@@ -17,8 +17,8 @@
 // matrix_slice.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_MATRIX_SLICE_H_
-#define STATSLABS_MATRIX_MATRIX_SLICE_H_
+#ifndef SLAB_MATRIX_MATRIX_SLICE_H_
+#define SLAB_MATRIX_MATRIX_SLICE_H_
 
 #include <cstddef>
 #include <algorithm>
@@ -139,4 +139,4 @@ std::ostream &operator<<(std::ostream &os, const MatrixSlice<N> &ms) {
   return os;
 }
 
-#endif // STATSLABS_MATRIX_MATRIX_SLICE_H_
+#endif // SLAB_MATRIX_MATRIX_SLICE_H_

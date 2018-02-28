@@ -17,8 +17,8 @@
 // matrix.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_H_
-#define STATSLABS_MATRIX_H_
+#ifndef SLAB_MATRIX_H_
+#define SLAB_MATRIX_H_
 
 #include <cassert>
 #include <cstddef> // std::size_t
@@ -52,4 +52,4 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 
 } // namespace slab
 
-#endif // STATSLABS_MATRIX_H_
+#endif // SLAB_MATRIX_H_

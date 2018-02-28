@@ -17,8 +17,8 @@
 // support.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_SUPPORT_H_
-#define STATSLABS_MATRIX_SUPPORT_H_
+#ifndef SLAB_MATRIX_SUPPORT_H_
+#define SLAB_MATRIX_SUPPORT_H_
 
 namespace matrix_impl {
 
@@ -179,4 +179,4 @@ std::size_t do_slice(const MatrixSlice<N> &os, MatrixSlice<N> &ns, const T &s, c
 
 } // namespace matrix_impl
 
-#endif // STATSLABS_MATRIX_SUPPORT_H_
+#endif // SLAB_MATRIX_SUPPORT_H_

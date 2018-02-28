@@ -17,8 +17,8 @@
 // matrix_ref.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_MATRIX_REF_H_
-#define STATSLABS_MATRIX_MATRIX_REF_H_
+#ifndef SLAB_MATRIX_MATRIX_REF_H_
+#define SLAB_MATRIX_MATRIX_REF_H_
 
 #include <cstddef>
 #include <iterator> // std::forward_iterator_tag
@@ -203,4 +203,4 @@ std::ostream &operator<<(std::ostream &os, const MatrixRef<T, 0> &mr0) {
   return os << (const T &) mr0;
 }
 
-#endif // STATSLABS_MATRIX_MATRIX_REF_H_
+#endif // SLAB_MATRIX_MATRIX_REF_H_

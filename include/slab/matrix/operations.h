@@ -17,8 +17,8 @@
 // operations.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_OPERATIONS_H_
-#define STATSLABS_MATRIX_OPERATIONS_H_
+#ifndef SLAB_MATRIX_OPERATIONS_H_
+#define SLAB_MATRIX_OPERATIONS_H_
 
 #include <cstddef>
 #include <algorithm>
@@ -86,4 +86,4 @@ T dot_product(const MatrixRef<T, 1> &a, const MatrixRef<U, 1> &b) {
   return std::inner_product(a.begin(), a.end(), b.begin(), T{});
 }
 
-#endif // STATSLABS_MATRIX_OPERATIONS_H_
+#endif // SLAB_MATRIX_OPERATIONS_H_

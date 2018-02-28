@@ -17,8 +17,8 @@
 // slice.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_SLICE_H_
-#define STATSLABS_MATRIX_SLICE_H_
+#ifndef SLAB_MATRIX_SLICE_H_
+#define SLAB_MATRIX_SLICE_H_
 
 #include <cstddef>
 
@@ -52,4 +52,4 @@ struct slice {
 //  return os;
 //}
 
-#endif // STATSLABS_MATRIX_SLICE_H_
+#endif // SLAB_MATRIX_SLICE_H_

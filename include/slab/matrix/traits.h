@@ -17,8 +17,8 @@
 // traits.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_TRAITS_H_
-#define STATSLABS_MATRIX_TRAITS_H_
+#ifndef SLAB_MATRIX_TRAITS_H_
+#define SLAB_MATRIX_TRAITS_H_
 
 template<bool B, typename T = void>
 using Enable_if = typename std::enable_if<B, T>::type;
@@ -84,4 +84,4 @@ constexpr bool Matrix_type() {
 template<typename C>
 using Value_type = typename C::value_type;
 
-#endif // STATSLABS_MATRIX_TRAITS_H_
+#endif // SLAB_MATRIX_TRAITS_H_

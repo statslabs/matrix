@@ -17,8 +17,8 @@
 // matrix_fwd.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_MATRIX_FWD_H_
-#define STATSLABS_MATRIX_MATRIX_FWD_H_
+#ifndef SLAB_MATRIX_MATRIX_FWD_H_
+#define SLAB_MATRIX_MATRIX_FWD_H_
 
 // Declarations
 struct slice;
@@ -32,4 +32,4 @@ class Matrix;
 template<typename T, std::size_t N>
 class MatrixRef;
 
-#endif // STATSLABS_MATRIX_MATRIX_FWD_H_
+#endif // SLAB_MATRIX_MATRIX_FWD_H_

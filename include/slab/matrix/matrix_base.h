@@ -17,8 +17,8 @@
 // matrix_base.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_MATRIX_BASE_H_
-#define STATSLABS_MATRIX_MATRIX_BASE_H_
+#ifndef SLAB_MATRIX_MATRIX_BASE_H_
+#define SLAB_MATRIX_MATRIX_BASE_H_
 
 #include <cstddef>
 #include "slab/matrix/matrix_slice.h"
@@ -53,4 +53,4 @@ template<typename... Exts>
 MatrixBase<T, N>::MatrixBase(Exts... exts)
     : desc(exts...) {}
 
-#endif // STATSLABS_MATRIX_MATRIX_BASE_H_
+#endif // SLAB_MATRIX_MATRIX_BASE_H_

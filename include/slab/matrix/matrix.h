@@ -17,8 +17,8 @@
 // matrix.h
 // -----------------------------------------------------------------------------
 //
-#ifndef STATSLABS_MATRIX_MATRIX_H_
-#define STATSLABS_MATRIX_MATRIX_H_
+#ifndef SLAB_MATRIX_MATRIX_H_
+#define SLAB_MATRIX_MATRIX_H_
 
 #include "slab/matrix/traits.h"
 #include "slab/matrix/matrix_ref.h"
@@ -355,4 +355,4 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
   return os << (const T &) m0;
 }
 
-#endif // STATSLABS_MATRIX_MATRIX_H_
+#endif // SLAB_MATRIX_MATRIX_H_
