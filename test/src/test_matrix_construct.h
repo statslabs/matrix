@@ -1,5 +1,5 @@
-#ifndef MATRIX_TEST_MATRIX_CTOR_H_
-#define MATRIX_TEST_MATRIX_CTOR_H_
+#ifndef MATRIX_TEST_MATRIX_CONSTRUCT_H_
+#define MATRIX_TEST_MATRIX_CONSTRUCT_H_
 
 #include <array>
 #include <gtest/gtest.h>
@@ -7,7 +7,7 @@
 
 namespace slab {
 
-TEST(MatrixCtorTest, ConstructFromMatrixRef) {
+TEST(MatrixConstructTest, ConstructFromMatrixRef) {
   Matrix<double, 1> m1{1, 2, 3};
   auto mr1 = m1(slice(1));                    // MatrixRef<double, 1>
   Matrix<double, 1> m1sub(mr1);
@@ -41,7 +41,7 @@ TEST(MatrixCtorTest, ConstructFromMatrixRef) {
   EXPECT_EQ(9, m3sub(1, 1, 1));
 }
 
-TEST(MatrixCtorTest, ConstructFromExtent) {
+TEST(MatrixConstructTest, ConstructFromExtent) {
 
   Matrix<double, 0> m0;
   auto ms0 = m0.descriptor(); // MatrixSlice<0>
@@ -86,7 +86,7 @@ TEST(MatrixCtorTest, ConstructFromExtent) {
   }
 }
 
-TEST(MatrixCtorTest, ConstructFromMatrixInitializer) {
+TEST(MatrixConstructTest, ConstructFromMatrixInitializer) {
   Matrix<double, 0> m0{1};
 
   EXPECT_EQ(1, m0());
@@ -117,4 +117,4 @@ TEST(MatrixCtorTest, ConstructFromMatrixInitializer) {
 
 } // namespace slab
 
-#endif // MATRIX_TEST_MATRIX_CTOR_H_
+#endif // MATRIX_TEST_MATRIX_CONSTRUCT_H_
