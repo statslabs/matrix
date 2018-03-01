@@ -42,30 +42,30 @@ TEST(MatrixAssignTest, AssignFromMatrixRef) {
 TEST(MatrixAssignTest, AssignFromMatrixInitializer) {
   Matrix<double, 0> m0 = {1};
 
-  EXPECT_EQ(m0(), 1);
+  EXPECT_EQ(1, m0());
 
   Matrix<double, 1> m1 = {1, 2};
 
-  EXPECT_EQ(m1(0), 1);
-  EXPECT_EQ(m1(1), 2);
+  EXPECT_EQ(1, m1(0));
+  EXPECT_EQ(2, m1(1));
 
   Matrix<double, 2> m2 = {{1, 2}, {3, 4}};
 
-  EXPECT_EQ(m2(0, 0), 1);
-  EXPECT_EQ(m2(0, 1), 2);
-  EXPECT_EQ(m2(1, 0), 3);
-  EXPECT_EQ(m2(1, 1), 4);
+  EXPECT_EQ(1, m2(0, 0));
+  EXPECT_EQ(2, m2(0, 1));
+  EXPECT_EQ(3, m2(1, 0));
+  EXPECT_EQ(4, m2(1, 1));
 
   Matrix<double, 3> m3 = {{{1, 2}, {3, 4}}, {{5, 6}, {7, 8}}};
 
-  EXPECT_EQ(m3(0, 0, 0), 1);
-  EXPECT_EQ(m3(0, 0, 1), 2);
-  EXPECT_EQ(m3(0, 1, 0), 3);
-  EXPECT_EQ(m3(0, 1, 1), 4);
-  EXPECT_EQ(m3(1, 0, 0), 5);
-  EXPECT_EQ(m3(1, 0, 1), 6);
-  EXPECT_EQ(m3(1, 1, 0), 7);
-  EXPECT_EQ(m3(1, 1, 1), 8);
+  EXPECT_EQ(1, m3(0, 0, 0));
+  EXPECT_EQ(2, m3(0, 0, 1));
+  EXPECT_EQ(3, m3(0, 1, 0));
+  EXPECT_EQ(4, m3(0, 1, 1));
+  EXPECT_EQ(5, m3(1, 0, 0));
+  EXPECT_EQ(6, m3(1, 0, 1));
+  EXPECT_EQ(7, m3(1, 1, 0));
+  EXPECT_EQ(8, m3(1, 1, 1));
 }
 
 
