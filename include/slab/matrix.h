@@ -49,7 +49,8 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/matrix.h"
 
 #include "slab/matrix/operations.h"
-
+#include "slab/matrix/typedef.h"
+ 
 } // namespace slab
 
 #endif // SLAB_MATRIX_H_
