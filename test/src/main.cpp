@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "test_matrix_ctor.h"
+#include "test_matrix_assign.h"
 
 int main(int argc, char **argv)
 {
