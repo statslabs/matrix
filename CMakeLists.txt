@@ -14,16 +14,66 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.9)
-project(matrix VERSION 0.1.0 LANGUAGES CXX)
+project(matrix VERSION 0.2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
+
+# Make sure that custom modules like FindCblas are found
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+
+##################################################
+# Declare dependencies
+##################################################
+find_package(CBLAS REQUIRED MODULE)
+
+configure_file ("${PROJECT_SOURCE_DIR}/include/slab/matrix/config.h.in"
+        "${PROJECT_SOURCE_DIR}/include/slab/matrix/config.h" )
 
 ##################################################
 # Create target and set properties
 ##################################################
 
+add_executable(main
+        src/main.cpp)
+
+if (CBLAS_FOUND)
+    target_include_directories(main PRIVATE ${CBLAS_INCLUDE_DIR})
+    target_link_libraries(main PUBLIC ${CBLAS_LIBRARIES})
+endif(CBLAS_FOUND)
+
+# Set target properties
+target_include_directories(main
+        PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        )
+
+add_executable(dgemm_example
+        src/dgemm_example.cpp)
+
+if (CBLAS_FOUND)
+    target_include_directories(dgemm_example PRIVATE ${CBLAS_INCLUDE_DIR})
+    target_link_libraries(dgemm_example PUBLIC ${CBLAS_LIBRARIES})
+endif(CBLAS_FOUND)
+
+# Set target properties
+target_include_directories(dgemm_example
+        PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        )
+
 add_library(matrix
         src/library.cpp)
+
+if (CBLAS_FOUND)
+    target_include_directories(matrix PRIVATE ${CBLAS_INCLUDE_DIR})
+    target_link_libraries(matrix PUBLIC ${CBLAS_LIBRARIES})
+endif(CBLAS_FOUND)
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Matrix::matrix ALIAS matrix)

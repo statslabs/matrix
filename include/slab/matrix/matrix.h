@@ -23,7 +23,6 @@
 #include "slab/matrix/traits.h"
 #include "slab/matrix/matrix_ref.h"
 
-
 template<typename T, std::size_t N>
 class Matrix {
  public:
@@ -110,6 +109,12 @@ class Matrix {
   Enable_if<Matrix_type<M>(), Matrix &> operator+=(const M &x);    // matrix addtion
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator-=(const M &x);    // matrix substraction
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator*=(const M &x);    //
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator/=(const M &x);    //
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);    //
 
   iterator begin() { return elems.begin(); }
   const_iterator begin() const { return elems.cbegin(); }
@@ -288,6 +293,30 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator-=(const M &m)
   return apply(m, [&](T &a, const Value_type<M> &b) { a -= b; });
 }
 
+template<typename T, std::size_t N>
+template<typename M>
+Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator*=(const M &m) {
+  assert(same_extents(desc, m.descriptor()));  // make sure sizes match
+
+  return apply(m, [&](T &a, const Value_type<M> &b) { a *= b; });
+}
+
+template<typename T, std::size_t N>
+template<typename M>
+Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator/=(const M &m) {
+  assert(same_extents(desc, m.descriptor()));  // make sure sizes match
+
+  return apply(m, [&](T &a, const Value_type<M> &b) { a /= b; });
+}
+
+template<typename T, std::size_t N>
+template<typename M>
+Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator%=(const M &m) {
+  assert(same_extents(desc, m.descriptor()));  // make sure sizes match
+
+  return apply(m, [&](T &a, const Value_type<M> &b) { a %= b; });
+}
+
 template<typename T>
 class Matrix<T, 0> {
  public:
@@ -312,31 +341,29 @@ class Matrix<T, 0> {
   T elem;
 };
 
-//template<typename T>
-//T &Matrix<T, 1>::row(std::size_t i) { return &elems[i]; }
-
-//template<typename T>
-//T &Matrix<T, 0>::row(std::size_t i) = delete;
+////////////////////////////////////////
+/// PRINTING UTILS
+///////////////////////////////////////
 
 // print Matrix, MatrixRef
 template<typename T, std::size_t N>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, N> &m) {
-  os << '{';
+  os << std::endl << '{';
   for (size_t i = 0; i != m.rows(); ++i) {
     os << m[i];
     if (i + 1 != m.rows()) os << ',';
   }
-  return os << '}';
+  return os << '}' << std::endl;
 }
 
 template<typename T, std::size_t N>
 std::ostream &operator<<(std::ostream &os, const MatrixRef<T, N> &m) {
-  os << '{';
+  os << std::endl << '{';
   for (size_t i = 0; i != m.rows(); ++i) {
     os << m[i];
     if (i + 1 != m.rows()) os << ',';
   }
-  return os << '}';
+  return os << '}' << std::endl;
 }
 
 //template<typename M>

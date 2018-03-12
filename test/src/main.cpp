@@ -2,6 +2,7 @@
 #include "test_matrix_construct.h"
 #include "test_matrix_assign.h"
 #include "test_matrix_subscript.h"
+#include "test_matrix_opereration.h"
 
 int main(int argc, char **argv)
 {

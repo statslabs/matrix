@@ -33,6 +33,8 @@
 #include <type_traits> // std::enable_if/is_convertible
 #include <vector>
 
+#include "slab/matrix/config.h"
+
 namespace slab {
 
 #include "slab/matrix/matrix_fwd.h"
@@ -48,8 +50,8 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
 
-#include "slab/matrix/operations.h"
-#include "slab/matrix/typedef.h"
+#include "slab/matrix/matrix_ops.h"
+#include "slab/matrix/type_alias.h"
  
 } // namespace slab
 
