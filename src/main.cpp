@@ -10,17 +10,17 @@ using namespace std;
 
 int main()
 {
-  slab::mat A =
+  slab::fmat A =
       {{1, 2, 3},
        {4, 5, 6},
        {7, 8, 9}};
 
-  slab::mat B =
+  slab::fmat B =
       {{1, 2, 3},
        {4, 5, 6},
        {7, 8, 9}};
 
-  slab::mat C = A * B;
+  slab::fmat C = A * B;
 
   cout << "C  = " << C << endl;
   cout << "AB = " << slab::matmul(A, B) << endl;

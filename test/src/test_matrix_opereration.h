@@ -29,7 +29,23 @@ TEST(MatrixOperationTest, MatTranspose) {
   EXPECT_EQ(9, m2(2, 2));
 }
 
-TEST(MatrixOperationTest, MatVecProd) {
+TEST(MatrixOperationTest, SinglePrecisionMatVecProd) {
+  fmat m1 = {
+      {8, 4, 7},
+      {3, 5, 1},
+      {1, 3, 2}
+  };
+  fvec v1 = {-1, 2, 1};
+  fvec v2 = {3, 2, 3};
+
+  fvec res = matmul(m1, v1) + v2;
+
+  EXPECT_EQ(10, res(0));
+  EXPECT_EQ(10, res(1));
+  EXPECT_EQ(10, res(2));
+}
+
+TEST(MatrixOperationTest, DoublePrecisionMatVecProd) {
   mat m1 = {
       {8, 4, 7},
       {3, 5, 1},
@@ -45,7 +61,25 @@ TEST(MatrixOperationTest, MatVecProd) {
   EXPECT_EQ(10, res(2));
 }
 
-TEST(MatrixOperationTest, MatMatProd) {
+TEST(MatrixOperationTest, SinglePrecisionMatMatProd) {
+  fmat m1 = {
+      {1, 2, 3},
+      {4, 5, 6}
+  };
+  fmat m2 = {
+      {7, 8},
+      {9, 10},
+      {11, 12}
+  };
+  fmat res = matmul(m1, m2);
+
+  EXPECT_EQ(58, res(0, 0));
+  EXPECT_EQ(64, res(0, 1));
+  EXPECT_EQ(139, res(1, 0));
+  EXPECT_EQ(154, res(1, 1));
+}
+
+TEST(MatrixOperationTest, DoublePrecisionMatMatProd) {
   mat m1 = {
       {1, 2, 3},
       {4, 5, 6}

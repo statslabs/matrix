@@ -84,4 +84,17 @@ constexpr bool Matrix_type() {
 template<typename C>
 using Value_type = typename C::value_type;
 
+template<typename T>
+struct is_float : public std::false_type {};
+
+template<>
+struct is_float<float> : public std::true_type {};
+
+template<typename T>
+struct is_double : public std::false_type {};
+
+template<>
+struct is_double<double> : public std::true_type {};
+
+
 #endif // SLAB_MATRIX_TRAITS_H_

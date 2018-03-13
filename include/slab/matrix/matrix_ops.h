@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <type_traits>
 #include "slab/matrix/matrix.h"
+#include "slab/matrix/traits.h"
 
 #include <iostream>
 using namespace std;
@@ -56,40 +57,131 @@ Matrix<T, N> operator/(const Matrix<T, N> &a, const Matrix<T, N> &b) {
   return res;
 }
 
+// Computes a matrix-vector product using a general matrix
+//
+// The operation is defined as
+//
+// y := op(A)*x
+//
+// where:
+// x and y are vectors,
+// A is an m-by-n matrix.
 template<typename T>
 Matrix<T, 1> matmul(const Matrix<T, 2> &a, const Matrix<T, 1> &b) {
   assert(a.extent(1) == b.extent(0));
-  const std::size_t nr = a.extent(0);
-  Matrix<T, 1> res(nr);
 
-  if (std::is_floating_point<T>::value)
-    cblas_dgemv(CblasRowMajor, CblasNoTrans,
-                a.rows(), a.cols(), 1.0, a.data(), b.size(), b.data(), 1, 0.0, res.data(), 1);
+  const int m    = a.rows();
+  const int n    = a.cols();
+  const int lda  = n;
+  const int incx = 1;
+  const int incy = 1;
 
-  return res;
+  Matrix<T, 1> y(m);
+
+  if (is_double<T>::value) {
+    cblas_dgemv(CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
+                CblasNoTrans,              // trans : CblasNoTrans/CblasTrans/CblasTrans.
+                m,                         // m     : the number of rows of the matrix A.
+                n,                         // n     : the number of cols of the matrix A.
+                (const double) 1.0,        // alpha : the scalar alpha.
+                (const double *) a.data(), // a     : the matrix A.
+                lda,                       // lda   : the leading dimension of a.
+                (const double *) b.data(), // x     : the vector x.
+                incx,                      // incx  : the increment for the elements of x.
+                (const double) 0.0,        // beta  : the scalar beta.
+                (double *) y.data(),       // y     : the vector y.
+                incy                       // incy  : the increment for the elements of y.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sgemv(CblasRowMajor,
+                CblasNoTrans,
+                m,
+                n,
+                (const float) 1.0,
+                (const float *) a.data(),
+                lda,
+                (const float *) b.data(),
+                incx,
+                (const float) 0.0,
+                (float *) y.data(),
+                incy
+    );
+  }
+
+  return y;
 }
 
+// Computes a matrix-matrix product with general matrices.
+//
+// The operation is defined as
+//
+// C := op(A)*op(B),
+//
+// where:
+// op(X) is one of op(X) = X, or op(X) = X^T, or op(X) = X^H,
+// A, B and C are matrices:
+// op(A) is an m-by-k matrix,
+// op(B) is a k-by-n matrix,
+// C is an m-by-n matrix.
 template<typename T>
 Matrix<T, 2> matmul(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   assert(a.extent(1) == b.extent(0));
-  const std::size_t nrows = a.rows();
-  const std::size_t ncols = b.cols();
-  Matrix<T, 2> res(nrows, ncols);
 
-  if (std::is_floating_point<T>::value)
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
-                a.rows(), b.cols(), a.cols(),
-                1.0, a.data(), a.cols(),
-                b.data(), b.cols(),
-                0.0, res.data(), res.cols());
+  const int m = a.rows();
+  const int n = b.cols();
+  const int k = a.cols();
 
-  return res;
+  const int lda = a.cols();
+  const int ldb = b.cols();
+  const int ldc = b.cols();
+
+  Matrix<T, 2> c(m, n);
+
+  if (is_double<T>::value) {
+    cblas_dgemm(CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
+                CblasNoTrans,              // transa: CblasNoTrans/CblasTrans/CblasConjTrans.
+                CblasNoTrans,              // transb: CblasNoTrans/CblasTrans/CblasConjTrans.
+                m,                         // m     : the number of rows of the matrix op(A) and of the matrix C.
+                n,                         // n     : the number of cols of the matrix op(B) and of the matrix C.
+                k,                         // k     : the number of cols of the matrix op(A) and the number of rows of the matrix op(B).
+                (const double) 1.0,        // alpha : the scalar alpha.
+                (const double *) a.data(), // a     : the matrix A.
+                lda,                       // lda   : the leading dimension of a.
+                (const double *) b.data(), // b     : the matrix B.
+                ldb,                       // ldb   : the leading dimension of b.
+                (const double) 0.0,        // beta  : the scalar beta.
+                (double *) c.data(),       // c     : the matrix C.
+                ldc                        // ldc   : the leading dimension of c.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sgemm(CblasRowMajor,
+                CblasNoTrans,
+                CblasNoTrans,
+                m,
+                n,
+                k,
+                (const float) 1.0,
+                (const float *) a.data(),
+                lda,
+                (const float *) b.data(),
+                ldb,
+                (const float) 0.0,
+                (float *) c.data(),
+                ldc
+    );
+  }
+
+  return c;
 }
 
 template<typename T, std::size_t N, typename... Args>
 auto reshape(const Matrix<T, N> &a, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
   Matrix<T, sizeof...(args)> res(args...);
-  cblas_dcopy(a.size(), a.data(), 1, res.data(), 1);
+
+  if (is_double<T>::value)
+    cblas_dcopy(a.size(), (double *) a.data(), 1, (double *) res.data(), 1);
+  else if (is_float<T>::value)
+    cblas_scopy(a.size(), (float *) a.data(), 1, (float *) res.data(), 1);
 
   return res;
 }
