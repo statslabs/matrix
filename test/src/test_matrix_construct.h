@@ -59,7 +59,7 @@ TEST(MatrixConstructTest, ConstructFromExtent) {
   EXPECT_EQ(0, m1(2));        // last element
   EXPECT_EQ(3, ms1.size);
   EXPECT_EQ(0, ms1.start);
-  for (auto idx = 0; idx < m1.order; ++idx) {
+  for (std::size_t idx = 0; idx < m1.order; ++idx) {
     EXPECT_EQ(arr[idx], ms1.extents[idx]) << "arrays differ at index " << idx;
   }
 
@@ -70,7 +70,7 @@ TEST(MatrixConstructTest, ConstructFromExtent) {
   EXPECT_EQ(0, m2(2, 3));     // last element
   EXPECT_EQ(12, ms2.size);
   EXPECT_EQ(0, ms2.start);
-  for (auto idx = 0; idx < m2.order; ++idx) {
+  for (std::size_t idx = 0; idx < m2.order; ++idx) {
     EXPECT_EQ(arr[idx], ms2.extents[idx]) << "arrays differ at index " << idx;
   }
 
@@ -81,7 +81,7 @@ TEST(MatrixConstructTest, ConstructFromExtent) {
   EXPECT_EQ(0, m3(2, 3, 4));  // last element
   EXPECT_EQ(60, ms3.size);
   EXPECT_EQ(0, ms3.start);
-  for (auto idx = 0; idx < m3.order; ++idx) {
+  for (std::size_t idx = 0; idx < m3.order; ++idx) {
     EXPECT_EQ(arr[idx], ms3.extents[idx]) << "arrays differ at index " << idx;
   }
 }
