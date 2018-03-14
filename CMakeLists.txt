@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.0)
 project(matrix VERSION 0.3.0 LANGUAGES CXX)
 
     set(CMAKE_CXX_STANDARD 11)
