@@ -24,7 +24,7 @@
 struct slice;
 
 template<std::size_t N>
-class MatrixSlice;
+struct MatrixSlice;
 
 template<typename T, std::size_t N>
 class Matrix;

@@ -50,7 +50,7 @@ TEST(MatrixConstructTest, ConstructFromExtent) {
   EXPECT_EQ(0, ms0.size);
   EXPECT_EQ(0, ms0.start);
 
-  std::array<int, 3> arr = {3, 4, 5};
+  std::array<int, 3> arr = {{3, 4, 5}};
 
   Matrix<double, 1> m1(3);
   auto ms1 = m1.descriptor(); // MatrixSlice<1>

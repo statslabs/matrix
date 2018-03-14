@@ -33,7 +33,8 @@
 #include <type_traits> // std::enable_if/is_convertible
 #include <vector>
 
-#include "slab/matrix/config.h"
+#include "mkl.h"
+// #include "slab/matrix/config.h"
 
 namespace slab {
 

@@ -14,20 +14,21 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.9)
-project(matrix VERSION 0.2.0 LANGUAGES CXX)
+project(matrix VERSION 0.3.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD 11)
 
-# Make sure that custom modules like FindCblas are found
-list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    message(STATUS "CMAKE_BUILD_TYPE is unset, defaulting to Release")
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
 
-##################################################
-# Declare dependencies
-##################################################
-find_package(CBLAS REQUIRED MODULE)
-
-configure_file ("${PROJECT_SOURCE_DIR}/include/slab/matrix/config.h.in"
-        "${PROJECT_SOURCE_DIR}/include/slab/matrix/config.h" )
+include("cmake/platform.cmake")
+include("cmake/OpenMP.cmake")
+include("cmake/SDL.cmake")
+include("cmake/MKL.cmake")
+include("cmake/Doxygen.cmake")
+include("cmake/profiling.cmake")
 
 ##################################################
 # Create target and set properties
@@ -36,10 +37,7 @@ configure_file ("${PROJECT_SOURCE_DIR}/include/slab/matrix/config.h.in"
 add_executable(main
         src/main.cpp)
 
-if (CBLAS_FOUND)
-    target_include_directories(main PRIVATE ${CBLAS_INCLUDE_DIR})
-    target_link_libraries(main PUBLIC ${CBLAS_LIBRARIES})
-endif(CBLAS_FOUND)
+target_link_libraries(main PUBLIC ${MKL_LINKER_LIBS})
 
 # Set target properties
 target_include_directories(main
@@ -53,10 +51,7 @@ target_include_directories(main
 add_executable(dgemm_example
         src/dgemm_example.cpp)
 
-if (CBLAS_FOUND)
-    target_include_directories(dgemm_example PRIVATE ${CBLAS_INCLUDE_DIR})
-    target_link_libraries(dgemm_example PUBLIC ${CBLAS_LIBRARIES})
-endif(CBLAS_FOUND)
+target_link_libraries(dgemm_example PUBLIC ${MKL_LINKER_LIBS})
 
 # Set target properties
 target_include_directories(dgemm_example
@@ -70,10 +65,7 @@ target_include_directories(dgemm_example
 add_library(matrix
         src/library.cpp)
 
-if (CBLAS_FOUND)
-    target_include_directories(matrix PRIVATE ${CBLAS_INCLUDE_DIR})
-    target_link_libraries(matrix PUBLIC ${CBLAS_LIBRARIES})
-endif(CBLAS_FOUND)
+target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Matrix::matrix ALIAS matrix)
