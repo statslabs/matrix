@@ -51,13 +51,15 @@ struct MatrixSlice {
 
   std::size_t offset(const std::array<std::size_t, N> &pos) const;
 
+  void clear();
+
   std::size_t size;                   // total number of elements
   std::size_t start;                  // starting offset
   std::array<std::size_t, N> extents; // number of elements in each dimension
   std::array<std::size_t, N> strides; // offsets between elements in each dimension
 };
 
-template<size_t N>
+template<std::size_t N>
 MatrixSlice<N>::MatrixSlice()
     :size{0}, start{0} {
   std::fill(extents.begin(), extents.end(), 0);
@@ -111,10 +113,19 @@ std::size_t MatrixSlice<N>::operator()(Dims... dims) const {
   return start + std::inner_product(args, args + N, strides.begin(), std::size_t{0});
 }
 
-template<size_t N>
+template<std::size_t N>
 std::size_t MatrixSlice<N>::offset(const std::array<std::size_t, N> &pos) const {
   assert(pos.size() == N);
   return start + std::inner_product(pos.begin(), pos.end(), strides.begin(), size_t{0});
+}
+
+template<std::size_t N>
+void MatrixSlice<N>::clear()
+{
+  size = 0;
+  start = 0;
+  extents.fill(0);
+  strides.fill(0);
 }
 
 template<size_t N>
@@ -122,7 +133,6 @@ bool same_extents(const MatrixSlice<N>& a, const MatrixSlice<N>& b)
 {
   return a.extents == b.extents;
 }
-
 
 template<std::size_t N>
 std::ostream &operator<<(std::ostream &os, const std::array<std::size_t, N> &a) {

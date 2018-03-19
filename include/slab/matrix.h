@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <array>
+#include <complex>
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
@@ -51,7 +52,11 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
 
+#include "slab/matrix/blas.h"
+#include "slab/matrix/lapack.h"
+
 #include "slab/matrix/matrix_ops.h"
+
 #include "slab/matrix/type_alias.h"
  
 } // namespace slab

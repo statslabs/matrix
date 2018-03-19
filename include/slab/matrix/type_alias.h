@@ -15,4 +15,12 @@ using dvec  = Matrix<double, 1>;
 using dmat  = Matrix<double, 2>;
 using dcube = Matrix<double, 3>;
 
+using uvec  = Matrix<unsigned, 1>;
+using umat  = Matrix<unsigned, 2>;
+using ucube = Matrix<unsigned, 3>;
+
+using ivec  = Matrix<int, 1>;
+using imat  = Matrix<int, 2>;
+using icube = Matrix<int, 3>;
+
 #endif // SLAB_MATRIX_TYPEDEF_H_

@@ -121,6 +121,8 @@ class Matrix {
   iterator end() { return elems.end(); }
   const_iterator end() const { return elems.cend(); }
 
+  void clear();
+
  private:
   MatrixSlice<N> desc;
   std::vector<T> elems;
@@ -315,6 +317,12 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator%=(const M &m)
   assert(same_extents(desc, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a %= b; });
+}
+
+template<typename T, std::size_t N>
+void Matrix<T, N>::clear() {
+  desc.clear();
+  elems.clear();
 }
 
 template<typename T>
