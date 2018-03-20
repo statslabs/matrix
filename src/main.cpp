@@ -31,6 +31,12 @@ int main() {
   slab::vec c = {1.0, 2.0, 3.0};
   slab::fvec c2 = {4.0, 5.0, 6.0};
 
+  slab::blas_scal(0.1, c);
+  slab::blas_scal(0.1f, c2);
+
+  cout << "c = " << c << endl;
+  cout << "c2 = " << c2 << endl;
+
   cout << "nrm2(c) = " << slab::blas_nrm2(c) << endl;
   cout << "nrm2(c2) = " << slab::blas_nrm2(c2) << endl;
 

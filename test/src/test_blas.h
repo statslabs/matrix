@@ -34,6 +34,26 @@ TEST(BLASlevel1Test, SWAP) {
   EXPECT_EQ(6, m2s(2));
 }
 
+TEST(BLASlevel1Test, SCAL) {
+  double a1 = 0.1;
+  Matrix<double, 1> m1 = {10, 20, 30};
+
+  float a2 = 0.1;
+  Matrix<float, 1> m2 = {10, 20, 30};
+
+  blas_scal(a1, m1);
+  blas_scal(a2, m2);
+
+  EXPECT_EQ(1, m1(0));
+  EXPECT_EQ(2, m1(1));
+  EXPECT_EQ(3, m1(2));
+
+  EXPECT_EQ(1, m2(0));
+  EXPECT_EQ(2, m2(1));
+  EXPECT_EQ(3, m2(2));
+}
+
+
 TEST(BLASlevel1Test, COPY) {
   Matrix<double, 1> m1 = {1, 2, 3}, m1c;
   Matrix<float, 1> m2 = {1, 2, 3}, m2c;

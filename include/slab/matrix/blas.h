@@ -71,6 +71,52 @@ void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y)
   }
 }
 
+// Computes the product of a vector by a scalar
+template<typename T>
+void blas_scal(const T a, Matrix<T, 1> &x)
+{
+  const int n = x.size();
+  const int incx = 1;
+
+  if (is_double<T>::value) {
+    cblas_dscal(
+        n,                   // n   : the number of elements in vector x
+        (const double) a,    // a   : the scalar a.
+        (double *) x.data(), // x   : array, size at least (1 + (n -1)*abs(incx))
+        incx                 // incx: the increment for the elements of x.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sscal(n, (const float) a, (float *) x.data(), incx);
+  } else if (is_complex_double<T>::value) {
+    cblas_zdscal(n, (const double) a, (std::complex<double> *) x.data(), incx);
+  } else if (is_complex_float<T>::value) {
+    cblas_csscal(n, (const float) a, (std::complex<float> *) x.data(), incx);
+  }
+}
+
+template<typename T>
+void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x)
+{
+  const int n = x.size();
+  const int incx = 1;
+
+  if (is_double<T>::value) {
+    cblas_zscal(
+        n,
+        (const std::complex<double> *) &a,
+        (std::complex<double> *) x.data(),
+        incx
+    );
+  } else if (is_float<T>::value) {
+    cblas_cscal(
+        n,
+        (const std::complex<float> *) &a,
+        (std::complex<float> *) x.data(),
+        incx);
+  }
+}
+
+
 // Copies vector to another vector
 template<typename T>
 void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
