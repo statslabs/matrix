@@ -48,20 +48,6 @@ target_include_directories(main
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
-add_executable(dgemm_example
-        src/dgemm_example.cpp)
-
-target_link_libraries(dgemm_example PUBLIC ${MKL_LINKER_LIBS})
-
-# Set target properties
-target_include_directories(dgemm_example
-        PUBLIC
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        )
-
 add_library(matrix
         src/library.cpp)
 
@@ -132,4 +118,5 @@ export(EXPORT matrix-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/MatrixTargets.cmak
 # Register package in user's package registry
 export(PACKAGE Matrix)
 
+add_subdirectory(examples)
 add_subdirectory(test)
