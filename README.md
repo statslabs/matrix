@@ -8,3 +8,4 @@ StatsLabs.Matrix is the fundamental package of StatsLabs for statistical computi
   + A Matrix Template: Construction and Assignment; Subscripting and Slicing
   + Matrix arithmetic operations: Scalar Operations; Additions; Multiplication
   + Matrix Implementation: slice; MatrixSlice; MatrixRef; Matrix List Initialization; Matrix Access; Zero-Dimensional Matrix
+  + An interface to Intel(R) MKL BLAS operations which apply to the Matrix template
