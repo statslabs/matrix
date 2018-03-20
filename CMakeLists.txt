@@ -14,9 +14,14 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.0)
+
+set(PROJECT_NAME "StatsLabs.Matrix")
+set(PROJECT_FULL_NAME "StatsLabs.Matrix C++ linear algebra library")
+set(PROJECT_VERSION "0.3.0")
+
 project(matrix VERSION 0.3.0 LANGUAGES CXX)
 
-    set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11)
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE is unset, defaulting to Release")
@@ -27,8 +32,32 @@ include("cmake/platform.cmake")
 include("cmake/OpenMP.cmake")
 include("cmake/SDL.cmake")
 include("cmake/MKL.cmake")
-include("cmake/Doxygen.cmake")
+#include("cmake/Doxygen.cmake")
 include("cmake/profiling.cmake")
+
+# Doxygen Build
+option(BUILD_DOC "Build Documentation" ON)
+
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    set(BUILD_DOC_DIR ${CMAKE_SOURCE_DIR}/build/doc)
+    if(NOT EXISTS ${BUILD_DOC_DIR})
+        file(MAKE_DIRECTORY ${BUILD_DOC_DIR})
+    endif()
+
+    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile)
+    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+
+    message("Doxygen build started")
+    add_custom_target(Doxygen ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM)
+else(DOXYGEN_FOUND)
+    message("Doxygen needs to be installed to generate the documentation.")
+endif(DOXYGEN_FOUND)
 
 ##################################################
 # Create target and set properties

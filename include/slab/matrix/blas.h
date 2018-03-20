@@ -18,6 +18,9 @@
 // -----------------------------------------------------------------------------
 //
 
+/// @file blas.h
+/// @brief BLAS interface
+
 #ifndef SLAB_MATRIX_BLAS_H_
 #define SLAB_MATRIX_BLAS_H_
 
@@ -43,8 +46,16 @@
 //  }
 //}
 
+/// @addtogroup blas_interface BLAS INTERFACE
+/// @{
 
-// Swaps a vector with another vector
+/// @addtogroup blas_level1 BLAS Level 1
+/// @{
+
+/// @brief Swaps a vector with another vector.
+///
+/// @param x a vector.
+/// @param y another vector.
 template<typename T>
 void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   assert(x.size() == y.size());
@@ -70,7 +81,7 @@ void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 }
 
-// Computes the product of a vector by a scalar
+/// @brief Computes the product of a vector by a scalar
 template<typename T>
 void blas_scal(const T a, Matrix<T, 1> &x) {
   const int n = x.size();
@@ -113,7 +124,7 @@ void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   }
 }
 
-// Copies vector to another vector
+/// @brief Copies vector to another vector
 template<typename T>
 void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   y.clear();
@@ -139,7 +150,7 @@ void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 }
 
-// Computes a vector-scalar product and adds the result to a vector
+/// @brief Computes a vector-scalar product and adds the result to a vector
 template<typename T>
 void blas_axpy(const T &a, const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   assert(x.size() == y.size());
@@ -166,7 +177,7 @@ void blas_axpy(const T &a, const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 }
 
-// Computes a vector-vector dot product
+/// @brief Computes a vector-vector dot product
 template<typename T>
 T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
   assert(x.size() == y.size());
@@ -191,7 +202,7 @@ T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
   return res;
 }
 
-// Computes a vector-vector dot product with double precision
+/// @brief Computes a vector-vector dot product with double precision
 float blas_sdsdot(const float sb, const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
   assert(sx.size() == sy.size());
 
@@ -202,7 +213,7 @@ float blas_sdsdot(const float sb, const Matrix<float, 1> &sx, const Matrix<float
   return cblas_sdsdot(n, sb, sx.data(), incx, sy.data(), incy);
 }
 
-// Computes a vector-vector dot product with double precision
+/// @brief Computes a vector-vector dot product with double precision
 double blas_dsdot(const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
   assert(sx.size() == sy.size());
 
@@ -213,7 +224,7 @@ double blas_dsdot(const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
   return cblas_dsdot(n, sx.data(), incx, sy.data(), incy);
 }
 
-// Computes the Euclidean norm of a vector
+/// @brief Computes the Euclidean norm of a vector
 template<typename T>
 double blas_nrm2(const Matrix<T, 1> &x) {
   double res = 0.0;
@@ -238,7 +249,7 @@ double blas_nrm2(const Matrix<T, 1> &x) {
   return res;
 }
 
-// Computes the sum of magnitudes of the vector elements
+/// @brief Computes the sum of magnitudes of the vector elements
 template<typename T>
 T blas_asum(const Matrix<T, 1> &x) {
   const int n = x.size();
@@ -262,7 +273,7 @@ T blas_asum(const Matrix<T, 1> &x) {
   return res;
 }
 
-// Finds the index of the element with maximum absolute value
+/// @brief Finds the index of the element with maximum absolute value
 template<typename T>
 std::size_t blas_iamax(const Matrix<T, 1> &x) {
   std::size_t res = 0;
@@ -284,5 +295,10 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
 
   return res;
 }
+
+/// @}
+
+/// @} BLAS INTERFACE
+
 
 #endif // SLAB_MATRIX_BLAS_H_
