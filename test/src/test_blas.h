@@ -8,6 +8,32 @@
 #include "slab/matrix.h"
 
 namespace slab {
+
+TEST(BLASlevel1Test, SWAP) {
+  Matrix<double, 1> m1 = {4, 5, 6};
+  Matrix<double, 1> m1s = {1, 2, 3};
+
+  Matrix<float, 1> m2 = {4, 5, 6};
+  Matrix<float, 1> m2s = {1, 2, 3};
+
+  blas_swap(m1, m1s);
+  blas_swap(m2, m2s);
+
+  EXPECT_EQ(1, m1(0));
+  EXPECT_EQ(2, m1(1));
+  EXPECT_EQ(3, m1(2));
+  EXPECT_EQ(4, m1s(0));
+  EXPECT_EQ(5, m1s(1));
+  EXPECT_EQ(6, m1s(2));
+
+  EXPECT_EQ(1, m2(0));
+  EXPECT_EQ(2, m2(1));
+  EXPECT_EQ(3, m2(2));
+  EXPECT_EQ(4, m2s(0));
+  EXPECT_EQ(5, m2s(1));
+  EXPECT_EQ(6, m2s(2));
+}
+
 TEST(BLASlevel1Test, COPY) {
   Matrix<double, 1> m1 = {1, 2, 3}, m1c;
   Matrix<float, 1> m2 = {1, 2, 3}, m2c;

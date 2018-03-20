@@ -44,6 +44,33 @@
 //}
 
 
+// Swaps a vector with another vector
+template<typename T>
+void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y)
+{
+  assert(x.size() == y.size());
+
+  const int n = x.size();
+  const int incx = 1;
+  const int incy = 1;
+
+  if (is_double<T>::value) {
+    cblas_dswap(
+        n,                   // n   : the number of elements in vectors x and y.
+        (double *) x.data(), // x   : array, size at least (1 + (n-1)*abs(incx)).
+        incx,                // incx: the increment for the elements of x.
+        (double *) y.data(), // y   : array, size at least (1 + (n-1)*abs(incy))
+        incy                 // incy: the increment for the elements of y.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sswap(n, (float *) x.data(), incx, (float *) y.data(), incy);
+  } else if (is_complex_double<T>::value) {
+    cblas_zswap(n, (std::complex<double> *) x.data(), incx, (std::complex<double> *) y.data(), incy);
+  } else if (is_complex_float<T>::value) {
+    cblas_cswap(n, (std::complex<float> *) x.data(), incx, (std::complex<float> *) y.data(), incy);
+  }
+}
+
 // Copies vector to another vector
 template<typename T>
 void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
