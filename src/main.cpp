@@ -29,6 +29,9 @@ int main() {
   cout << "D = " << D << endl;
 
   slab::vec c = {1.0, 2.0, 3.0};
+  slab::vec cc = {1.0, 2.0, 3.0};
+  cout << "dot(c, cc) = " << slab::blas_dot(c, cc) << endl;
+
   slab::fvec c2 = {4.0, 5.0, 6.0};
 
   slab::blas_scal(0.1, c);

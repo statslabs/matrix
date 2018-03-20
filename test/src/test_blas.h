@@ -53,7 +53,6 @@ TEST(BLASlevel1Test, SCAL) {
   EXPECT_EQ(3, m2(2));
 }
 
-
 TEST(BLASlevel1Test, COPY) {
   Matrix<double, 1> m1 = {1, 2, 3}, m1c;
   Matrix<float, 1> m2 = {1, 2, 3}, m2c;
@@ -70,6 +69,34 @@ TEST(BLASlevel1Test, COPY) {
   EXPECT_EQ(3, m2c(2));
 }
 
+TEST(BLASlevel1Test, AXPY) {
+  double a1 = 9.0;
+  Matrix<double, 1> x1 = {1, 2, 3};
+  Matrix<double, 1> y1 = {1, 2, 3};
+
+  float a2 = 9.0;
+  Matrix<float, 1> x2 = {1, 2, 3};
+  Matrix<float, 1> y2 = {1, 2, 3};
+
+  blas_axpy(a1, x1, y1);
+  blas_axpy(a2, x2, y2);
+
+  EXPECT_EQ(10, y1(0));
+  EXPECT_EQ(20, y1(1));
+  EXPECT_EQ(30, y1(2));
+  EXPECT_EQ(10, y2(0));
+  EXPECT_EQ(20, y2(1));
+  EXPECT_EQ(30, y2(2));
+}
+
+TEST(BLASlevel1Test, DOT) {
+  Matrix<double, 1> m1 = {1, 2, 3};
+  Matrix<float, 1> m2 = {1, 2, 3};
+
+  EXPECT_EQ(14, blas_dot(m1, m1));
+  EXPECT_EQ(14, blas_dot(m2, m2));
+}
+
 TEST(BLASlevel1Test, IAMAX) {
   Matrix<double, 1> m1 = {1, 3, 2};
   Matrix<float, 1> m2 = {1, 3, 2};
@@ -80,7 +107,6 @@ TEST(BLASlevel1Test, IAMAX) {
   EXPECT_EQ(1, idx1);
   EXPECT_EQ(1, idx2);
 }
-
 
 }
 

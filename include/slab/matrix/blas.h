@@ -46,8 +46,7 @@
 
 // Swaps a vector with another vector
 template<typename T>
-void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y)
-{
+void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   assert(x.size() == y.size());
 
   const int n = x.size();
@@ -73,8 +72,7 @@ void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y)
 
 // Computes the product of a vector by a scalar
 template<typename T>
-void blas_scal(const T a, Matrix<T, 1> &x)
-{
+void blas_scal(const T a, Matrix<T, 1> &x) {
   const int n = x.size();
   const int incx = 1;
 
@@ -95,8 +93,7 @@ void blas_scal(const T a, Matrix<T, 1> &x)
 }
 
 template<typename T>
-void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x)
-{
+void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   const int n = x.size();
   const int incx = 1;
 
@@ -115,7 +112,6 @@ void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x)
         incx);
   }
 }
-
 
 // Copies vector to another vector
 template<typename T>
@@ -168,6 +164,53 @@ void blas_axpy(const T &a, const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   } else if (is_complex_float<T>::value) {
     cblas_caxpy(n, &a, (const std::complex<float> *) x.data(), incx, (std::complex<float> *) y.data(), incy);
   }
+}
+
+// Computes a vector-vector dot product
+template<typename T>
+T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
+  assert(x.size() == y.size());
+
+  const int n = x.size();
+  const int incx = 1;
+  const int incy = 1;
+
+  T res = 0.0;
+  if (is_double<T>::value) {
+    res = cblas_ddot(
+        n,
+        (const double *) x.data(),
+        incx,
+        (const double *) y.data(),
+        incy
+    );
+  } else if (is_float<T>::value) {
+    res = cblas_sdot(n, (const float *) x.data(), incx, (const float *) y.data(), incy);
+  }
+
+  return res;
+}
+
+// Computes a vector-vector dot product with double precision
+float blas_sdsdot(const float sb, const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
+  assert(sx.size() == sy.size());
+
+  const int n = sx.size();
+  const int incx = 1;
+  const int incy = 1;
+
+  return cblas_sdsdot(n, sb, sx.data(), incx, sy.data(), incy);
+}
+
+// Computes a vector-vector dot product with double precision
+double blas_dsdot(const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
+  assert(sx.size() == sy.size());
+
+  const int n = sx.size();
+  const int incx = 1;
+  const int incy = 1;
+
+  return cblas_dsdot(n, sx.data(), incx, sy.data(), incy);
 }
 
 // Computes the Euclidean norm of a vector
