@@ -66,6 +66,7 @@ int main() {
   cout << "min(c) = " << slab::blas_iamax(c) << endl;
   cout << "min(c2) = " << slab::blas_iamax(c2) << endl;
 
+  cout << "hello" << endl;
 
   return 0;
 }

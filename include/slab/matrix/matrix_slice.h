@@ -98,7 +98,7 @@ template<typename... Dims>
 MatrixSlice<N>::MatrixSlice(Dims... dims)
     : start{0} {
   static_assert(sizeof...(Dims) == N,
-                "Matrix_slice<N>::Matrix_slice(Dims...): dimension mismatch");
+                "MatrixSlice<N>::MatrixSlice(Dims...): dimension mismatch");
 
   std::size_t args[N]{std::size_t(dims)...};
   std::copy(std::begin(args), std::end(args), extents.begin());
@@ -108,7 +108,7 @@ MatrixSlice<N>::MatrixSlice(Dims... dims)
 template<std::size_t N>
 template<typename... Dims>
 std::size_t MatrixSlice<N>::operator()(Dims... dims) const {
-  static_assert(sizeof...(Dims) == N, "Matrix_slice<N>::operator(): dimension mismatch");
+  static_assert(sizeof...(Dims) == N, "MatrixSlice<N>::operator(): dimension mismatch");
   std::size_t args[N]{std::size_t(dims)...};  // copy arguments into an array
   return start + std::inner_product(args, args + N, strides.begin(), std::size_t{0});
 }

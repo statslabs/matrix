@@ -13,16 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// blas.h
-// -----------------------------------------------------------------------------
-//
 
-/// @file blas.h
+/// @file blas_interface.h
 /// @brief BLAS interface
 
-#ifndef SLAB_MATRIX_BLAS_H_
-#define SLAB_MATRIX_BLAS_H_
+#ifndef SLAB_MATRIX_BLAS_INTERFACE_H_
+#define SLAB_MATRIX_BLAS_INTERFACE_H_
 
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/traits.h"
@@ -296,9 +292,10 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
   return res;
 }
 
+
 /// @}
 
 /// @} BLAS INTERFACE
 
 
-#endif // SLAB_MATRIX_BLAS_H_
+#endif // SLAB_MATRIX_BLAS_INTERFACE_H_

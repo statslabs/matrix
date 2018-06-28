@@ -52,8 +52,8 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
 
-#include "slab/matrix/blas.h"
-#include "slab/matrix/lapack.h"
+#include "slab/matrix/blas_interface.h"
+#include "slab/matrix/lapack_interface.h"
 
 #include "slab/matrix/matrix_ops.h"
 

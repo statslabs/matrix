@@ -13,13 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// lapack.h
-// -----------------------------------------------------------------------------
-//
 
-#ifndef SLAB_MATRIX_LAPACK_H_
-#define SLAB_MATRIX_LAPACK_H_
+/// @file lapack_interface.h
+/// @brief LAPACK interface
+
+#ifndef SLAB_MATRIX_LAPACK_INTERFACE_H_
+#define SLAB_MATRIX_LAPACK_INTERFACE_H_
 
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/traits.h"
@@ -59,7 +58,6 @@ int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
   }
 
   return info;
-
 }
 
-#endif // SLAB_MATRIX_LAPACK_H_
+#endif // SLAB_MATRIX_LAPACK_INTERFACE_H_
