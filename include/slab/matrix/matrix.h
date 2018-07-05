@@ -49,10 +49,14 @@ class Matrix {
   Matrix(MatrixInitializer<T, N>);             // initialize from list
   Matrix &operator=(MatrixInitializer<T, N>);  // assign from list
 
-  template<typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>,
+  template<typename U,
+      std::size_t NN = N,
+      typename = Enable_if<(NN > 1)>,
       typename = Enable_if<Convertible<U, std::size_t>()>>
   Matrix(std::initializer_list<U>) = delete;
-  template<typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>,
+  template<typename U,
+      std::size_t NN = N,
+      typename = Enable_if<(NN > 1)>,
       typename = Enable_if<Convertible<U, std::size_t>()>>
   Matrix &operator=(std::initializer_list<U>) = delete;
 
@@ -62,13 +66,14 @@ class Matrix {
   std::size_t extent(std::size_t n) const { assert(n < order_); return desc_.extents[n]; }
   // total number of elements
   std::size_t size() const { return elems_.size(); }
+  // the slice defining subscripting
   const MatrixSlice<N> &descriptor() const { return desc_; }
-
-  std::size_t rows() const { return desc_.extents[0]; }
-  std::size_t cols() const { return desc_.extents[1]; }
 
   T *data() { return elems_.data(); }          // "flat" element access
   const T *data() const { return elems_.data(); }
+
+  std::size_t rows() const { return desc_.extents[0]; }
+  std::size_t cols() const { return desc_.extents[1]; }
 
   // subscripting with integers
   template<typename... Args>
