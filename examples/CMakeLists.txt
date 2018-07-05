@@ -1,6 +1,9 @@
 add_executable(basic_matrix_uses 01_basic_matrix_uses.cpp)
 target_link_libraries(basic_matrix_uses Matrix::matrix)
 
+add_executable(construction_and_assignment 02_construction_and_assignment.cpp)
+target_link_libraries(construction_and_assignment Matrix::matrix)
+
 add_executable(example example.cpp)
 target_link_libraries(example Matrix::matrix)
 
