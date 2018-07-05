@@ -59,7 +59,7 @@ class Matrix {
   // number of dimensions
   static constexpr std::size_t order() { return order_; }
   // #elements in the nth dimension
-  std::size_t extent(std::size_t n) const { return desc_.extents[n]; }
+  std::size_t extent(std::size_t n) const { assert(n < order_); return desc_.extents[n]; }
   // total number of elements
   std::size_t size() const { return elems_.size(); }
   const MatrixSlice<N> &descriptor() const { return desc_; }

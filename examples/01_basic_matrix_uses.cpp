@@ -40,12 +40,11 @@ int main() {
 
 //  Matrix<char, 2> mc1(2, 3, 4);  // error: two many dimension sizes
 
-  // FIXME: fail to detect this error
 //  Matrix<char, 2> mc2{
-//      {'1', '2', '3'}  // error: initializer missing for second dimension
+//      {'1', '2', '3'}
 //  };
 
-//  Matrix<char, 2> mc2{
+//  Matrix<char, 2> mc3{
 //      {'1', '2', '3'},
 //      {'4', '5'}  // error: element missing for third column
 //  };
@@ -57,7 +56,6 @@ int main() {
   auto d2 = m2_new.order();            // 2
 
   auto e1 = m1_new.extent(0);          // 100
-  // FIXME: fail to detect this error
 //  auto e1a = m1_new.extent(1);         // error: m1 is one-dimensional
 
   auto e2 = m2_new.extent(0);          // 50
@@ -83,9 +81,10 @@ int main() {
   Matrix<double, 1> v = m[1];
   cout << "\nv = " << v << endl;
 
-  double dval1 = m(1, 2);
-  double dval2 = m[1][2];
-  double dval3 = v[2];
+  double dval1 = m(1, 2);              // 12
+  double dval2 = m[1][2];              // 12
+  double dval3 = v[2];                 // 12
+
   cout << "\ndval1 = " << dval1
        << "\ndval2 = " << dval2
        << "\ndval3 = " << dval3
