@@ -27,7 +27,7 @@
 template<typename T, std::size_t N>
 class MatrixBase {
  public:
-  static constexpr std::size_t order = N;
+  static constexpr std::size_t order_ = N;
   using value_type = T;
 
   MatrixBase() = default;
@@ -36,21 +36,19 @@ class MatrixBase {
   MatrixBase(MatrixBase const &) = default;
   MatrixBase &operator=(MatrixBase const &) = default;
 
-  template<typename... Exts>
-  explicit MatrixBase(Exts... exts);
+  // number of dimensions
+  static constexpr std::size_t order() { return order_; }
+  // #elements in the nth dimension
+  std::size_t extent(std::size_t n) const { assert(n < order_); return desc_.extents[n]; }
+  // the slice defining subscripting
+  const MatrixSlice<N> &descriptor() const { return desc_; }
 
-  std::size_t extent(std::size_t n) const { return desc.extents[n]; }
-  std::size_t rows() const { return desc.extents[0]; }
-  std::size_t cols() const { return desc.extents[1]; }
-  const MatrixSlice<N> &descriptor() const { return desc; }
+  virtual T *data() = 0;
+  virtual const T *data() const = 0;
 
  private:
-  MatrixSlice<N> desc;
+  MatrixSlice<N> desc_;
 };
 
-template<typename T, std::size_t N>
-template<typename... Exts>
-MatrixBase<T, N>::MatrixBase(Exts... exts)
-    : desc(exts...) {}
 
 #endif // SLAB_MATRIX_MATRIX_BASE_H_

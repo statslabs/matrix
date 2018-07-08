@@ -75,28 +75,26 @@ class Matrix {
   std::size_t rows() const { return desc_.extents[0]; }
   std::size_t cols() const { return desc_.extents[1]; }
 
-  // subscripting with integers
+  // m(i,j,k) subscripting with integers
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
   operator()(Args... args);
 
-  // const subscripting with integers
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
   operator()(Args... args) const;
 
-  // subscripting with slides
+  // m(s1, s2, s3) subscripting with slides
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
   operator()(const Args &... args);
 
-  // const subscripting with slides
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
   operator()(const Args &... args) const;
 
   // m[i] row access
-  MatrixRef<T, N - 1> operator[](std::size_t n) { return row(n); }
+  MatrixRef<T, N - 1> operator[](std::size_t i) { return row(i); }
   MatrixRef<const T, N - 1> operator[](std::size_t i) const { return row(i); }
 
   // row access
@@ -176,7 +174,7 @@ Matrix<T, N>::Matrix(MatrixInitializer<T, N> init) {
   desc_.extents = matrix_impl::derive_extents<N>(init);
   desc_.size = matrix_impl::compute_strides(desc_.extents, desc_.strides);
   elems_.reserve(desc_.size);              // make room for slices
-  matrix_impl::insert_flat(init, elems_);  // initalize from initializer list
+  matrix_impl::insert_flat(init, elems_);  // initialize from initializer list
   assert(elems_.size() == desc_.size);
 }
 

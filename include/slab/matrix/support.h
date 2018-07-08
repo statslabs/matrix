@@ -112,6 +112,24 @@ void insert_flat(std::initializer_list<T> list, Vec &vec) {
   add_list(list.begin(), list.end(), vec);
 }
 
+template<typename T, typename Iter>
+void copy_list(const T *first, const T *last, Iter &iter) {
+  iter = std::copy(first, last, iter);
+}
+
+template<typename T, typename Iter>
+void copy_list(const std::initializer_list<T> *first,
+               const std::initializer_list<T> *last, Iter &it) {
+  for (; first != last; ++first)
+    copy_list(first->begin(), first->end(), it);
+}
+
+template<typename T, typename Iter>
+void copy_flat(std::initializer_list<T> list, Iter &iter) {
+  copy_list(list.begin(), list.end(), iter);
+}
+
+
 template<std::size_t I, std::size_t N>
 void slice_dim(std::size_t offset,
                const MatrixSlice<N> &desc, MatrixSlice<N - 1> &row) {
