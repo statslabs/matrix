@@ -97,8 +97,8 @@ MatrixRef<T, N> &MatrixRef<T, N>::operator=(const Matrix<U, N> &x) {
 
 template<typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator=(MatrixInitializer<T, N> init) {
-  std::array<std::size_t, N> extents = matrix_impl::derive_extents<N>(init);
-  assert(extents == desc_.extents);
+  //std::array<std::size_t, N> extents = matrix_impl::derive_extents<N>(init);
+  assert(matrix_impl::derive_extents<N>(init) == desc_.extents);
 
   auto iter = begin();
   matrix_impl::copy_flat(init, iter);
