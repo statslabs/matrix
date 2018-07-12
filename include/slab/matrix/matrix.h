@@ -26,7 +26,7 @@
 template<typename T, std::size_t N>
 class Matrix {
  public:
-  static constexpr std::size_t order_ = N;
+  static constexpr std::size_t order_ = N;     // number of dimensions
   using value_type = T;
   using iterator = typename std::vector<T>::iterator;
   using const_iterator = typename std::vector<T>::const_iterator;
@@ -108,9 +108,10 @@ class Matrix {
   template<typename F>
   Matrix &apply(F f);                          // f(x) for every element x
 
+  // f(x, mx) for corresponding elements of *this and m
   template<typename M, typename F>
   Enable_if<Matrix_type<M>(), Matrix &>
-  apply(const M &m, F f);  // f(x, m) for corresponding elements
+  apply(const M &m, F f);
 
   Matrix &operator=(const T &value);           // assignment with scalar
 
@@ -120,8 +121,10 @@ class Matrix {
   Matrix &operator/=(const T &value);          // scalar division
   Matrix &operator%=(const T &value);          // scalar modulo
 
+  // matrix addition
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator+=(const M &x);
+  // matrix subtraction
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator-=(const M &x);
   template<typename M>
@@ -146,7 +149,7 @@ class Matrix {
 template<typename T, std::size_t N>
 template<typename U>
 Matrix<T, N>::Matrix(const MatrixRef<U, N> &x)  // copy desc_ and elements
-    :desc_(x.descriptor().extents), elems_(x.begin(), x.end()) {
+    :desc_{x.descriptor().extents}, elems_{x.begin(), x.end()} {
   static_assert(Convertible<U, T>(),
                 "Matrix constructor: incompatible element types");
 }
@@ -158,7 +161,6 @@ Matrix<T, N> &Matrix<T, N>::operator=(const MatrixRef<U, N> &x) {
 
   desc_ = x.descriptor();
   elems_.assign(x.begin(), x.end());
-
   return *this;
 }
 

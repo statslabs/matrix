@@ -30,11 +30,26 @@
 using namespace std;
 
 template<typename T, std::size_t N>
+Matrix<T, N> operator+(const Matrix<T, N> &m, const T &val) {
+  Matrix<T, N> res = m;
+  res += val;
+  return res;
+}
+
+template<typename T, std::size_t N>
 Matrix<T, N> operator+(const Matrix<T, N> &a, const Matrix<T, N> &b) {
   Matrix<T, N> res = a;
   res += b;
   return res;
 }
+
+//template<typename T, typename T2, std::size_t N,
+//    typename RT = Matrix<Common_type < Value_type<T>, Value_type<T2>, N>> >
+//Matrix<RT, N> operator+(const Matrix<T, N> &a, const Matrix<T2, N> &b) {
+//  Matrix<RT, N> res = a;
+//  res += b;
+//  return res;
+//}
 
 template<typename T, std::size_t N>
 Matrix<T, N> operator-(const Matrix<T, N> &a, const Matrix<T, N> &b) {
@@ -146,7 +161,7 @@ Matrix<T, 2> matmul(const Matrix<T, 2> &m1, const Matrix<T, 2> &m2) {
   for (std::size_t i = 0; i != n; ++i) {
     for (std::size_t j = 0; j != p; ++j) {
       for (std::size_t k = 0; k != m; ++k) {
-        res(i, j) = m1(i, k) * m2(k, j);
+        res(i, j) += m1(i, k) * m2(k, j);
       }
     }
   }

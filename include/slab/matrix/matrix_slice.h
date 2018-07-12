@@ -141,6 +141,22 @@ std::ostream &operator<<(std::ostream &os, const std::array<std::size_t, N> &a) 
 }
 
 template<std::size_t N>
+inline bool
+operator==(const MatrixSlice<N>& a, const MatrixSlice<N>& b)
+{
+  return a.start == b.start
+      && std::equal(a.extents.cbegin(), a.extents.cend(), b.extents.cbegin())
+      && std::equal(a.strides.cbegin(), a.strides.cend(), b.strides.cbegin());
+}
+
+template<std::size_t N>
+inline bool
+operator!=(const MatrixSlice<N>& a, const MatrixSlice<N>& b)
+{
+  return !(a == b);
+}
+
+template<std::size_t N>
 std::ostream &operator<<(std::ostream &os, const MatrixSlice<N> &ms) {
   os << "size: " << ms.size
      << ", start: " << ms.start

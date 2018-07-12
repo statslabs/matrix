@@ -68,5 +68,14 @@ int main() {
 
   cout << "hello world" << endl;
 
+  slab::mat x = {
+      {1,2},
+      {3,4}
+  };
+
+  x = x + 5.0;
+
+  cout << "x = " << x << endl;
+
   return 0;
 }
