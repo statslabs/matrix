@@ -127,10 +127,13 @@ class Matrix {
   // matrix subtraction
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator-=(const M &x);
+  // element-wise multiplication
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator*=(const M &x);
+  // element-wise division
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator/=(const M &x);
+  // element-wise modulus
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
 

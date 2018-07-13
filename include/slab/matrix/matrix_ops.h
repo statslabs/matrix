@@ -29,12 +29,127 @@
 #include <iostream>
 using namespace std;
 
+// Scalar Addtion
+//
+// res = X + val or res = val + X
+
 template<typename T, std::size_t N>
-Matrix<T, N> operator+(const Matrix<T, N> &m, const T &val) {
-  Matrix<T, N> res = m;
+Matrix<T, N> operator+(const Matrix<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
   res += val;
   return res;
 }
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator+(const MatrixRef<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res += val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator+(const T &val, const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res += val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator+(const T &val, const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res += val;
+  return res;
+}
+
+// Scalar Subtraction
+//
+// res = X - val
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator-(const Matrix<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res -= val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator-(const MatrixRef<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res -= val;
+  return res;
+}
+
+// Scalar Multiplication
+//
+// res = X * val or res = val * X
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator*(const Matrix<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res *= val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator*(const MatrixRef<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res *= val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator*(const T &val, const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res *= val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator*(const T &val, const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res *= val;
+  return res;
+}
+
+// Scalar Division
+//
+// res = X / val
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator/(const Matrix<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res /= val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator/(const MatrixRef<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res /= val;
+  return res;
+}
+
+// Scalar Modulus
+//
+// res = X % val
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator%(const Matrix<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res %= val;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator%(const MatrixRef<T, N> &x, const T &val) {
+  Matrix<T, N> res = x;
+  res %= val;
+  return res;
+}
+
+// Matrix Addtion
+//
+// res = A + B
 
 template<typename T, std::size_t N>
 Matrix<T, N> operator+(const Matrix<T, N> &a, const Matrix<T, N> &b) {
@@ -43,13 +158,30 @@ Matrix<T, N> operator+(const Matrix<T, N> &a, const Matrix<T, N> &b) {
   return res;
 }
 
-//template<typename T, typename T2, std::size_t N,
-//    typename RT = Matrix<Common_type < Value_type<T>, Value_type<T2>, N>> >
-//Matrix<RT, N> operator+(const Matrix<T, N> &a, const Matrix<T2, N> &b) {
-//  Matrix<RT, N> res = a;
-//  res += b;
-//  return res;
-//}
+template<typename T, std::size_t N>
+Matrix<T, N> operator+(const MatrixRef<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res += b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator+(const Matrix<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res += b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator+(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
+  Matrix<T, N> res = a;
+  res += b;
+  return res;
+}
+
+// Matrix Subtraction
+//
+// res = A - B
 
 template<typename T, std::size_t N>
 Matrix<T, N> operator-(const Matrix<T, N> &a, const Matrix<T, N> &b) {
@@ -59,6 +191,31 @@ Matrix<T, N> operator-(const Matrix<T, N> &a, const Matrix<T, N> &b) {
 }
 
 template<typename T, std::size_t N>
+Matrix<T, N> operator-(const MatrixRef<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res -= b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator-(const Matrix<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res -= b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator-(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
+  Matrix<T, N> res = a;
+  res -= b;
+  return res;
+}
+
+// Element-wise Multiplication
+//
+// res = A * B
+
+template<typename T, std::size_t N>
 Matrix<T, N> operator*(const Matrix<T, N> &a, const Matrix<T, N> &b) {
   Matrix<T, N> res = a;
   res *= b;
@@ -66,11 +223,58 @@ Matrix<T, N> operator*(const Matrix<T, N> &a, const Matrix<T, N> &b) {
 }
 
 template<typename T, std::size_t N>
+Matrix<T, N> operator*(const MatrixRef<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res *= b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator*(const Matrix<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res *= b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator*(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
+  Matrix<T, N> res = a;
+  res *= b;
+  return res;
+}
+
+// Element-wise Division
+//
+// res = A / B
+
+template<typename T, std::size_t N>
 Matrix<T, N> operator/(const Matrix<T, N> &a, const Matrix<T, N> &b) {
   Matrix<T, N> res = a;
   res /= b;
   return res;
 }
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator/(const MatrixRef<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res /= b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator/(const Matrix<T, N> &a, const MatrixRef<T, N> &b) {
+  Matrix<T, N> res = a;
+  res /= b;
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
+  Matrix<T, N> res = a;
+  res /= b;
+  return res;
+}
+
 
 // Computes a matrix-vector product using a general matrix
 //
