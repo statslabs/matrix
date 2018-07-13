@@ -1,14 +1,14 @@
-add_executable(basic_matrix_uses 01_basic_matrix_uses.cpp)
-target_link_libraries(basic_matrix_uses Matrix::matrix)
+add_executable(01_basic_matrix_uses 01_basic_matrix_uses.cpp)
+target_link_libraries(01_basic_matrix_uses Matrix::matrix)
 
-add_executable(construction_and_assignment 02_construction_and_assignment.cpp)
-target_link_libraries(construction_and_assignment Matrix::matrix)
+add_executable(02_construction_and_assignment 02_construction_and_assignment.cpp)
+target_link_libraries(02_construction_and_assignment Matrix::matrix)
 
-add_executable(subscripting_and_slicing 03_subscripting_and_slicing.cpp)
-target_link_libraries(subscripting_and_slicing Matrix::matrix)
+add_executable(03_subscripting_and_slicing 03_subscripting_and_slicing.cpp)
+target_link_libraries(03_subscripting_and_slicing Matrix::matrix)
 
-add_executable(matrix_arithmetric_operations 04_matrix_arithmetric_operations.cpp)
-target_link_libraries(matrix_arithmetric_operations Matrix::matrix)
+add_executable(04_matrix_arithmetric_operations 04_matrix_arithmetric_operations.cpp)
+target_link_libraries(04_matrix_arithmetric_operations Matrix::matrix)
 
 add_executable(example example.cpp)
 target_link_libraries(example Matrix::matrix)
