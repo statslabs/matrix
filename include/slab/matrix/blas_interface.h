@@ -23,6 +23,12 @@
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/traits.h"
 
+enum class blas_trans {
+  no_trans = CblasNoTrans,
+  trans = CblasTrans,
+  conj_trans = CblasConjTrans
+};
+
 // Computes the parameters for a Givens rotation
 //template<typename T>
 //void blas_rotg(Matrix<T, 1> &a, Matrix<T, 1> &b, Matrix<T, 1> &c, Matrix<T, 1> &s) {
@@ -291,9 +297,28 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
 
   return res;
 }
+/// @}
 
+/// @addtogroup blas_level1 BLAS Level 2
+/// @{
+
+void blas_gemv()
+{
+
+}
 
 /// @}
+
+/// @addtogroup blas_level1 BLAS Level 3
+/// @{
+
+void blas_gemm()
+{
+
+}
+
+/// @}
+
 
 /// @} BLAS INTERFACE
 

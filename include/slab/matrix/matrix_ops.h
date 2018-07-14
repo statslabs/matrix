@@ -275,71 +275,69 @@ Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
   return res;
 }
 
-
 // Computes a matrix-vector product using a general matrix
 //
 // The operation is defined as
 //
-// y := op(A)*x
+// y := Ax
 //
 // where:
 // x and y are vectors,
 // A is an m-by-n matrix.
 template<typename T>
-Matrix<T, 1> matmul(const Matrix<T, 2> &m, const Matrix<T, 1> &v) {
-  assert(m.extent(1) == v.extent(0));
+Matrix<T, 1> matmul(const Matrix<T, 2> &a, const Matrix<T, 1> &x) {
+  assert(a.extent(1) == x.extent(0));
+  const int m = a.rows();
+  const int n = a.cols();
+  const int lda = n;
+  const int incx = 1;
+  const int incy = 1;
 
-  const std::size_t n = m.extent(0);
-  Matrix<T, 1> res(n);
-  for (std::size_t i = 0; i != n; ++i) {
-    for (std::size_t j = 0; j != n; ++j) {
-      res(i) += m(i, j) * v(j);
+  Matrix<T, 1> y(m);
+
+  if (is_double<T>::value) {
+    cblas_dgemv(
+        CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
+        CblasNoTrans,              // trans : CblasNoTrans/CblasTrans/CblasTrans.
+        m,                         // m     : the number of rows of the matrix A.
+        n,                         // n     : the number of cols of the matrix A.
+        (const double) 1.0,        // alpha : the scalar alpha.
+        (const double *) a.data(), // a     : the matrix A.
+        lda,                       // lda   : the leading dimension of a.
+        (const double *) x.data(), // x     : the vector x.
+        incx,                      // incx  : the increment for the elements of x.
+        (const double) 0.0,        // beta  : the scalar beta.
+        (double *) y.data(),       // y     : the vector y.
+        incy                       // incy  : the increment for the elements of y.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sgemv(
+        CblasRowMajor,
+        CblasNoTrans,
+        m,
+        n,
+        (const float) 1.0,
+        (const float *) a.data(),
+        lda,
+        (const float *) x.data(),
+        incx,
+        (const float) 0.0,
+        (float *) y.data(),
+        incy
+    );
+  } else if (is_complex_double<T>::value) {
+
+  } else if (is_complex_float<T>::value) {
+
+  } else {
+    for (std::size_t i = 0; i != m; ++i) {
+      for (std::size_t j = 0; j != n; ++j) {
+        y(i) += a(i, j) * x(j);
+      }
     }
   }
 
-  return res;
-
-//  const int m = a.rows();
-//  const int n = a.cols();
-//  const int lda = n;
-//  const int incx = 1;
-//  const int incy = 1;
-//
-//  Matrix<T, 1> y(m);
-//
-//  if (is_double<T>::value) {
-//    cblas_dgemv(
-//        CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
-//        CblasNoTrans,              // trans : CblasNoTrans/CblasTrans/CblasTrans.
-//        m,                         // m     : the number of rows of the matrix A.
-//        n,                         // n     : the number of cols of the matrix A.
-//        (const double) 1.0,        // alpha : the scalar alpha.
-//        (const double *) a.data(), // a     : the matrix A.
-//        lda,                       // lda   : the leading dimension of a.
-//        (const double *) b.data(), // x     : the vector x.
-//        incx,                      // incx  : the increment for the elements of x.
-//        (const double) 0.0,        // beta  : the scalar beta.
-//        (double *) y.data(),       // y     : the vector y.
-//        incy                       // incy  : the increment for the elements of y.
-//    );
-//  } else if (is_float<T>::value) {
-//    cblas_sgemv(
-//        CblasRowMajor,
-//        CblasNoTrans,
-//        m,
-//        n,
-//        (const float) 1.0,
-//        (const float *) a.data(),
-//        lda,
-//        (const float *) b.data(),
-//        incx,
-//        (const float) 0.0,
-//        (float *) y.data(),
-//        incy
-//    );
-//  }
-//
-//  return y;
+  return y;
 }
 
 // Computes a matrix-matrix product with general matrices.
@@ -355,72 +353,68 @@ Matrix<T, 1> matmul(const Matrix<T, 2> &m, const Matrix<T, 1> &v) {
 // op(B) is a k-by-n matrix,
 // C is an m-by-n matrix.
 template<typename T>
-Matrix<T, 2> matmul(const Matrix<T, 2> &m1, const Matrix<T, 2> &m2) {
-  const std::size_t n = m1.extent(0);
-  const std::size_t m = m1.extent(1);
-  assert(m == m2.extent(0));  // columns must match rows
+Matrix<T, 2> matmul(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+  assert(a.extent(1) == b.extent(0));
 
-  const std::size_t p = m2.extent(1);
-  Matrix<T, 2> res(n, p);
-  for (std::size_t i = 0; i != n; ++i) {
-    for (std::size_t j = 0; j != p; ++j) {
-      for (std::size_t k = 0; k != m; ++k) {
-        res(i, j) += m1(i, k) * m2(k, j);
+  const int m = a.rows();
+  const int n = b.cols();
+  const int k = a.cols();
+
+  const int lda = a.cols();
+  const int ldb = b.cols();
+  const int ldc = b.cols();
+
+  Matrix<T, 2> c(m, n);
+
+  if (is_double<T>::value) {
+    cblas_dgemm(
+        CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
+        CblasNoTrans,              // transa: CblasNoTrans/CblasTrans/CblasConjTrans.
+        CblasNoTrans,              // transb: CblasNoTrans/CblasTrans/CblasConjTrans.
+        m,                         // m     : the number of rows of the matrix op(A) and of the matrix C.
+        n,                         // n     : the number of cols of the matrix op(B) and of the matrix C.
+        k,                         // k     : the number of cols of the matrix op(A) and the number of rows of the matrix op(B).
+        (const double) 1.0,        // alpha : the scalar alpha.
+        (const double *) a.data(), // a     : the matrix A.
+        lda,                       // lda   : the leading dimension of a.
+        (const double *) b.data(), // b     : the matrix B.
+        ldb,                       // ldb   : the leading dimension of b.
+        (const double) 0.0,        // beta  : the scalar beta.
+        (double *) c.data(),       // c     : the matrix C.
+        ldc                        // ldc   : the leading dimension of c.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sgemm(
+        CblasRowMajor,
+        CblasNoTrans,
+        CblasNoTrans,
+        m,
+        n,
+        k,
+        (const float) 1.0,
+        (const float *) a.data(),
+        lda,
+        (const float *) b.data(),
+        ldb,
+        (const float) 0.0,
+        (float *) c.data(),
+        ldc
+    );
+  } else if (is_complex_double<T>::value) {
+
+  } else if (is_complex_float<T>::value) {
+
+  } else {
+    for (std::size_t i = 0; i != m; ++i) {
+      for (std::size_t j = 0; j != n; ++j) {
+        for (std::size_t idx = 0; idx != k; ++idx) {
+          c(i, j) += a(i, idx) * b(idx, j);
+        }
       }
     }
   }
 
-  return res;
-
-//  assert(a.extent(1) == b.extent(0));
-//
-//  const int m = a.rows();
-//  const int n = b.cols();
-//  const int k = a.cols();
-//
-//  const int lda = a.cols();
-//  const int ldb = b.cols();
-//  const int ldc = b.cols();
-//
-//  Matrix<T, 2> c(m, n);
-//
-//  if (is_double<T>::value) {
-//    cblas_dgemm(
-//        CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
-//        CblasNoTrans,              // transa: CblasNoTrans/CblasTrans/CblasConjTrans.
-//        CblasNoTrans,              // transb: CblasNoTrans/CblasTrans/CblasConjTrans.
-//        m,                         // m     : the number of rows of the matrix op(A) and of the matrix C.
-//        n,                         // n     : the number of cols of the matrix op(B) and of the matrix C.
-//        k,                         // k     : the number of cols of the matrix op(A) and the number of rows of the matrix op(B).
-//        (const double) 1.0,        // alpha : the scalar alpha.
-//        (const double *) a.data(), // a     : the matrix A.
-//        lda,                       // lda   : the leading dimension of a.
-//        (const double *) b.data(), // b     : the matrix B.
-//        ldb,                       // ldb   : the leading dimension of b.
-//        (const double) 0.0,        // beta  : the scalar beta.
-//        (double *) c.data(),       // c     : the matrix C.
-//        ldc                        // ldc   : the leading dimension of c.
-//    );
-//  } else if (is_float<T>::value) {
-//    cblas_sgemm(
-//        CblasRowMajor,
-//        CblasNoTrans,
-//        CblasNoTrans,
-//        m,
-//        n,
-//        k,
-//        (const float) 1.0,
-//        (const float *) a.data(),
-//        lda,
-//        (const float *) b.data(),
-//        ldb,
-//        (const float) 0.0,
-//        (float *) c.data(),
-//        ldc
-//    );
-//  }
-//
-//  return c;
+  return c;
 }
 
 template<typename T, std::size_t N, typename... Args>
@@ -458,52 +452,5 @@ Matrix<T, 2> transpose(const Matrix<T, 2> &a) {
 
   return res;
 }
-
-//template<typename T>
-//Matrix<T, 2> operator*(const Matrix<T, 1> &u, const Matrix<T, 1> &v) {
-//  const std::size_t n = u.extent(0);
-//  const std::size_t m = v.extent(0);
-//  Matrix<T, 2> res(n, m);  // an n-by-m matrix
-//  for (std::size_t i = 0; i != n; ++i)
-//    for (std::size_t j = 0; j != m; ++j)
-//      res(i, j) = u[i] * v[j];
-//
-//  return res;
-//}
-//
-//template<typename T>
-//Matrix<T, 1> operator*(const Matrix<T, 2> &m, const Matrix<T, 1> &v) {
-//  assert(m.extent(1) == v.extent(0));
-//
-//  const std::size_t nr = m.extent(0);
-//  const std::size_t nc = m.extent(1);
-//  Matrix<T, 1> res(nr);
-//  for (std::size_t i = 0; i != nr; ++i)
-//    for (std::size_t j = 0; j != nc; ++j)
-//      res(i) += m(i, j) * v(j);
-//
-//  return res;
-//}
-//
-//template<typename T>
-//Matrix<T, 2> operator*(const Matrix<T, 2> &m1, const Matrix<T, 2> &m2) {
-//  const std::size_t n = m1.extent(0);
-//  const std::size_t m = m1.extent(1);
-//  assert(m == m2.extent(0));
-//  const std::size_t p = m2.extent(1);
-//
-//  Matrix<T, 2> res(n, p);
-//  for (std::size_t i = 0; i != n; ++i)
-//    for (std::size_t j = 0; j != p; ++j)
-//      for (std::size_t k = 0; k != m; ++k)
-//        res(i, j) += m1(i, k) * m2(k, j);
-//
-//  return res;
-//}
-//
-//template<typename T, typename U = T>
-//T dot_product(const MatrixRef<T, 1> &a, const MatrixRef<U, 1> &b) {
-//  return std::inner_product(a.begin(), a.end(), b.begin(), T{});
-//}
 
 #endif // SLAB_MATRIX_OPERATIONS_H_
