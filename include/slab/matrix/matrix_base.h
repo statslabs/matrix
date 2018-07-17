@@ -22,7 +22,6 @@
 
 #include <cstddef>
 #include "slab/matrix/matrix_slice.h"
-#include "slab/matrix/support.h"
 
 template<typename T, std::size_t N>
 class MatrixBase {
@@ -36,19 +35,31 @@ class MatrixBase {
   MatrixBase(MatrixBase const &) = default;
   MatrixBase &operator=(MatrixBase const &) = default;
 
+  template<typename... Exts>
+  explicit MatrixBase(Exts... exts) : desc_{exts...} {}
+
+  explicit MatrixBase(const MatrixSlice<N> &ms) : desc_{ms} {}
+
   // number of dimensions
   static constexpr std::size_t order() { return order_; }
   // #elements in the nth dimension
-  std::size_t extent(std::size_t n) const { assert(n < order_); return desc_.extents[n]; }
+  std::size_t extent(std::size_t n) const {
+    assert(n < order_);
+    return desc_.extents[n];
+  }
+  // total number of elements
+  virtual std::size_t size() const = 0;
   // the slice defining subscripting
   const MatrixSlice<N> &descriptor() const { return desc_; }
 
   virtual T *data() = 0;
   virtual const T *data() const = 0;
 
- private:
+  std::size_t rows() const { return desc_.extents[0]; }
+  std::size_t cols() const { return desc_.extents[1]; }
+
+ protected:
   MatrixSlice<N> desc_;
 };
-
 
 #endif // SLAB_MATRIX_MATRIX_BASE_H_

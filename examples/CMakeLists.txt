@@ -10,6 +10,9 @@ target_link_libraries(03_subscripting_and_slicing Matrix::matrix)
 add_executable(04_matrix_arithmetric_operations 04_matrix_arithmetric_operations.cpp)
 target_link_libraries(04_matrix_arithmetric_operations Matrix::matrix)
 
+add_executable(05_solving_linear_equations 05_solving_linear_equations.cpp)
+target_link_libraries(05_solving_linear_equations Matrix::matrix)
+
 add_executable(example example.cpp)
 target_link_libraries(example Matrix::matrix)
 

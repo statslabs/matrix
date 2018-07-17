@@ -154,28 +154,49 @@ void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
 
 /// @brief Computes a vector-scalar product and adds the result to a vector
 template<typename T>
-void blas_axpy(const T &a, const Matrix<T, 1> &x, Matrix<T, 1> &y) {
+void blas_axpy(const T &a, const MatrixBase<T, 1> &x, MatrixBase<T, 1> &y) {
   assert(x.size() == y.size());
 
   const int n = x.size();
-  const int incx = 1;
-  const int incy = 1;
+  const int incx = x.descriptor().strides[0];
+  const int incy = y.descriptor().strides[0];
 
   if (is_double<T>::value) {
     cblas_daxpy(
         n,                         // n   : the number of elements in vectors x and y.
         a,                         // a   : the scalar a.
-        (const double *) x.data(), // x   : the vector x.
+        (const double *) (x.data() + x.descriptor().start),  // x   : the vector x.
         incx,                      // incx: the increment for indexing vector x.
-        (double *) y.data(),       // y   : the vector y.
+        (double *) (y.data() + y.descriptor().start),        // y   : the vector y.
         incy                       // incy: the increment for indexing vector y.
     );
   } else if (is_float<T>::value) {
-    cblas_saxpy(n, a, (const float *) x.data(), incx, (float *) y.data(), incy);
+    cblas_saxpy(
+        n,
+        a,
+        (const float *) (x.data() + x.descriptor().start),
+        incx,
+        (float *) (y.data() + y.descriptor().start),
+        incy
+    );
   } else if (is_complex_double<T>::value) {
-    cblas_zaxpy(n, &a, (const std::complex<double> *) x.data(), incx, (std::complex<double> *) y.data(), incy);
+    cblas_zaxpy(
+        n,
+        &a,
+        (const std::complex<double> *) (x.data() + x.descriptor().start),
+        incx,
+        (std::complex<double> *) (y.data() + y.descriptor().start),
+        incy
+    );
   } else if (is_complex_float<T>::value) {
-    cblas_caxpy(n, &a, (const std::complex<float> *) x.data(), incx, (std::complex<float> *) y.data(), incy);
+    cblas_caxpy(
+        n,
+        &a,
+        (const std::complex<float> *) (x.data() + x.descriptor().start),
+        incx,
+        (std::complex<float> *) (y.data() + y.descriptor().start),
+        incy
+    );
   }
 }
 
