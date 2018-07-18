@@ -209,7 +209,7 @@ Matrix<T, N>::operator()(const Args &... args) const {
 // row
 template<typename T, std::size_t N>
 MatrixRef<T, N - 1> Matrix<T, N>::row(std::size_t n) {
-  assert(n < this->rows());
+  assert(n < this->n_rows());
   MatrixSlice<N - 1> row;
   matrix_impl::slice_dim<0>(n, this->desc_, row);
   return {row, data()};
@@ -217,7 +217,7 @@ MatrixRef<T, N - 1> Matrix<T, N>::row(std::size_t n) {
 
 template<typename T, std::size_t N>
 MatrixRef<const T, N - 1> Matrix<T, N>::row(std::size_t n) const {
-  assert(n < this->rows());
+  assert(n < this->n_rows());
   MatrixSlice<N - 1> row;
   matrix_impl::slice_dim<0>(n, this->desc_, row);
   return {row, data()};
@@ -365,9 +365,9 @@ class Matrix<T, 0> {
 template<typename T, std::size_t N>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, N> &m) {
   os << std::endl << '{';
-  for (size_t i = 0; i != m.rows(); ++i) {
+  for (size_t i = 0; i != m.n_rows(); ++i) {
     os << m[i];
-    if (i + 1 != m.rows()) os << ',';
+    if (i + 1 != m.n_rows()) os << ',';
   }
   return os << '}' << std::endl;
 }
@@ -375,9 +375,9 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T, N> &m) {
 template<typename T, std::size_t N>
 std::ostream &operator<<(std::ostream &os, const MatrixRef<T, N> &m) {
   os << std::endl << '{';
-  for (size_t i = 0; i != m.rows(); ++i) {
+  for (size_t i = 0; i != m.n_rows(); ++i) {
     os << m[i];
-    if (i + 1 != m.rows()) os << ',';
+    if (i + 1 != m.n_rows()) os << ',';
   }
   return os << '}' << std::endl;
 }
@@ -386,9 +386,9 @@ std::ostream &operator<<(std::ostream &os, const MatrixRef<T, N> &m) {
 //Enable_if<Matrix_type<M>(), std::ostream &>
 //operator<<(std::ostream &os, const M &m) {
 //    os << '{';
-//    for (size_t i = 0; i != m.rows(); ++i) {
+//    for (size_t i = 0; i != m.n_rows(); ++i) {
 //        os << m[i];
-//        if (i + 1 != m.rows()) os << ',';
+//        if (i + 1 != m.n_rows()) os << ',';
 //    }
 //    return os << '}';
 //}

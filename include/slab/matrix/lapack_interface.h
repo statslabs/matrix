@@ -28,8 +28,8 @@ int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 
   int info = 0;
 
-  const int m = a.rows();
-  const int n = a.cols();
+  const int m = a.n_rows();
+  const int n = a.n_cols();
 
   //assert(ipiv.size() >= std::max(1, std::min(m, n)));
   ipiv.clear();

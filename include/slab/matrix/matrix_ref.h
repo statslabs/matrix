@@ -193,7 +193,7 @@ MatrixRef<T, N>::operator()(const Args &... args) const {
 // row
 template<typename T, size_t N>
 MatrixRef<T, N - 1> MatrixRef<T, N>::row(size_t n) {
-  assert(n < this->rows());
+  assert(n < this->n_rows());
   MatrixSlice<N - 1> row;
   matrix_impl::slice_dim<0>(n, this->desc_, row);
   return {row, ptr_};
@@ -201,7 +201,7 @@ MatrixRef<T, N - 1> MatrixRef<T, N>::row(size_t n) {
 
 template<typename T, size_t N>
 MatrixRef<const T, N - 1> MatrixRef<T, N>::row(size_t n) const {
-  assert(n < this->rows());
+  assert(n < this->n_rows());
   MatrixSlice<N - 1> row;
   matrix_impl::slice_dim<0>(n, this->desc_, row);
   return {row, ptr_};

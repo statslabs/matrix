@@ -33,7 +33,7 @@ double dot_product(const MatrixRef<T, 1> &a, const MatrixRef<T1, 1> &b) {
 }
 
 void classical_elimination(Mat2d &A, Vec &b) {
-  const std::size_t n = A.rows();
+  const std::size_t n = A.n_rows();
 
   // traverse from 1st column to the next-to-last, filling zeros into all
   // elements under the diagonal:
@@ -50,7 +50,7 @@ void classical_elimination(Mat2d &A, Vec &b) {
 }
 
 Vec back_substitution(const Mat2d &A, const Vec &b) {
-  const std::size_t n = A.rows();
+  const std::size_t n = A.n_rows();
   Vec x(n);
 
   for (int i = n - 1; i >= 0; --i) {

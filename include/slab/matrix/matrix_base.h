@@ -55,8 +55,8 @@ class MatrixBase {
   virtual T *data() = 0;
   virtual const T *data() const = 0;
 
-  std::size_t rows() const { return desc_.extents[0]; }
-  std::size_t cols() const { return desc_.extents[1]; }
+  std::size_t n_rows() const { return desc_.extents[0]; }
+  std::size_t n_cols() const { return desc_.extents[1]; }
 
  protected:
   MatrixSlice<N> desc_;

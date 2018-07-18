@@ -279,8 +279,8 @@ template<typename T>
 Matrix<T, 1> matmul(const Matrix<T, 2> &a, const Matrix<T, 1> &x) {
   assert(a.extent(1) == x.extent(0));
 
-  const std::size_t m = a.rows();
-  const std::size_t n = a.cols();
+  const std::size_t m = a.n_rows();
+  const std::size_t n = a.n_cols();
   Matrix<T, 1> y(m);
 
   for (std::size_t i = 0; i != m; ++i)
@@ -294,8 +294,8 @@ template<>
 Matrix<double, 1> matmul(const Matrix<double, 2> &a, const Matrix<double, 1> &x)
 {
   assert(a.extent(1) == x.extent(0));
-  const int m = a.rows();
-  const int n = a.cols();
+  const int m = a.n_rows();
+  const int n = a.n_cols();
   const int lda = n;
   const int incx = x.descriptor().strides[0];
   const int incy = 1;
@@ -322,8 +322,8 @@ Matrix<double, 1> matmul(const Matrix<double, 2> &a, const Matrix<double, 1> &x)
 template<>
 Matrix<float, 1> matmul(const Matrix<float, 2> &a, const Matrix<float, 1> &x) {
   assert(a.extent(1) == x.extent(0));
-  const int m = a.rows();
-  const int n = a.cols();
+  const int m = a.n_rows();
+  const int n = a.n_cols();
   const int lda = n;
   const int incx = x.descriptor().strides[0];
   const int incy = 1;
@@ -351,9 +351,9 @@ template<typename T>
 Matrix<T, 2> matmul(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
-  const std::size_t m = a.rows();
-  const std::size_t n = b.cols();
-  const std::size_t k = a.cols();
+  const std::size_t m = a.n_rows();
+  const std::size_t n = b.n_cols();
+  const std::size_t k = a.n_cols();
 
   Matrix<T, 2> c(m, n);
 
@@ -373,13 +373,13 @@ Matrix<double, 2>
 matmul(const Matrix<double, 2> &a, const Matrix<double, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
-  const int m = a.rows();
-  const int n = b.cols();
-  const int k = a.cols();
+  const int m = a.n_rows();
+  const int n = b.n_cols();
+  const int k = a.n_cols();
 
-  const int lda = a.cols();
-  const int ldb = b.cols();
-  const int ldc = b.cols();
+  const int lda = a.n_cols();
+  const int ldb = b.n_cols();
+  const int ldc = b.n_cols();
 
   Matrix<double, 2> c(m, n);
   cblas_dgemm(
@@ -407,13 +407,13 @@ Matrix<float, 2>
 matmul(const Matrix<float, 2> &a, const Matrix<float, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
-  const int m = a.rows();
-  const int n = b.cols();
-  const int k = a.cols();
+  const int m = a.n_rows();
+  const int n = b.n_cols();
+  const int k = a.n_cols();
 
-  const int lda = a.cols();
-  const int ldb = b.cols();
-  const int ldc = b.cols();
+  const int lda = a.n_cols();
+  const int ldb = b.n_cols();
+  const int ldc = b.n_cols();
 
   Matrix<float, 2> c(m, n);
   cblas_sgemm(
@@ -462,9 +462,9 @@ auto reshape(const Matrix<T, N> &a, Args... args) -> decltype(Matrix<T, sizeof..
 
 template<typename T>
 Matrix<T, 2> transpose(const Matrix<T, 2> &a) {
-  Matrix<T, 2> res(a.cols(), a.rows());
-  for (std::size_t i = 0; i < a.rows(); ++i) {
-    for (std::size_t j = 0; j < a.rows(); ++j) {
+  Matrix<T, 2> res(a.n_cols(), a.n_rows());
+  for (std::size_t i = 0; i < a.n_rows(); ++i) {
+    for (std::size_t j = 0; j < a.n_rows(); ++j) {
       res(j, i) = a(i, j);
     }
   }
