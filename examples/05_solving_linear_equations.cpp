@@ -1,9 +1,9 @@
-#include "slab/matrix.h"
-using namespace slab;
-
 #include <exception>
 #include <iostream>
 using namespace std;
+
+#include "slab/matrix.h"
+using namespace slab;
 
 using Mat2d = Matrix<double, 2>;
 using Vec = Matrix<double, 1>;
