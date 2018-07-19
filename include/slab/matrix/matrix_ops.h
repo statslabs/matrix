@@ -276,7 +276,7 @@ Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
 }
 
 template<typename T>
-Matrix<T, 1> matmul(const Matrix<T, 2> &a, const Matrix<T, 1> &x) {
+Matrix<T, 1> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x) {
   assert(a.extent(1) == x.extent(0));
 
   const std::size_t m = a.n_rows();
@@ -291,7 +291,7 @@ Matrix<T, 1> matmul(const Matrix<T, 2> &a, const Matrix<T, 1> &x) {
 }
 
 template<>
-Matrix<double, 1> matmul(const Matrix<double, 2> &a, const Matrix<double, 1> &x)
+Matrix<double, 1> matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 1> &x)
 {
   assert(a.extent(1) == x.extent(0));
   const int m = a.n_rows();
@@ -320,7 +320,7 @@ Matrix<double, 1> matmul(const Matrix<double, 2> &a, const Matrix<double, 1> &x)
 }
 
 template<>
-Matrix<float, 1> matmul(const Matrix<float, 2> &a, const Matrix<float, 1> &x) {
+Matrix<float, 1> matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 1> &x) {
   assert(a.extent(1) == x.extent(0));
   const int m = a.n_rows();
   const int n = a.n_cols();
@@ -348,7 +348,7 @@ Matrix<float, 1> matmul(const Matrix<float, 2> &a, const Matrix<float, 1> &x) {
 }
 
 template<typename T>
-Matrix<T, 2> matmul(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+Matrix<T, 2> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
   const std::size_t m = a.n_rows();
@@ -370,7 +370,7 @@ Matrix<T, 2> matmul(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
 
 template<>
 Matrix<double, 2>
-matmul(const Matrix<double, 2> &a, const Matrix<double, 2> &b) {
+matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
   const int m = a.n_rows();
@@ -404,7 +404,7 @@ matmul(const Matrix<double, 2> &a, const Matrix<double, 2> &b) {
 
 template<>
 Matrix<float, 2>
-matmul(const Matrix<float, 2> &a, const Matrix<float, 2> &b) {
+matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
   const int m = a.n_rows();
