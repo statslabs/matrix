@@ -59,11 +59,15 @@ class MatrixRef : public MatrixBase<T, N> {
   // m(i,j,k) subscripting with integers
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
-  operator()(Args... args);
+  operator()(Args... args) {
+    return MatrixBase<T,N>::template operator()<Args...>(args...);
+  }
 
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
-  operator()(Args... args) const;
+  operator()(Args... args) const {
+    return MatrixBase<T,N>::template operator()<Args...>(args...);
+  }
 
   // m(s1, s2, s3) subscripting with slides
   template<typename... Args>
@@ -152,22 +156,6 @@ MatrixRef<T, N> &MatrixRef<T, N>::operator=(MatrixInitializer<T, N> init) {
   matrix_impl::copy_flat(init, iter);
 
   return *this;
-}
-
-template<typename T, size_t N>
-template<typename... Args>
-Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
-MatrixRef<T, N>::operator()(Args... args) {
-  assert(matrix_impl::check_bounds(this->desc_, args...));
-  return *(data() + this->desc_(args...));
-}
-
-template<typename T, size_t N>
-template<typename... Args>
-Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
-MatrixRef<T, N>::operator()(Args... args) const {
-  assert(matrix_impl::check_bounds(this->desc_, args...));
-  return *(data() + this->desc_(args...));
 }
 
 template<typename T, size_t N>

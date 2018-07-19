@@ -58,8 +58,29 @@ class MatrixBase {
   std::size_t n_rows() const { return desc_.extents[0]; }
   std::size_t n_cols() const { return desc_.extents[1]; }
 
+  // m(i,j,k) subscripting with integers
+  template<typename... Args>
+  T &operator()(Args... args);
+
+  template<typename... Args>
+  const T &operator()(Args... args) const;
+
  protected:
   MatrixSlice<N> desc_;
 };
+
+template<typename T, std::size_t N>
+template<typename... Args>
+T &MatrixBase<T, N>::operator()(Args... args) {
+  assert(matrix_impl::check_bounds(this->desc_, args...));
+  return *(data() + this->desc_(args...));
+}
+
+template<typename T, std::size_t N>
+template<typename... Args>
+const T &MatrixBase<T, N>::operator()(Args... args) const {
+  assert(matrix_impl::check_bounds(this->desc_, args...));
+  return *(data() + this->desc_(args...));
+}
 
 #endif // SLAB_MATRIX_MATRIX_BASE_H_

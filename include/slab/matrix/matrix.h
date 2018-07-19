@@ -68,11 +68,15 @@ class Matrix : public MatrixBase<T, N> {
   // m(i,j,k) subscripting with integers
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
-  operator()(Args... args);
+  operator()(Args... args) {
+    return MatrixBase<T,N>::template operator()<Args...>(args...);
+  }
 
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
-  operator()(Args... args) const;
+  operator()(Args... args) const {
+    return MatrixBase<T,N>::template operator()<Args...>(args...);
+  }
 
   // m(s1, s2, s3) subscripting with slides
   template<typename... Args>
@@ -170,22 +174,6 @@ Matrix<T, N>::Matrix(MatrixInitializer<T, N> init) {
   elems_.reserve(this->desc_.size);              // make room for slices
   matrix_impl::insert_flat(init, elems_);  // initialize from initializer list
   assert(elems_.size() == this->desc_.size);
-}
-
-template<typename T, std::size_t N>
-template<typename... Args>
-Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
-Matrix<T, N>::operator()(Args... args) {
-  assert(matrix_impl::check_bounds(this->desc_, args...));
-  return *(data() + this->desc_(args...));
-}
-
-template<typename T, std::size_t N>
-template<typename... Args>
-Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
-Matrix<T, N>::operator()(Args... args) const {
-  assert(matrix_impl::check_bounds(this->desc_, args...));
-  return *(data() + this->desc_(args...));
 }
 
 template<typename T, std::size_t N>
