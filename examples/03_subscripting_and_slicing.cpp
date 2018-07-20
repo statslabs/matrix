@@ -1,8 +1,8 @@
-#include "slab/matrix.h"
-using namespace slab;
-
 #include <iostream>
 using namespace std;
+
+#include "slab/matrix.h"
+using namespace slab;
 
 int main() {
 

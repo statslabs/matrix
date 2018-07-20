@@ -350,36 +350,36 @@ class Matrix<T, 0> {
 ///////////////////////////////////////
 
 // print Matrix, MatrixRef
-template<typename T, std::size_t N>
-std::ostream &operator<<(std::ostream &os, const Matrix<T, N> &m) {
-  os << std::endl << '{';
-  for (size_t i = 0; i != m.n_rows(); ++i) {
-    os << m[i];
-    if (i + 1 != m.n_rows()) os << ',';
-  }
-  return os << '}' << std::endl;
-}
-
-template<typename T, std::size_t N>
-std::ostream &operator<<(std::ostream &os, const MatrixRef<T, N> &m) {
-  os << std::endl << '{';
-  for (size_t i = 0; i != m.n_rows(); ++i) {
-    os << m[i];
-    if (i + 1 != m.n_rows()) os << ',';
-  }
-  return os << '}' << std::endl;
-}
-
-//template<typename M>
-//Enable_if<Matrix_type<M>(), std::ostream &>
-//operator<<(std::ostream &os, const M &m) {
-//    os << '{';
-//    for (size_t i = 0; i != m.n_rows(); ++i) {
-//        os << m[i];
-//        if (i + 1 != m.n_rows()) os << ',';
-//    }
-//    return os << '}';
+//template<typename T, std::size_t N>
+//std::ostream &operator<<(std::ostream &os, const Matrix<T, N> &m) {
+//  os << std::endl << '{';
+//  for (size_t i = 0; i != m.n_rows(); ++i) {
+//    os << m[i];
+//    if (i + 1 != m.n_rows()) os << ',';
+//  }
+//  return os << '}' << std::endl;
 //}
+
+//template<typename T, std::size_t N>
+//std::ostream &operator<<(std::ostream &os, const MatrixRef<T, N> &m) {
+//  os << std::endl << '{';
+//  for (size_t i = 0; i != m.n_rows(); ++i) {
+//    os << m[i];
+//    if (i + 1 != m.n_rows()) os << ',';
+//  }
+//  return os << '}' << std::endl;
+//}
+
+template<typename M>
+Enable_if<Matrix_type<M>(), std::ostream &>
+operator<<(std::ostream &os, const M &m) {
+    os << '{';
+    for (std::size_t i = 0; i != m.n_rows(); ++i) {
+        os << m[i];
+        if (i + 1 != m.n_rows()) os << ',';
+    }
+    return os << '}';
+}
 
 template<typename T>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {

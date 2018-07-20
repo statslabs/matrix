@@ -1,8 +1,8 @@
-#include "slab/matrix.h"
-using namespace slab;
-
 #include <iostream>
 using namespace std;
+
+#include "slab/matrix.h"
+using namespace slab;
 
 int main() {
   Matrix<int, 2> m1{{1, 2, 3}, {4, 5, 6}};    // 2-by-3

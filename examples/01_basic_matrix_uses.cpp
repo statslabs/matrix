@@ -1,8 +1,30 @@
-#include "slab/matrix.h"
-using namespace slab;
+/*******************************************************************************
+ * EXPECTED OUTPUT:
+ *******************************************************************************
+
+d1 = 1
+d2 = 2
+e1 = 100
+e2 = 50
+e2a = 6000
+s1 = 100
+s2 = 300000
+
+m = {{0,1,2,3},{10,11,12,13},{20,21,22,23}}
+
+v = {10,11,12,13}
+
+dval1 = 12
+dval2 = 12
+dval3 = 12
+
+ ******************************************************************************/
 
 #include <iostream>
 using namespace std;
+
+#include "slab/matrix.h"
+using namespace slab;
 
 int main() {
   Matrix<double, 0> m0{1};           // zero dimensions: a scalar
