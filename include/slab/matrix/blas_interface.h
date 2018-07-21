@@ -417,7 +417,7 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
 }
 /// @}
 
-/// @addtogroup blas_level1 BLAS Level 2
+/// @addtogroup blas_level2 BLAS Level 2
 /// @{
 
 void blas_gemv()
@@ -427,7 +427,7 @@ void blas_gemv()
 
 /// @}
 
-/// @addtogroup blas_level1 BLAS Level 3
+/// @addtogroup blas_level3 BLAS Level 3
 /// @{
 
 void blas_gemm()

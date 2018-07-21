@@ -15,11 +15,11 @@
 #
 cmake_minimum_required(VERSION 3.0)
 
-set(PROJECT_NAME "StatsLabs.Matrix")
-set(PROJECT_FULL_NAME "StatsLabs.Matrix C++ linear algebra library")
+set(PROJECT_NAME "Statslabs.Matrix")
+set(PROJECT_FULL_NAME "Statslabs.Matrix C++ Linear Algebra Library")
 set(PROJECT_VERSION "0.3.0")
 
-project(matrix VERSION 0.3.0 LANGUAGES CXX)
+project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -28,12 +28,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-include("cmake/platform.cmake")
-include("cmake/OpenMP.cmake")
-include("cmake/SDL.cmake")
 include("cmake/MKL.cmake")
-#include("cmake/Doxygen.cmake")
-include("cmake/profiling.cmake")
 
 # Doxygen Build
 option(BUILD_DOC "Build Documentation" ON)
