@@ -23,12 +23,6 @@
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/traits.h"
 
-enum class blas_trans {
-  no_trans = CblasNoTrans,
-  trans = CblasTrans,
-  conj_trans = CblasConjTrans
-};
-
 /// @addtogroup blas_interface BLAS INTERFACE
 /// @{
 
@@ -359,14 +353,14 @@ void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
         n,
         (float *) (x.data() + x.descriptor().start),
         incx,
-		(float *) (y.data() + y.descriptor().start),
+        (float *) (y.data() + y.descriptor().start),
         incy
     );
   } else if (is_complex_double<T>::value) {
     cblas_zswap(
         n,
         (std::complex<double> *) (x.data() + x.descriptor().start),
-		incx,
+        incx,
         (std::complex<double> *) (y.data() + y.descriptor().start),
         incy
     );
@@ -420,9 +414,83 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
 /// @addtogroup blas_level2 BLAS Level 2
 /// @{
 
-void blas_gemv()
+template<typename T>
+void blas_gemv(const CBLAS_TRANSPOSE trans,
+               const T &alpha,
+               const MatrixBase<T, 2> &a,
+               const MatrixBase<T, 1> &x,
+               const T &beta,
+               MatrixBase<T, 1> &y)
 {
+  const int m = y.n_rows();
+  const int n = a.n_cols();
 
+  const int lda = a.n_cols();
+
+  const int incx = x.descriptor().strides[0];
+  const int incy = y.descriptor().strides[0];
+
+  if (is_double<T>::value) {
+    cblas_dgemv(
+        CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
+        trans,                     // trans : CblasNoTrans/CblasTrans/CblasTrans.
+        m,                         // m     : the number of rows of the matrix A.
+        n,                         // n     : the number of cols of the matrix A.
+        (const double) alpha,      // alpha : the scalar alpha.
+        (const double *) (a.data() + a.descriptor().start),  // the matrix A.
+        lda,                       // lda   : the leading dimension of a.
+        (const double *) (x.data() + x.descriptor().start),  // the vector x.
+        incx,                      // incx  : the increment for the elements of x.
+        (const double) beta,       // beta  : the scalar beta.
+        (double *) (y.data() + y.descriptor().start),        // the vector y.
+        incy                       // incy  : the increment for the elements of y.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sgemv(
+        CblasRowMajor,
+        trans,
+        m,
+        n,
+        (const float) alpha,
+        (const float *) (a.data() + a.descriptor().start),
+        lda,
+        (const float *) (x.data() + x.descriptor().start),
+        incx,
+        (const float) beta,
+        (float *) (y.data() + y.descriptor().start),
+        incy
+    );
+  } else if (is_complex_double<T>::value) {
+    cblas_zgemv(
+        CblasRowMajor,
+        trans,
+        m,
+        n,
+        (const std::complex<double> *) &alpha,
+        (const std::complex<double> *) (a.data() + a.descriptor().start),
+        lda,
+        (const std::complex<double> *) (x.data() + x.descriptor().start),
+        incx,
+        (const std::complex<double> *) &beta,
+        (std::complex<double> *) (y.data() + y.descriptor().start),
+        incy
+    );
+  } else if (is_complex_float<T>::value) {
+    cblas_cgemv(
+        CblasRowMajor,
+        trans,
+        m,
+        n,
+        (const std::complex<float> *) &alpha,
+        (const std::complex<float> *) (a.data() + a.descriptor().start),
+        lda,
+        (const std::complex<float> *) (x.data() + x.descriptor().start),
+        incx,
+        (const std::complex<float> *) &beta,
+        (std::complex<float> *) (y.data() + y.descriptor().start),
+        incy
+    );
+  }
 }
 
 /// @}
@@ -430,9 +498,103 @@ void blas_gemv()
 /// @addtogroup blas_level3 BLAS Level 3
 /// @{
 
-void blas_gemm()
-{
 
+//! Computes a matrix-matrix product with general matrices.
+/* \t param T Data type (double/float/std::complex<double>/std::complex<float>)
+ * \param transa Specifies the form of op(A) used in the matrix multiplication.
+ * \param transb Specifies the form of op(B) used in the matrix multiplication.
+ * \param alpha Specifies the scalar alpha
+ * \param a
+ * \param b
+ * \param beta Specifies the scalar beta.
+ * \param c
+ */
+template<typename T>
+void blas_gemm(const CBLAS_TRANSPOSE transa,
+               const CBLAS_TRANSPOSE transb,
+               const T &alpha,
+               const MatrixBase<T, 2> &a,
+               const MatrixBase<T, 2> &b,
+               const T &beta,
+               MatrixBase<T, 2> &c)
+{
+  const int m = c.n_rows();
+  const int n = c.n_cols();
+  const int k = a.n_cols();
+
+  const int lda = a.n_cols();
+  const int ldb = b.n_cols();
+  const int ldc = b.n_cols();
+
+  if (is_double<T>::value) {
+    cblas_dgemm(
+        CblasRowMajor,             // Layout: row-major (CblasRowMajor) or column-major (CblasColMajor).
+        transa,                    // transa: CblasNoTrans/CblasTrans/CblasConjTrans.
+        transb,                    // transb: CblasNoTrans/CblasTrans/CblasConjTrans.
+        m,                         // m     : the number of rows of the matrix op(A) and of the matrix C.
+        n,                         // n     : the number of cols of the matrix op(B) and of the matrix C.
+        k,                         // k     : the number of cols of the matrix op(A) and the number of rows of the matrix op(B).
+        (const double) alpha,      // alpha : the scalar alpha.
+        (const double *) (a.data() + a.descriptor().start),  // the matrix A.
+        lda,                       // lda   : the leading dimension of a.
+        (const double *) (b.data() + b.descriptor().start),  // the matrix B.
+        ldb,                       // ldb   : the leading dimension of b.
+        (const double) beta,       // beta  : the scalar beta.
+        (double *) (c.data() + c.descriptor().start),        // the matrix C.
+        ldc                        // ldc   : the leading dimension of c.
+    );
+  } else if (is_float<T>::value) {
+    cblas_sgemm(
+        CblasRowMajor,
+        transa,
+        transb,
+        m,
+        n,
+        k,
+        (const float) alpha,
+        (const float *) (a.data() + a.descriptor().start),
+        lda,
+        (const float *) (b.data() + b.descriptor().start),
+        ldb,
+        (const float) beta,
+        (float *) (c.data() + c.descriptor().start),
+        ldc
+    );
+  } else if (is_complex_double<T>::value) {
+    cblas_zgemm(
+        CblasRowMajor,
+        transa,
+        transb,
+        m,
+        n,
+        k,
+        (const std::complex<double> *) &alpha,
+        (const std::complex<double> *) (a.data() + a.descriptor().start),
+        lda,
+        (const std::complex<double> *) (b.data() + b.descriptor().start),
+        ldb,
+        (const std::complex<double> *) &beta,
+        (std::complex<double> *) (c.data() + c.descriptor().start),
+        ldc
+    );
+  } else if (is_complex_float<T>::value) {
+    cblas_cgemm(
+        CblasRowMajor,
+        transa,
+        transb,
+        m,
+        n,
+        k,
+        (const std::complex<float> *) &alpha,
+        (const std::complex<float> *) (a.data() + a.descriptor().start),
+        lda,
+        (const std::complex<float> *) (b.data() + b.descriptor().start),
+        ldb,
+        (const std::complex<float> *) &beta,
+        (std::complex<float> *) (c.data() + c.descriptor().start),
+        ldc
+    );
+  }
 }
 
 /// @}
