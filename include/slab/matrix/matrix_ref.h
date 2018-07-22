@@ -41,22 +41,26 @@ class MatrixRef : public MatrixBase<T, N> {
   MatrixRef &operator=(MatrixRef const &) = default;
   ~MatrixRef() = default;
 
+  //! construct from Matrix
   template<typename U>
-  MatrixRef(const Matrix<U, N> &);                   // construct from Matrix
+  MatrixRef(const Matrix<U, N> &);
+  //! assign from Matrix
   template<typename U>
-  MatrixRef &operator=(const Matrix<U, N> &);        // assign from Matrix
+  MatrixRef &operator=(const Matrix<U, N> &);
 
-  MatrixRef &operator=(MatrixInitializer<T, N>);     // assign from list
+  //! assign from list
+  MatrixRef &operator=(MatrixInitializer<T, N>);
 
   MatrixRef(const MatrixSlice<N> &s, T *p) : MatrixBase<T, N>{s}, ptr_{p} {}
 
-  // total number of elements
+  //! total number of elements
   std::size_t size() const { return this->desc_.size; }
 
-  T *data() { return ptr_; }                         // "flat" element access
+  //! "flat" element access
+  T *data() { return ptr_; }
   const T *data() const { return ptr_; }
 
-  // m(i,j,k) subscripting with integers
+  //! m(i,j,k) subscripting with integers
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
   operator()(Args... args) {
@@ -69,7 +73,7 @@ class MatrixRef : public MatrixBase<T, N> {
     return MatrixBase<T,N>::template operator()<Args...>(args...);
   }
 
-  // m(s1, s2, s3) subscripting with slides
+  //! m(s1, s2, s3) subscripting with slides
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
   operator()(const Args &... args);
@@ -78,17 +82,19 @@ class MatrixRef : public MatrixBase<T, N> {
   Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
   operator()(const Args &... args) const;
 
-  // m[i] row access
+  //! m[i] row access
   MatrixRef<T, N - 1> operator[](std::size_t i) { return row(i); }
   MatrixRef<const T, N - 1> operator[](std::size_t i) const { return row(i); }
 
-  // row access
+  //! row access
   MatrixRef<T, N - 1> row(std::size_t n);
   MatrixRef<const T, N - 1> row(std::size_t n) const;
 
-  // column access
+  //! column access
   MatrixRef<T, N - 1> col(std::size_t n);
   MatrixRef<const T, N - 1> col(std::size_t n) const;
+
+  //! @cond Doxygen_Suppress
 
   template<typename F>
   MatrixRef &apply(F f);                             // f(x) for every element x
@@ -121,6 +127,8 @@ class MatrixRef : public MatrixBase<T, N> {
   // element-wise modulus
   template<typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator%=(const M &x);
+  
+  //! @endcond
 
   iterator begin() { return {this->desc_, ptr_}; }
   const_iterator begin() const { return {this->desc_, ptr_}; }

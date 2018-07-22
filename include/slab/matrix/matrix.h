@@ -24,6 +24,14 @@
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/traits.h"
 
+//! Matrix<T,N> is an N-dimensional matrix of some value type T.
+/*!
+ * \tparam T value type.
+ * \tparam N number of dimensions.
+ *
+ * This class implements matrix class which provides support subscripting,
+ * slicing and basic matrix arithmetic operations.
+ */
 template<typename T, std::size_t N>
 class Matrix : public MatrixBase<T, N> {
  public:
@@ -37,16 +45,21 @@ class Matrix : public MatrixBase<T, N> {
   Matrix &operator=(Matrix const &) = default;
   ~Matrix() = default;
 
+  //! construct from MatrixRef
   template<typename U>
-  Matrix(const MatrixRef<U, N> &);             // construct from MatrixRef
+  Matrix(const MatrixRef<U, N> &);
+  //! assign from MatrixRef
   template<typename U>
-  Matrix &operator=(const MatrixRef<U, N> &);  // assign from MatrixRef
+  Matrix &operator=(const MatrixRef<U, N> &);
 
+  //! specify the extents
   template<typename... Exts>
-  explicit Matrix(Exts... exts);               // specify the extents
+  explicit Matrix(Exts... exts);
 
-  Matrix(MatrixInitializer<T, N>);             // initialize from list
-  Matrix &operator=(MatrixInitializer<T, N>);  // assign from list
+  //! initialize from list
+  Matrix(MatrixInitializer<T, N>);
+  //! assign from list
+  Matrix &operator=(MatrixInitializer<T, N>);
 
   template<typename U,
       std::size_t NN = N,
@@ -59,13 +72,14 @@ class Matrix : public MatrixBase<T, N> {
       typename = Enable_if<Convertible<U, std::size_t>()>>
   Matrix &operator=(std::initializer_list<U>) = delete;
 
-  // total number of elements
+  //! total number of elements
   std::size_t size() const { return elems_.size(); }
 
-  T *data() { return elems_.data(); }          // "flat" element access
+  //! "flat" element access
+  T *data() { return elems_.data(); }
   const T *data() const { return elems_.data(); }
 
-  // m(i,j,k) subscripting with integers
+  //! m(i,j,k) subscripting with integers
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
   operator()(Args... args) {
@@ -78,7 +92,7 @@ class Matrix : public MatrixBase<T, N> {
     return MatrixBase<T,N>::template operator()<Args...>(args...);
   }
 
-  // m(s1, s2, s3) subscripting with slides
+  //! m(s1, s2, s3) subscripting with slides
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
   operator()(const Args &... args);
@@ -87,17 +101,19 @@ class Matrix : public MatrixBase<T, N> {
   Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
   operator()(const Args &... args) const;
 
-  // m[i] row access
+  //! m[i] row access
   MatrixRef<T, N - 1> operator[](std::size_t i) { return row(i); }
   MatrixRef<const T, N - 1> operator[](std::size_t i) const { return row(i); }
 
-  // row access
+  //! row access
   MatrixRef<T, N - 1> row(std::size_t n);
   MatrixRef<const T, N - 1> row(std::size_t n) const;
 
-  // column access
+  //! column access
   MatrixRef<T, N - 1> col(size_t n);
   MatrixRef<const T, N - 1> col(size_t n) const;
+
+  //! @cond Doxygen_Suppress
 
   template<typename F>
   Matrix &apply(F f);                          // f(x) for every element x
@@ -130,6 +146,8 @@ class Matrix : public MatrixBase<T, N> {
   // element-wise modulus
   template<typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
+
+  //! @endcond
 
   iterator begin() { return elems_.begin(); }
   const_iterator begin() const { return elems_.cbegin(); }
