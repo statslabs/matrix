@@ -420,10 +420,9 @@ void blas_gemv(const CBLAS_TRANSPOSE trans,
                const MatrixBase<T, 2> &a,
                const MatrixBase<T, 1> &x,
                const T &beta,
-               MatrixBase<T, 1> &y)
-{
+               MatrixBase<T, 1> &y) {
   const int m = y.n_rows();
-  const int n = a.n_cols();
+  const int n = x.n_rows();
 
   const int lda = a.n_cols();
 
@@ -498,17 +497,6 @@ void blas_gemv(const CBLAS_TRANSPOSE trans,
 /// @addtogroup blas_level3 BLAS Level 3
 /// @{
 
-
-//! Computes a matrix-matrix product with general matrices.
-/* \t param T Data type (double/float/std::complex<double>/std::complex<float>)
- * \param transa Specifies the form of op(A) used in the matrix multiplication.
- * \param transb Specifies the form of op(B) used in the matrix multiplication.
- * \param alpha Specifies the scalar alpha
- * \param a
- * \param b
- * \param beta Specifies the scalar beta.
- * \param c
- */
 template<typename T>
 void blas_gemm(const CBLAS_TRANSPOSE transa,
                const CBLAS_TRANSPOSE transb,
@@ -516,15 +504,16 @@ void blas_gemm(const CBLAS_TRANSPOSE transa,
                const MatrixBase<T, 2> &a,
                const MatrixBase<T, 2> &b,
                const T &beta,
-               MatrixBase<T, 2> &c)
-{
+               MatrixBase<T, 2> &c) {
   const int m = c.n_rows();
   const int n = c.n_cols();
-  const int k = a.n_cols();
+  int k = a.n_cols();
+
+  if (transa != CblasNoTrans) k = a.n_rows();
 
   const int lda = a.n_cols();
   const int ldb = b.n_cols();
-  const int ldc = b.n_cols();
+  const int ldc = c.n_cols();
 
   if (is_double<T>::value) {
     cblas_dgemm(

@@ -77,5 +77,23 @@ int main() {
 
   cout << "x = " << x << endl;
 
+  slab::mat A = {
+      {1.0, -3.0},
+      {2.0, 4.0},
+      {1.0, -1.0}
+  };
+
+  slab::mat B = A;
+
+  slab::mat C = {
+      {0.5, 0.5, 0.5},
+      {0.5, 0.5, 0.5},
+      {0.5, 0.5, 0.5}
+  };
+
+  slab::blas_gemm(CblasNoTrans,CblasTrans, 1.0, A, B, 2.0, C);
+
+  cout << "C = " << C << endl;
+
   return 0;
 }
