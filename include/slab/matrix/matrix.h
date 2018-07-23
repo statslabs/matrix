@@ -76,10 +76,13 @@ class Matrix : public MatrixBase<T, N> {
   std::size_t size() const { return elems_.size(); }
 
   //! "flat" element access
+  ///@{
   T *data() { return elems_.data(); }
   const T *data() const { return elems_.data(); }
+  ///@}
 
   //! m(i,j,k) subscripting with integers
+  ///@{
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
   operator()(Args... args) {
@@ -91,8 +94,10 @@ class Matrix : public MatrixBase<T, N> {
   operator()(Args... args) const {
     return MatrixBase<T,N>::template operator()<Args...>(args...);
   }
+  ///@}
 
   //! m(s1, s2, s3) subscripting with slides
+  ///@{
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
   operator()(const Args &... args);
@@ -100,18 +105,25 @@ class Matrix : public MatrixBase<T, N> {
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
   operator()(const Args &... args) const;
+  ///@}
 
   //! m[i] row access
+  ///@{
   MatrixRef<T, N - 1> operator[](std::size_t i) { return row(i); }
   MatrixRef<const T, N - 1> operator[](std::size_t i) const { return row(i); }
+  ///@}
 
   //! row access
+  ///@{
   MatrixRef<T, N - 1> row(std::size_t n);
   MatrixRef<const T, N - 1> row(std::size_t n) const;
+  ///@}
 
   //! column access
+  ///@{
   MatrixRef<T, N - 1> col(size_t n);
   MatrixRef<const T, N - 1> col(size_t n) const;
+  ///@}
 
   //! @cond Doxygen_Suppress
 
