@@ -129,7 +129,6 @@ void copy_flat(std::initializer_list<T> list, Iter &iter) {
   copy_list(list.begin(), list.end(), iter);
 }
 
-
 template<std::size_t I, std::size_t N>
 void slice_dim(std::size_t offset,
                const MatrixSlice<N> &desc, MatrixSlice<N - 1> &row) {
@@ -167,7 +166,7 @@ bool check_bounds(const MatrixSlice<N> &ms, Dims... dims) {
   return std::equal(indexes, indexes + N, ms.extents.begin(), std::less<std::size_t>{});
 }
 
-template<size_t NRest, size_t N>
+template<std::size_t NRest, std::size_t N>
 std::size_t do_slice_dim(const MatrixSlice<N> &os, MatrixSlice<N> &ns, std::size_t s) {
   std::size_t i = N - NRest;
   ns.strides[i] = os.strides[i];
@@ -175,8 +174,18 @@ std::size_t do_slice_dim(const MatrixSlice<N> &os, MatrixSlice<N> &ns, std::size
   return s * ns.strides[i];
 }
 
-template<size_t NRest, size_t N>
+template<std::size_t NRest, std::size_t N>
 std::size_t do_slice_dim(const MatrixSlice<N> &os, MatrixSlice<N> &ns, slice s) {
+  std::size_t i = N - NRest;
+  ns.strides[i] = s.stride * os.strides[i];
+  ns.extents[i] = (s.length == size_t(-1)) ?
+                  (os.extents[i] - s.start + s.stride - 1) / s.stride
+                                           : s.length;
+  return s.start * os.strides[i];
+}
+
+template<std::size_t N>
+std::size_t do_slice_dim2(const MatrixSlice<N> &os, MatrixSlice<N> &ns, slice s, std::size_t NRest) {
   std::size_t i = N - NRest;
   ns.strides[i] = s.stride * os.strides[i];
   ns.extents[i] = (s.length == size_t(-1)) ?

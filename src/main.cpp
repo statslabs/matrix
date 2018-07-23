@@ -95,5 +95,18 @@ int main() {
 
   cout << "C = " << C << endl;
 
+
+  slab::cube xcube = {
+      {{1,2},{3,4}},
+      {{5,6},{7,8}},
+      {{10,2},{3,4}},
+      {{5,6},{7,8}},
+      {{1,2},{3,4}},
+      {{5,6},{7,8}}
+  };
+
+  cout << "slice: " << xcube(slab::slice{2},slab::slice{0},slab::slice{0}) << endl;
+  cout << "rows : " << xcube.rows(2, 5) << endl;
+
   return 0;
 }

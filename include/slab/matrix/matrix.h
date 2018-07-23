@@ -86,13 +86,13 @@ class Matrix : public MatrixBase<T, N> {
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
   operator()(Args... args) {
-    return MatrixBase<T,N>::template operator()<Args...>(args...);
+    return MatrixBase<T, N>::template operator() < Args...>(args...);
   }
 
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
   operator()(Args... args) const {
-    return MatrixBase<T,N>::template operator()<Args...>(args...);
+    return MatrixBase<T, N>::template operator() < Args...>(args...);
   }
   ///@}
 
@@ -124,6 +124,9 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<T, N - 1> col(size_t n);
   MatrixRef<const T, N - 1> col(size_t n) const;
   ///@}
+
+  MatrixRef<T, N> rows(std::size_t i, std::size_t j);
+  MatrixRef<const T, N> rows(std::size_t i, std::size_t j) const;
 
   //! @cond Doxygen_Suppress
 
@@ -244,7 +247,7 @@ MatrixRef<const T, N - 1> Matrix<T, N>::row(std::size_t n) const {
 // col
 template<typename T, std::size_t N>
 MatrixRef<T, N - 1> Matrix<T, N>::col(std::size_t n) {
-  assert(n < this->cols());
+  assert(n < this->n_cols());
   MatrixSlice<N - 1> col;
   matrix_impl::slice_dim<1>(n, this->desc_, col);
   return {col, data()};
@@ -252,10 +255,40 @@ MatrixRef<T, N - 1> Matrix<T, N>::col(std::size_t n) {
 
 template<typename T, std::size_t N>
 MatrixRef<const T, N - 1> Matrix<T, N>::col(std::size_t n) const {
-  assert(n < this->cols());
+  assert(n < this->n_cols());
   MatrixSlice<N - 1> col;
   matrix_impl::slice_dim<1>(n, this->desc_, col);
   return {col, data()};
+}
+
+template<typename T, std::size_t N>
+MatrixRef<T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) {
+  assert(i < j);
+  assert(j < this->n_rows());
+
+  MatrixSlice<N> d;
+  d.start = matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j-i+1});
+  std::size_t NRest = N - 1;
+  while(NRest >= 1) {
+    d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
+    --NRest;
+  }
+  return {d, data()};
+}
+
+template<typename T, std::size_t N>
+MatrixRef<const T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) const {
+  assert(i < j);
+  assert(j < this->n_rows());
+
+  MatrixSlice<N> d;
+  d.start = matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j-i+1});
+  std::size_t NRest = N - 1;
+  while(NRest >= 1) {
+    d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
+    --NRest;
+  }
+  return {d, data()};
 }
 
 template<typename T, std::size_t N>
@@ -403,12 +436,12 @@ class Matrix<T, 0> {
 template<typename M>
 Enable_if<Matrix_type<M>(), std::ostream &>
 operator<<(std::ostream &os, const M &m) {
-    os << '{';
-    for (std::size_t i = 0; i != m.n_rows(); ++i) {
-        os << m[i];
-        if (i + 1 != m.n_rows()) os << ',';
-    }
-    return os << '}';
+  os << '{';
+  for (std::size_t i = 0; i != m.n_rows(); ++i) {
+    os << m[i];
+    if (i + 1 != m.n_rows()) os << ',';
+  }
+  return os << '}';
 }
 
 template<typename T>
