@@ -295,7 +295,8 @@ MatrixRef<T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) {
   assert(j < this->n_rows());
 
   MatrixSlice<N> d;
-  d.start = matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j - i + 1});
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j - i + 1});
   std::size_t NRest = N - 1;
   while (NRest >= 1) {
     d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
@@ -310,7 +311,8 @@ MatrixRef<const T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) const {
   assert(j < this->n_rows());
 
   MatrixSlice<N> d;
-  d.start = matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j - i + 1});
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j - i + 1});
   std::size_t NRest = N - 1;
   while (NRest >= 1) {
     d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
@@ -326,7 +328,8 @@ MatrixRef<T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) {
   assert(j < this->n_cols());
 
   MatrixSlice<N> d;
-  d.start = matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
   d.start += matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
 
   std::size_t NRest = N - 2;
@@ -344,7 +347,8 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
   assert(j < this->n_cols());
 
   MatrixSlice<N> d;
-  d.start = matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
   d.start += matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
 
   std::size_t NRest = N - 2;

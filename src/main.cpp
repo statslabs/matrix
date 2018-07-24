@@ -109,11 +109,11 @@ int main() {
   cout << "cols : " << xcube.cols(2, 3) << endl;
 
   slab::mat xxx = {
-      {1,2,3},
-      {4,5,6},
-      {7,8,9}
+      {1,2,3,4,5},
+      {4,5,6,7,8},
+      {7,8,9,10,11}
   };
-  cout << "diag = " << xxx.diag() << endl;
+  cout << xxx.rows(1, 2).cols(1,3).cols(0,1) << endl;
 
 
   return 0;

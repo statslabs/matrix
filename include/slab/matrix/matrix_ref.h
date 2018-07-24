@@ -106,6 +106,37 @@ class MatrixRef : public MatrixBase<T, N> {
   MatrixRef<const T, N - 1> col(std::size_t n) const;
   ///@}
 
+  MatrixRef<T, N> rows(std::size_t i, std::size_t j);
+  MatrixRef<const T, N> rows(std::size_t i, std::size_t j) const;
+
+  MatrixRef<T, N> cols(std::size_t i, std::size_t j);
+  MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<T, 1> diag()
+  {
+    assert(this->n_rows() == this->n_cols());
+
+    MatrixSlice<1> d;
+    d.start = this->desc_.start;
+    d.extents[0] = this->n_rows();
+    d.strides[0] = this->n_rows() + 1;
+
+    return {d, data()};
+  }
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<const T, 1> diag() const
+  {
+    assert(this->n_rows() == this->n_cols());
+
+    MatrixSlice<1> d;
+    d.start = this->desc_.start;
+    d.extents[0] = this->n_rows();
+    d.strides[0] = this->n_rows() + 1;
+
+    return {d, data()};
+  }
+
   //! @cond Doxygen_Suppress
 
   template<typename F>
@@ -230,6 +261,76 @@ MatrixRef<const T, N - 1> MatrixRef<T, N>::col(size_t n) const {
   MatrixSlice<N - 1> col;
   matrix_impl::slice_dim<1>(n, this->desc_, col);
   return {col, ptr_};
+}
+
+template<typename T, std::size_t N>
+MatrixRef<T, N> MatrixRef<T, N>::rows(std::size_t i, std::size_t j) {
+  assert(i < j);
+  assert(j < this->n_rows());
+
+  MatrixSlice<N> d;
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j - i + 1});
+  std::size_t NRest = N - 1;
+  while (NRest >= 1) {
+    d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
+    --NRest;
+  }
+  return {d, data()};
+}
+
+template<typename T, std::size_t N>
+MatrixRef<const T, N> MatrixRef<T, N>::rows(std::size_t i, std::size_t j) const {
+  assert(i < j);
+  assert(j < this->n_rows());
+
+  MatrixSlice<N> d;
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{i, j - i + 1});
+  std::size_t NRest = N - 1;
+  while (NRest >= 1) {
+    d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
+    --NRest;
+  }
+  return {d, data()};
+}
+
+template<typename T, std::size_t N>
+MatrixRef<T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) {
+  assert(N >= 2);
+  assert(i < j);
+  assert(j < this->n_cols());
+
+  MatrixSlice<N> d;
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
+  d.start += matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
+
+  std::size_t NRest = N - 2;
+  while (NRest >= 1) {
+    d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
+    --NRest;
+  }
+  return {d, data()};
+}
+
+template<typename T, std::size_t N>
+MatrixRef<const T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) const {
+  assert(N >= 2);
+  assert(i < j);
+  assert(j < this->n_cols());
+
+  MatrixSlice<N> d;
+  d.start = this->desc_.start;
+  d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
+  d.start += matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
+
+  std::size_t NRest = N - 2;
+  while (NRest >= 1) {
+    d.start += matrix_impl::do_slice_dim2(this->desc_, d, slice{0}, NRest);
+    --NRest;
+  }
+  return {d, data()};
 }
 
 template<typename T, std::size_t N>
