@@ -24,6 +24,12 @@
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/traits.h"
 
+template<typename T>
+Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
+
+template<typename T>
+Matrix<T, 2> transpose(const MatrixBase<T, 2> &a);
+
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
  * \tparam T value type.
@@ -154,17 +160,8 @@ class Matrix : public MatrixBase<T, N> {
     return {d, data()};
   }
 
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  Matrix<T, 2> t() const {
-    Matrix<T, 2> res(this->n_cols(), this->n_rows());
-    for (std::size_t i = 0; i < this->n_rows(); ++i) {
-      for (std::size_t j = 0; j < this->n_cols(); ++j) {
-        res(j, i) = this->operator()(i, j);
-      }
-    }
-
-    return res;
-  }
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const { return transpose(*this); }
 
   //! @cond Doxygen_Suppress
 
@@ -537,6 +534,29 @@ operator<<(std::ostream &os, const M &m) {
 template<typename T>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
   return os << (const T &) m0;
+}
+
+template<typename T>
+Matrix<T, 2> transpose(const MatrixBase<T, 1> &a) {
+  Matrix<T, 2> res(1, a.n_rows());
+  for (std::size_t i = 0; i < a.n_rows(); ++i) {
+    std::cout << "res=" << res << std::endl;
+    res(0, i) = a(i);
+  }
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> transpose(const MatrixBase<T, 2> &a) {
+  Matrix<T, 2> res(a.n_cols(), a.n_rows());
+  for (std::size_t i = 0; i < a.n_rows(); ++i) {
+    for (std::size_t j = 0; j < a.n_cols(); ++j) {
+      res(j, i) = a(i, j);
+    }
+  }
+
+  return res;
 }
 
 #endif // SLAB_MATRIX_MATRIX_H_

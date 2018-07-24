@@ -471,16 +471,4 @@ auto reshape(const Matrix<T, N> &a, Args... args) -> decltype(Matrix<T, sizeof..
   return res;
 }
 
-template<typename T>
-Matrix<T, 2> transpose(const Matrix<T, 2> &a) {
-  Matrix<T, 2> res(a.n_cols(), a.n_rows());
-  for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    for (std::size_t j = 0; j < a.n_cols(); ++j) {
-      res(j, i) = a(i, j);
-    }
-  }
-
-  return res;
-}
-
 #endif // SLAB_MATRIX_OPERATIONS_H_
