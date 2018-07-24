@@ -166,6 +166,8 @@ class Matrix : public MatrixBase<T, N> {
   Enable_if<Matrix_type<M>(), Matrix &>
   apply(const M &m, F f);
 
+  Matrix operator-() const;
+
   Matrix &operator=(const T &value);           // assignment with scalar
 
   Matrix &operator+=(const T &value);          // scalar addition
@@ -377,6 +379,12 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::apply(const M &m, F f)
   }
 
   return *this;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> Matrix<T, N>::operator-() const {
+  Matrix<T, N> res = *this;
+  return res.apply([&](T &a) { a = -a; });
 }
 
 template<typename T, std::size_t N>

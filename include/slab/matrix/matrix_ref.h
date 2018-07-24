@@ -147,6 +147,8 @@ class MatrixRef : public MatrixBase<T, N> {
   Enable_if<Matrix_type<M>(), MatrixRef &>
   apply(const M &m, F f);
 
+  Matrix<T, N> operator-() const;
+
   MatrixRef &operator=(const T &value);              // assignment with scalar
 
   MatrixRef &operator+=(const T &value);             // scalar addition
@@ -352,6 +354,12 @@ Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::apply(const M &m
   }
 
   return *this;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> MatrixRef<T, N>::operator-() const {
+  Matrix<T, N> res(*this);
+  return res.apply([&](T &a) { a = -a; });
 }
 
 template<typename T, std::size_t N>

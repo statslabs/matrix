@@ -113,7 +113,7 @@ int main() {
       {4,5,6,7,8},
       {7,8,9,10,11}
   };
-  cout << xxx.rows(1, 2).cols(1,3).cols(0,1) << endl;
+  cout << -xxx(slab::slice{1,2},slab::slice{3,2}) << endl;
 
 
   return 0;
