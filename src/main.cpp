@@ -108,5 +108,13 @@ int main() {
   cout << "rows : " << xcube.rows(2, 5) << endl;
   cout << "cols : " << xcube.cols(2, 3) << endl;
 
+  slab::mat xxx = {
+      {1,2,3},
+      {4,5,6},
+      {7,8,9}
+  };
+  cout << "diag = " << xxx.diag() << endl;
+
+
   return 0;
 }
