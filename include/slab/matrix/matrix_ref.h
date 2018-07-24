@@ -67,13 +67,13 @@ class MatrixRef : public MatrixBase<T, N> {
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
   operator()(Args... args) {
-    return MatrixBase<T,N>::template operator()<Args...>(args...);
+    return MatrixBase<T, N>::template operator() < Args...>(args...);
   }
 
   template<typename... Args>
   Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
   operator()(Args... args) const {
-    return MatrixBase<T,N>::template operator()<Args...>(args...);
+    return MatrixBase<T, N>::template operator() < Args...>(args...);
   }
   ///@}
 
@@ -113,8 +113,7 @@ class MatrixRef : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
 
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<T, 1> diag()
-  {
+  MatrixRef<T, 1> diag() {
     assert(this->n_rows() == this->n_cols());
 
     MatrixSlice<1> d;
@@ -125,8 +124,7 @@ class MatrixRef : public MatrixBase<T, N> {
     return {d, data()};
   }
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<const T, 1> diag() const
-  {
+  MatrixRef<const T, 1> diag() const {
     assert(this->n_rows() == this->n_cols());
 
     MatrixSlice<1> d;
@@ -150,7 +148,6 @@ class MatrixRef : public MatrixBase<T, N> {
   Matrix<T, N> operator-() const;
 
   MatrixRef &operator=(const T &value);              // assignment with scalar
-
   MatrixRef &operator+=(const T &value);             // scalar addition
   MatrixRef &operator-=(const T &value);             // scalar subtraction
   MatrixRef &operator*=(const T &value);             // scalar multiplication
@@ -172,7 +169,7 @@ class MatrixRef : public MatrixBase<T, N> {
   // element-wise modulus
   template<typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator%=(const M &x);
-  
+
   //! @endcond
 
   iterator begin() { return {this->desc_, ptr_}; }
@@ -360,6 +357,11 @@ template<typename T, std::size_t N>
 Matrix<T, N> MatrixRef<T, N>::operator-() const {
   Matrix<T, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
+}
+
+template<typename T, std::size_t N>
+MatrixRef<T, N> &MatrixRef<T, N>::operator=(const T &val) {
+  return apply([&](T &a) { a = val; });
 }
 
 template<typename T, std::size_t N>

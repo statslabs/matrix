@@ -116,6 +116,9 @@ int main() {
   cout << -xxx.t() << endl;
   cout << -slab::transpose(xxx) << endl;
 
+  C.diag() = {100, 100, 100};
+  cout << "C = " << C << endl;
+
 
   return 0;
 }

@@ -132,8 +132,7 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
 
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<T, 1> diag()
-  {
+  MatrixRef<T, 1> diag() {
     assert(this->n_rows() == this->n_cols());
 
     MatrixSlice<1> d;
@@ -144,8 +143,7 @@ class Matrix : public MatrixBase<T, N> {
     return {d, data()};
   }
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<const T, 1> diag() const
-  {
+  MatrixRef<const T, 1> diag() const {
     assert(this->n_rows() == this->n_cols());
 
     MatrixSlice<1> d;
@@ -181,7 +179,6 @@ class Matrix : public MatrixBase<T, N> {
   Matrix operator-() const;
 
   Matrix &operator=(const T &value);           // assignment with scalar
-
   Matrix &operator+=(const T &value);          // scalar addition
   Matrix &operator-=(const T &value);          // scalar subtraction
   Matrix &operator*=(const T &value);          // scalar multiplication
@@ -397,6 +394,11 @@ template<typename T, std::size_t N>
 Matrix<T, N> Matrix<T, N>::operator-() const {
   Matrix<T, N> res = *this;
   return res.apply([&](T &a) { a = -a; });
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> &Matrix<T, N>::operator=(const T &val) {
+  return apply([&](T &a) { a = val; });
 }
 
 template<typename T, std::size_t N>
