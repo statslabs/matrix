@@ -113,7 +113,8 @@ int main() {
       {4,5,6,7,8},
       {7,8,9,10,11}
   };
-  cout << -xxx(slab::slice{1,2},slab::slice{3,2}) << endl;
+  cout << -xxx.t() << endl;
+  cout << -slab::transpose(xxx) << endl;
 
 
   return 0;

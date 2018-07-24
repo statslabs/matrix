@@ -156,6 +156,18 @@ class Matrix : public MatrixBase<T, N> {
     return {d, data()};
   }
 
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix<T, 2> t() const {
+    Matrix<T, 2> res(this->n_cols(), this->n_rows());
+    for (std::size_t i = 0; i < this->n_rows(); ++i) {
+      for (std::size_t j = 0; j < this->n_cols(); ++j) {
+        res(j, i) = this->operator()(i, j);
+      }
+    }
+
+    return res;
+  }
+
   //! @cond Doxygen_Suppress
 
   template<typename F>

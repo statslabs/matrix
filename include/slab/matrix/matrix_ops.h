@@ -276,6 +276,18 @@ Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
 }
 
 template<typename T>
+T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
+  assert(a.size() == b.size());
+
+  T res = T{0};
+  for (std::size_t idx = 0; idx != a.size(); ++idx) {
+    res += a(idx) * b(idx);
+  }
+
+  return res;
+}
+
+template<typename T>
 Matrix<T, 1> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x) {
   assert(a.extent(1) == x.extent(0));
 
@@ -291,8 +303,7 @@ Matrix<T, 1> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x) {
 }
 
 template<>
-Matrix<double, 1> matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 1> &x)
-{
+Matrix<double, 1> matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 1> &x) {
   assert(a.extent(1) == x.extent(0));
   const int m = a.n_rows();
   const int n = a.n_cols();
@@ -397,7 +408,7 @@ matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 2> &b) {
       (const double) 0.0,        // beta  : the scalar beta.
       (double *) c.data(),       // c     : the matrix C.
       ldc                        // ldc   : the leading dimension of c.
-    );
+  );
 
   return c;
 }
@@ -464,7 +475,7 @@ template<typename T>
 Matrix<T, 2> transpose(const Matrix<T, 2> &a) {
   Matrix<T, 2> res(a.n_cols(), a.n_rows());
   for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    for (std::size_t j = 0; j < a.n_rows(); ++j) {
+    for (std::size_t j = 0; j < a.n_cols(); ++j) {
       res(j, i) = a(i, j);
     }
   }
