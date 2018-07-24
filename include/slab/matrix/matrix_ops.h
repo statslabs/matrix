@@ -288,6 +288,16 @@ T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
 }
 
 template<typename T>
+Matrix<T, 2> matmul(const MatrixBase<T, 1> &a, const MatrixBase<T, 2> &b) {
+  assert(b.n_rows() == 1);
+
+  Matrix<T, 2> mat_a(a.n_rows(), 1);
+  for (std::size_t i = 0; i != a.n_rows(); ++i) mat_a(i, 0) = a(i);
+
+  return matmul(mat_a, b);
+}
+
+template<typename T>
 Matrix<T, 1> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x) {
   assert(a.extent(1) == x.extent(0));
 

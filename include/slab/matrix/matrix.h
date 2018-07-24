@@ -540,7 +540,6 @@ template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a) {
   Matrix<T, 2> res(1, a.n_rows());
   for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    std::cout << "res=" << res << std::endl;
     res(0, i) = a(i);
   }
 
