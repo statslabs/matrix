@@ -481,4 +481,21 @@ auto reshape(const Matrix<T, N> &a, Args... args) -> decltype(Matrix<T, sizeof..
   return res;
 }
 
+template <typename T>
+Matrix<T, 2> kron(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+  const std::size_t a_rows = a.n_rows();
+  const std::size_t a_cols = a.n_cols();
+  const std::size_t b_rows = b.n_rows();
+  const std::size_t b_cols = b.n_cols();
+
+  Matrix<T, 2> res(a_rows * b_rows, a_cols * b_cols);
+  for (std::size_t j = 0; j != a_cols; ++j) {
+    for (std::size_t i = 0; i != a_rows; ++i) {
+      res(slice{i * b_rows, b_rows}, slice{j * b_cols, b_cols}) = a(i,j) * b;
+    }
+  }
+
+  return res;
+}
+
 #endif // SLAB_MATRIX_OPERATIONS_H_

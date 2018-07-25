@@ -11,8 +11,10 @@ using namespace std;
 int main() {
   slab::vec x1 = {1, 2, 3};
   slab::mat x2 = {{1, 2, 3}};
-
   cout << slab::matmul(x1, x2) << endl;
+
+  slab::cube x3 = slab::ones<slab::cube>(3,3,3);
+  cout << "x3 = " << x3 << endl;
 
   return 0;
 }

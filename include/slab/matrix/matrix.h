@@ -536,6 +536,26 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
   return os << (const T &) m0;
 }
 
+template<typename M, typename... Args>
+Enable_if<Matrix_type<M>(), M>
+zeros(Args... args) {
+  assert(M::order() == sizeof...(args));
+  M res(args...);
+  res = 0;
+
+  return res;
+};
+
+template<typename M, typename... Args>
+Enable_if<Matrix_type<M>(), M>
+ones(Args... args) {
+  assert(M::order() == sizeof...(args));
+  M res(args...);
+  res = 1;
+
+  return res;
+};
+
 template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a) {
   Matrix<T, 2> res(1, a.n_rows());
