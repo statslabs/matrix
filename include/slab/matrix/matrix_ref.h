@@ -135,6 +135,9 @@ class MatrixRef : public MatrixBase<T, N> {
     return {d, data()};
   }
 
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const { return transpose(*this); }
+
   //! @cond Doxygen_Suppress
 
   template<typename F>
