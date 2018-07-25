@@ -481,8 +481,100 @@ auto reshape(const Matrix<T, N> &a, Args... args) -> decltype(Matrix<T, sizeof..
   return res;
 }
 
+// join_rows()
+
+template<typename T>
+Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  Matrix<T, 2> res(a.n_rows(), a.n_cols() + b.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{0, a.n_rows()}, slice{a.n_cols(), b.n_cols()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const MatrixRef<T, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  Matrix<T, 2> res(a.n_rows(), a.n_cols() + b.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{0, a.n_rows()}, slice{a.n_cols(), b.n_cols()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const MatrixRef<T, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  Matrix<T, 2> res(a.n_rows(), a.n_cols() + b.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{0, a.n_rows()}, slice{a.n_cols(), b.n_cols()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  Matrix<T, 2> res(a.n_rows(), a.n_cols() + b.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{0, a.n_rows()}, slice{a.n_cols(), b.n_cols()}) = b;
+
+  return res;
+}
+
+// join_cols()
+
+template<typename T>
+Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+  assert(a.n_cols() == b.n_cols());
+
+  Matrix<T, 2> res(a.n_rows() + b.n_rows(), a.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}, slice{0, a.n_cols()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const MatrixRef<T, 2> &b) {
+  assert(a.n_cols() == b.n_cols());
+
+  Matrix<T, 2> res(a.n_rows() + b.n_rows(), a.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}, slice{0, a.n_cols()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const MatrixRef<T, 2> &b) {
+  assert(a.n_cols() == b.n_cols());
+
+  Matrix<T, 2> res(a.n_rows() + b.n_rows(), a.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}, slice{0, a.n_cols()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
+  assert(a.n_cols() == b.n_cols());
+
+  Matrix<T, 2> res(a.n_rows() + b.n_rows(), a.n_cols());
+  res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}, slice{0, a.n_cols()}) = b;
+
+  return res;
+}
+
 template <typename T>
-Matrix<T, 2> kron(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+Matrix<T, 2> kron(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
   const std::size_t a_rows = a.n_rows();
   const std::size_t a_cols = a.n_cols();
   const std::size_t b_rows = b.n_rows();

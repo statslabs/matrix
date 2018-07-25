@@ -9,15 +9,25 @@
 using namespace std;
 
 int main() {
-  slab::vec x1 = {1, 2, 3};
-  slab::mat x2 = {{1, 2, 3}};
-  cout << slab::matmul(x1, x2) << endl;
+  slab::mat x1 = {
+      {1,2,3},
+      {4,5,6}
+  };
 
-  slab::cube x3 = slab::ones<slab::cube>(3,3,3);
-  cout << "x3 = " << x3 << endl;
+  slab::mat x2 = {
+      {1,2,3},
+      {4,5,6},
+      {7,8,9}
+  };
 
-  slab::mat x4 = slab::eye<slab::mat>(3,3);
-  cout << "x4 = " << x4 << endl;
+  slab::mat x3 = {
+      {10,10},
+      {10,10}
+  };
+
+  cout << slab::join_cols(x1, x2) << endl;
+  cout << slab::join_rows(x1, x3) << endl;
+
 
   return 0;
 }
