@@ -458,27 +458,34 @@ matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 2> &b) {
 }
 
 template<typename T, std::size_t N, typename... Args>
-auto reshape(const Matrix<T, N> &a, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
+auto reshape(const MatrixBase<T, N> &x, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
   Matrix<T, sizeof...(args)> res(args...);
+
+  const int incx = x.descriptor().strides[0];
 
   if (is_double<T>::value)
     cblas_dcopy(
-        a.size(),
-        (double *) a.data(),
-        1,
+        x.size(),
+        (double *) (x.data() + x.descriptor().start),
+        incx,
         (double *) res.data(),
         1
     );
   else if (is_float<T>::value)
     cblas_scopy(
-        a.size(),
-        (float *) a.data(),
-        1,
+        x.size(),
+        (float *) (x.data() + x.descriptor().start),
+        incx,
         (float *) res.data(),
         1
     );
 
   return res;
+}
+
+template <typename T, std::size_t N>
+Matrix<T, 1> vectorise(const MatrixBase<T, N> &x) {
+  return reshape(x, x.size());
 }
 
 // join_rows()

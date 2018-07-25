@@ -28,6 +28,9 @@ int main() {
   cout << slab::join_cols(x1, x2) << endl;
   cout << slab::join_rows(x1, x3) << endl;
 
+  cout << x2(slab::slice{1}, slab::slice{1}) << endl;
+  cout << slab::vectorise(x2(slab::slice{1}, slab::slice{1})) << endl;
+
 
   return 0;
 }

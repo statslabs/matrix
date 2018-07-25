@@ -251,6 +251,7 @@ Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
 Matrix<T, N>::operator()(const Args &... args) {
   MatrixSlice<N> d;
   d.start = matrix_impl::do_slice(this->desc_, d, args...);
+  d.size = matrix_impl::compute_size(d.extents);
   return {d, data()};
 }
 
@@ -260,6 +261,7 @@ Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
 Matrix<T, N>::operator()(const Args &... args) const {
   MatrixSlice<N> d;
   d.start = matrix_impl::do_slice(this->desc_, d, args...);
+  d.size = matrix_impl::compute_size(d.extents);
   return {d, data()};
 }
 
