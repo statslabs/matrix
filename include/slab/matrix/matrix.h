@@ -544,7 +544,7 @@ zeros(Args... args) {
   res = 0;
 
   return res;
-};
+}
 
 template<typename M, typename... Args>
 Enable_if<Matrix_type<M>(), M>
@@ -554,7 +554,17 @@ ones(Args... args) {
   res = 1;
 
   return res;
-};
+}
+
+template<typename M, typename... Args>
+Enable_if<Matrix_type<M>(), M>
+eye(std::size_t i, std::size_t j) {
+  assert(M::order() == 2);
+  M res(i, j);
+  res.diag() = 1;
+
+  return res;
+}
 
 template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a) {

@@ -16,5 +16,8 @@ int main() {
   slab::cube x3 = slab::ones<slab::cube>(3,3,3);
   cout << "x3 = " << x3 << endl;
 
+  slab::mat x4 = slab::eye<slab::mat>(3,3);
+  cout << "x4 = " << x4 << endl;
+
   return 0;
 }
