@@ -1,5 +1,5 @@
 #
-# Copyright 2018 The StatsLabs Authors.
+# Copyright 2018 The Statslabs Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ include(CMakeFindDependencyMacro)
 
 list(APPEND CMAKE_MODULE_PATH ${Matrix_CMAKE_DIR})
 
-if(NOT TARGET Matrix::Matrix)
+if(NOT TARGET Statslabs::Matrix)
     include("${Matrix_CMAKE_DIR}/MatrixTargets.cmake")
 endif()
 
-set(Matrix_LIBRARIES Matrix::Matrix)
+set(Matrix_LIBRARIES Statslabs::Matrix)

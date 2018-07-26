@@ -78,7 +78,7 @@ add_library(matrix
 target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
-add_library(Matrix::matrix ALIAS matrix)
+add_library(Statslabs::matrix ALIAS matrix)
 
 # Set target properties
 target_include_directories(matrix
@@ -112,7 +112,7 @@ install(EXPORT matrix-targets
         FILE
         MatrixTargets.cmake
         NAMESPACE
-        Matrix::
+        Statslabs::
         DESTINATION
         ${INSTALL_CONFIGDIR}
         )
@@ -137,7 +137,7 @@ install(FILES
         DESTINATION ${INSTALL_CONFIGDIR}
         )
 
-export(EXPORT matrix-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/MatrixTargets.cmake NAMESPACE Matrix::)
+export(EXPORT matrix-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/MatrixTargets.cmake NAMESPACE Statslabs::)
 
 # Register package in user's package registry
 export(PACKAGE Matrix)
