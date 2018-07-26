@@ -137,6 +137,34 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<T, N> cols(std::size_t i, std::size_t j);
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
 
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef<T, 1> subvec(std::size_t first_index, std::size_t last_index) {
+    return this->operator()(slice{first_index, last_index - first_index + 1});
+  }
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef<const T, 1> subvec(std::size_t first_index, std::size_t last_index) const {
+    return this->operator()(slice{first_index, last_index - first_index + 1});
+  }
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<T, 2> submat(std::size_t first_row, std::size_t first_col,
+                         std::size_t last_row, std::size_t last_col) {
+    return this->operator()(
+        slice{first_row, last_row - first_row + 1},
+        slice{first_col, last_col - first_col + 1}
+    );
+  }
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<const T, 2> submat(std::size_t first_row, std::size_t first_col,
+                               std::size_t last_row, std::size_t last_col) const {
+    return this->operator()(
+        slice{first_row, last_row - first_row + 1},
+        slice{first_col, last_col - first_col + 1}
+    );
+  }
+
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   MatrixRef<T, 1> diag() {
     assert(this->n_rows() == this->n_cols());
