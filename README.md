@@ -27,7 +27,8 @@ Statslabs.Matrix is the fundamental package of Statslabs for statistical computi
    make install
    ```
 
-## Example Program
+## Example program
+`demo.cc`:
 ```c
 #include <iostream>
 #include "slab/matrix.h"
@@ -66,3 +67,34 @@ int main() {
   return 0;
 }
 ```
+
+## Integration of Matrix in your own project
+To make the project simple enough, we will create a CMake project for `demo.cc`.
+
+1. Make a project folder.
+   ```sh
+   mkdir example && cd example
+   ```
+
+2. Create `demo.cc` and `CMakeLists.txt` in the project folder where file `CMakeLists.txt` should look like:
+   ```cmake
+   cmake_minimum_required(VERSION 3.0)
+   project(example)
+   set(CMAKE_CXX_STANDARD 11)
+   add_executable(example demo.cc)
+
+   find_package(Matrix REQUIRED)
+   target_link_libraries(example Statslabs::Matrix)
+   ```
+
+3. Perform a out-of-source build.
+   ```sh
+   mkdir build && cd build
+   cmake ..
+   make
+   ```
+
+4. Run the program.
+   ```sh
+   ./example
+   ```
