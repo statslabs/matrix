@@ -10,6 +10,24 @@ Statslabs.Matrix is the fundamental package of Statslabs for statistical computi
   + Matrix Implementation: slice; MatrixSlice; MatrixRef; Matrix List Initialization; Matrix Access; Zero-Dimensional Matrix
   + An interface to Intel(R) MKL BLAS operations which apply to the Matrix template
   
+## Installation on Ubuntu / macOS
+1. Clone the repository.
+   ```sh
+   git clone git@github.com:statslabs/matrix.git
+   cd matrix
+   ```
+2. Configure the project.
+   ```sh
+   mkdir build
+   cd build
+   cmake ..
+   ```
+3. Compile and install the library.
+   ```sh
+   make
+   make install
+   ``` 
+  
 ## Example Program
 ```c
 #include <iostream>
