@@ -7,6 +7,27 @@ struct upper_tag {};
 struct unit_lower_tag : public lower_tag {};
 struct unit_upper_tag : public upper_tag {};
 
+struct lower {
+
+  lower();
+  lower(std::size_t n) {
+    extents[0] = n;
+    extents[1] = n;
+    size = std::size_t((1 + n) * n / 2);
+  }
+
+  inline bool other_half(std::size_t i, std::size_t j) const {
+    return j > i;
+  }
+
+  inline std::size_t operator()(std::size_t i, std::size_t j) const {
+    return (1 + i) * i / 2 + j;
+  }
+
+  std::size_t size;
+  std::array<std::size_t, 2> extents;
+};
+
 template<typename T, typename TRI>
 class PackedMatrix {
  public:
@@ -20,31 +41,77 @@ class PackedMatrix {
   PackedMatrix(PackedMatrix const &) = default;
   PackedMatrix &operator=(PackedMatrix const &) = default;
 
-  PackedMatrix(std::size_t);
+  PackedMatrix(std::size_t n) : elem_(n * n), desc_(n) {}
 
   //! "flat" element access
   ///@{
   T *data() { return elem_.data(); }
-  const T *data() { return elem_.data(); }
+  const T *data() const { return elem_.data(); }
   ///@}
+
+  std::size_t n_rows() const { return desc_.extents[0]; }
+  std::size_t n_cols() const { return desc_.extents[1]; }
 
   T &operator() (std::size_t i, std::size_t j) {
     if (!desc_.other_half(i, j))
-      return *(data() + desc_(i, j, n_rows()));
+      return *(data() + desc_(i, j));
     else
-      return *(data() + desc_(j, i, n_rows()));
+      return elem_in_other_half(i, j);
   }
 
   const T &operator() (std::size_t i, std::size_t j) const {
     if (!desc_.other_half(i, j))
-      return *(data() + desc_(i, j, n_rows()));
+      return *(data() + desc_(i, j));
     else
-      return *(data() + desc_(j, i, n_rows()));
+      return elem_in_other_half(i, j);
   }
 
  protected:
   std::vector<T> elem_;
   TRI desc_;
+
+  virtual T& elem_in_other_half(std::size_t i, std::size_t j) = 0;
+  virtual const T& elem_in_other_half(std::size_t i, std::size_t j) const = 0;
 };
+
+template<typename T, typename TRI>
+class SymmetricMatrix : public PackedMatrix<T, TRI> {
+ public:
+  SymmetricMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
+
+  T &elem_in_other_half(std::size_t i, std::size_t j) {
+    return *(this->data() + this->desc_(j, i));
+  }
+
+  const T &elem_in_other_half(std::size_t i, std::size_t j) const {
+    return *(this->data() + this->desc_(j, i));
+  }
+};
+
+template<typename T, typename TRI>
+class TriangularMatrix : public PackedMatrix<T, TRI> {
+ public:
+  TriangularMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
+
+  T &elem_in_other_half(std::size_t i, std::size_t j) {
+    return 0;
+  }
+
+  const T &elem_in_other_half(std::size_t i, std::size_t j) const {
+    return 0;
+  }
+};
+
+template<typename T, typename TRI>
+std::ostream &operator<<(std::ostream &os, const PackedMatrix<T, TRI> &m) {
+  for (std::size_t i = 0; i != m.n_rows(); ++i) {
+    for (std::size_t j = 0; j != m.n_cols(); ++j) {
+    os << m(i, j) << "\t";
+    }
+    os << endl;
+  }
+
+  return os << endl;
+}
 
 #endif // SLAB_MATRIX_PACKED_MATRIX_H

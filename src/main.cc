@@ -9,7 +9,7 @@
 using namespace std;
 
 int main() {
-
+/*
   slab::vec dv = {10, 9, 8, 7, 6};
 
   dv.subvec(2, 4) = {1, 2, 3};
@@ -44,8 +44,21 @@ int main() {
   x2.submat(1,1,2,2) = x1.submat(0,1,1,2);
   cout << "x2.submat(1,1,2,2) = " << x2.submat(1,1,2,2) << endl;
 
-
   cout << x2 << endl;
+*/
+
+  slab::SymmetricMatrix<double, slab::lower> sm(5);
+
+  for (size_t i = 0; i != 5; ++i) {
+    for (size_t j = 0; j <= i; ++j) {
+      sm(i, j) = i * 10 + j;
+    }
+  }
+
+  cout << "sm =\n" << sm << endl;
+  sm(2, 3) = 100;
+
+  cout << "sm =\n" << sm << endl;
 
   return 0;
 }
