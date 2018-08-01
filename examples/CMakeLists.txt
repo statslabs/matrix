@@ -1,20 +1,20 @@
-add_executable(01_basic_matrix_uses 01_basic_matrix_uses.cpp)
+add_executable(01_basic_matrix_uses 01_basic_matrix_uses.cc)
 target_link_libraries(01_basic_matrix_uses Statslabs::matrix)
 
-add_executable(02_construction_and_assignment 02_construction_and_assignment.cpp)
+add_executable(02_construction_and_assignment 02_construction_and_assignment.cc)
 target_link_libraries(02_construction_and_assignment Statslabs::matrix)
 
-add_executable(03_subscripting_and_slicing 03_subscripting_and_slicing.cpp)
+add_executable(03_subscripting_and_slicing 03_subscripting_and_slicing.cc)
 target_link_libraries(03_subscripting_and_slicing Statslabs::matrix)
 
-add_executable(04_matrix_arithmetric_operations 04_matrix_arithmetric_operations.cpp)
+add_executable(04_matrix_arithmetric_operations 04_matrix_arithmetric_operations.cc)
 target_link_libraries(04_matrix_arithmetric_operations Statslabs::matrix)
 
-add_executable(05_solving_linear_equations 05_solving_linear_equations.cpp)
+add_executable(05_solving_linear_equations 05_solving_linear_equations.cc)
 target_link_libraries(05_solving_linear_equations Statslabs::matrix)
 
-add_executable(example example.cpp)
+add_executable(example example.cc)
 target_link_libraries(example Statslabs::matrix)
 
-add_executable(dgemm_example dgemm_example.cpp)
+add_executable(dgemm_example dgemm_example.cc)
 target_link_libraries(dgemm_example Statslabs::matrix)

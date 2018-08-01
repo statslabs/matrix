@@ -59,7 +59,7 @@ endif(DOXYGEN_FOUND)
 ##################################################
 
 add_executable(main
-        src/main.cpp)
+        src/main.cc)
 
 target_link_libraries(main PUBLIC ${MKL_LINKER_LIBS})
 
@@ -73,7 +73,7 @@ target_include_directories(main
         )
 
 add_library(matrix
-        src/library.cpp)
+        src/library.cc)
 
 target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
 
