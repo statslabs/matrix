@@ -55,13 +55,13 @@ template<typename T>
 struct is_upper : public std::false_type {};
 
 template<>
-struct is_upper<upper::triangular_type> : public std::true_type {};
+struct is_upper<upper> : public std::true_type {};
 
 template<typename T>
 struct is_lower : public std::false_type {};
 
 template<>
-struct is_lower<lower::triangular_type> : public std::true_type {};
+struct is_lower<lower> : public std::true_type {};
 
 
 template<typename T, typename TRI>

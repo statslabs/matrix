@@ -495,16 +495,18 @@ void blas_gemv(const CBLAS_TRANSPOSE trans,
 
 template<typename T, typename TRI>
 void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI> &ap) {
-  assert(x.size() != ap.n_rows());
+  assert(x.size() == ap.n_rows());
 
   CBLAS_UPLO uplo;
+  if (is_upper<TRI>::value) uplo = CblasUpper;
+  else if (is_lower<TRI>::value) uplo = CblasLower;
 
   const int incx = x.descriptor().strides[0];
 
   if (is_double<T>::value) {
     cblas_dspr(
         CblasRowMajor,
-        CblasLower,
+        uplo,
         x.size(),
         (const double) alpha,
         (const double*) x.data(),
@@ -514,7 +516,7 @@ void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI>
   } else if (is_float<T>::value) {
     cblas_sspr(
         CblasRowMajor,
-        CblasLower,
+        uplo,
         x.size(),
         (const float) alpha,
         (const float*) x.data(),
