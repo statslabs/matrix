@@ -47,7 +47,9 @@ int main() {
   cout << x2 << endl;
 */
 
-  slab::SymmetricMatrix<double, slab::lower> sm(5);
+  slab::SymmetricMatrix<double, slab::upper> sm(5);
+
+  cout << "sm =\n" << sm << endl;
 
   for (size_t i = 0; i != 5; ++i) {
     for (size_t j = 0; j <= i; ++j) {
@@ -59,6 +61,11 @@ int main() {
   sm(2, 3) = 100;
 
   cout << "sm =\n" << sm << endl;
+//
+//  slab::vec xvec = {1, 2, 3, 4, 5};
+//  slab::blas_spr(2.0, xvec, sm);
+//
+//  cout << "sm =\n" << sm << endl;
 
   return 0;
 }

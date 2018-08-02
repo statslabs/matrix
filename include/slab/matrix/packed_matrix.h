@@ -7,7 +7,30 @@ struct upper_tag {};
 struct unit_lower_tag : public lower_tag {};
 struct unit_upper_tag : public upper_tag {};
 
+struct upper {
+  using triangular_type = upper_tag;
+
+  upper();
+  upper(std::size_t n) {
+    extents[0] = n;
+    extents[1] = n;
+    size = std::size_t((1 + n) * n / 2);
+  }
+
+  inline bool other_half(std::size_t i, std::size_t j) const {
+    return i > j;
+  }
+
+  inline std::size_t operator()(std::size_t i, std::size_t j) const {
+    return (2 * extents[0] - i + 1) * i / 2 + (j - i);
+  }
+
+  std::size_t size;
+  std::array<std::size_t, 2> extents;
+};
+
 struct lower {
+  using triangular_type = lower_tag;
 
   lower();
   lower(std::size_t n) {
@@ -27,6 +50,19 @@ struct lower {
   std::size_t size;
   std::array<std::size_t, 2> extents;
 };
+
+template<typename T>
+struct is_upper : public std::false_type {};
+
+template<>
+struct is_upper<upper::triangular_type> : public std::true_type {};
+
+template<typename T>
+struct is_lower : public std::false_type {};
+
+template<>
+struct is_lower<lower::triangular_type> : public std::true_type {};
+
 
 template<typename T, typename TRI>
 class PackedMatrix {
@@ -108,10 +144,10 @@ std::ostream &operator<<(std::ostream &os, const PackedMatrix<T, TRI> &m) {
     for (std::size_t j = 0; j != m.n_cols(); ++j) {
     os << m(i, j) << "\t";
     }
-    os << endl;
+    os << std::endl;
   }
 
-  return os << endl;
+  return os << std::endl;
 }
 
 #endif // SLAB_MATRIX_PACKED_MATRIX_H

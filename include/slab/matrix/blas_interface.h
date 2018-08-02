@@ -21,6 +21,7 @@
 #define SLAB_MATRIX_BLAS_INTERFACE_H_
 
 #include "slab/matrix/matrix.h"
+#include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/traits.h"
 
 /// @addtogroup blas_interface BLAS INTERFACE
@@ -488,6 +489,37 @@ void blas_gemv(const CBLAS_TRANSPOSE trans,
         (const std::complex<float> *) &beta,
         (std::complex<float> *) (y.data() + y.descriptor().start),
         incy
+    );
+  }
+}
+
+template<typename T, typename TRI>
+void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI> &ap) {
+  assert(x.size() != ap.n_rows());
+
+  CBLAS_UPLO uplo;
+
+  const int incx = x.descriptor().strides[0];
+
+  if (is_double<T>::value) {
+    cblas_dspr(
+        CblasRowMajor,
+        CblasLower,
+        x.size(),
+        (const double) alpha,
+        (const double*) x.data(),
+        incx,
+        (double *) ap.data()
+    );
+  } else if (is_float<T>::value) {
+    cblas_sspr(
+        CblasRowMajor,
+        CblasLower,
+        x.size(),
+        (const float) alpha,
+        (const float*) x.data(),
+        incx,
+        (float *) ap.data()
     );
   }
 }
