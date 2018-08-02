@@ -170,6 +170,38 @@ TEST(BLASlevel2Test, SPR) {
   EXPECT_EQ(40, ap2(2, 2));
 }
 
+TEST(BLASlevel2Test, SPR2) {
+  Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
+  Matrix<double, 1> y1 = {1.0, 2.0, 3.0};
+  SymmetricMatrix<double, upper> ap1(3);
+
+  Matrix<float, 1> x2 = {1.0, 2.0, 3.0};
+  Matrix<float, 1> y2 = {1.0, 2.0, 3.0};
+  SymmetricMatrix<float, upper> ap2(3);
+
+  for (size_t i = 0; i != 3; ++i) {
+    for (size_t j = 0; j <= i; ++j) {
+      ap1(i, j) = i * 10 + j;
+      ap2(i, j) = i * 10 + j;
+    }
+  }
+
+  blas_spr2(1.0, x1, y1, ap1);
+  blas_spr2(1.0f, x2, y2, ap2);
+
+  EXPECT_EQ(2,  ap1(0, 0));
+  EXPECT_EQ(14, ap1(0, 1));
+  EXPECT_EQ(26, ap1(0, 2));
+  EXPECT_EQ(19, ap1(1, 1));
+  EXPECT_EQ(33, ap1(1, 2));
+  EXPECT_EQ(40, ap1(2, 2));
+  EXPECT_EQ(2,  ap2(0, 0));
+  EXPECT_EQ(14, ap2(0, 1));
+  EXPECT_EQ(26, ap2(0, 2));
+  EXPECT_EQ(19, ap2(1, 1));
+  EXPECT_EQ(33, ap2(1, 2));
+  EXPECT_EQ(40, ap2(2, 2));
+}
 
 TEST(BLASlevel3Test, GEMM) {
 
