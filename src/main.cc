@@ -3,6 +3,7 @@
 //
 
 #include <cstdio>
+#include <complex>
 #include <iostream>
 #include "slab/matrix.h"
 
@@ -47,22 +48,54 @@ int main() {
   cout << x2 << endl;
 */
 
-  slab::SymmetricMatrix<double, slab::upper> sm(3);
+//  slab::SymmetricMatrix<double, slab::upper> sm(3);
+//
+//  cout << "sm =\n" << sm << endl;
+//
+//  for (size_t i = 0; i != sm.n_rows(); ++i) {
+//    for (size_t j = 0; j <= i; ++j) {
+//      sm(i, j) = i * 10 + j;
+//    }
+//  }
+//
+//  cout << "sm =\n" << sm << endl;
+//
+//  slab::vec xvec = {1, 2, 3};
+//  slab::blas_spr(2.0, xvec, sm);
+//
+//  cout << "sm =\n" << sm << endl;
 
-  cout << "sm =\n" << sm << endl;
+//  slab::HermitianMatrix<std::complex<double>, slab::lower> ml(3);
+//  for (unsigned i = 0; i < ml.n_rows(); ++ i) {
+//    for (unsigned j = 0; j < i; ++ j)
+//      ml (i, j) = std::complex<double> (3 * i + j, 3 * i + j);
+//    ml (i, i) = std::complex<double> (4 * i, 0);
+//  }
+//
+//  cout << "ml =\n" << ml << endl;
 
-  for (size_t i = 0; i != sm.n_rows(); ++i) {
-    for (size_t j = 0; j <= i; ++j) {
-      sm(i, j) = i * 10 + j;
-    }
+
+  // std::complex<double> data(2, 3);
+  // cout << "da = " << data << endl;
+
+  // std::complex<double> data2(4, 5);
+  // cout << "da2 = " << data2 << endl;
+
+  // ComplexConj<double> cc(data);
+  // cout << "cc = " << std::complex<double>(cc) << endl;
+
+  // cc = data2;
+
+  // cout << "da = " << data << endl;
+
+
+  slab::HermitianMatrix<std::complex<double>, slab::lower> ml(3);
+  for (unsigned i = 0; i < ml.n_rows(); ++i) {
+    for (unsigned j = 0; j < i; ++j)
+      ml(i, j) = std::complex<double>(3 * i + j, 3 * i + j);
+    ml(i, i) = std::complex<double>(4 * i, 0);
   }
-
-  cout << "sm =\n" << sm << endl;
-
-  slab::vec xvec = {1, 2, 3};
-  slab::blas_spr(2.0, xvec, sm);
-
-  cout << "sm =\n" << sm << endl;
+  std::cout << ml << std::endl;
 
   return 0;
 }

@@ -63,7 +63,6 @@ struct is_lower : public std::false_type {};
 template<>
 struct is_lower<lower> : public std::true_type {};
 
-
 template<typename T, typename TRI>
 class PackedMatrix {
  public:
@@ -79,6 +78,8 @@ class PackedMatrix {
 
   PackedMatrix(std::size_t n) : elem_(n * n), desc_(n) {}
 
+  const TRI &descriptor() const { return desc_; }
+
   //! "flat" element access
   ///@{
   T *data() { return elem_.data(); }
@@ -88,14 +89,14 @@ class PackedMatrix {
   std::size_t n_rows() const { return desc_.extents[0]; }
   std::size_t n_cols() const { return desc_.extents[1]; }
 
-  T &operator() (std::size_t i, std::size_t j) {
+  T &operator()(std::size_t i, std::size_t j) {
     if (!desc_.other_half(i, j))
       return *(data() + desc_(i, j));
     else
       return elem_in_other_half(i, j);
   }
 
-  const T &operator() (std::size_t i, std::size_t j) const {
+  const T &operator()(std::size_t i, std::size_t j) const {
     if (!desc_.other_half(i, j))
       return *(data() + desc_(i, j));
     else
@@ -106,8 +107,8 @@ class PackedMatrix {
   std::vector<T> elem_;
   TRI desc_;
 
-  virtual T& elem_in_other_half(std::size_t i, std::size_t j) = 0;
-  virtual const T& elem_in_other_half(std::size_t i, std::size_t j) const = 0;
+  virtual T &elem_in_other_half(std::size_t i, std::size_t j) = 0;
+  virtual const T &elem_in_other_half(std::size_t i, std::size_t j) const = 0;
 };
 
 template<typename T, typename TRI>
@@ -142,7 +143,7 @@ template<typename T, typename TRI>
 std::ostream &operator<<(std::ostream &os, const PackedMatrix<T, TRI> &m) {
   for (std::size_t i = 0; i != m.n_rows(); ++i) {
     for (std::size_t j = 0; j != m.n_cols(); ++j) {
-    os << m(i, j) << "\t";
+      os << m(i, j) << "\t";
     }
     os << std::endl;
   }

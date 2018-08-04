@@ -60,6 +60,7 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/type_alias.h"
 
 #include "slab/matrix/packed_matrix.h"
+#include "slab/matrix/hermitian_matrix.h"
 
 } // namespace slab
 
