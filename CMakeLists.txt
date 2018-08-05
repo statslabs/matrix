@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.0)
 
 set(PROJECT_NAME "Statslabs.Matrix")
 set(PROJECT_FULL_NAME "Statslabs.Matrix C++ Linear Algebra Library")
-set(PROJECT_VERSION "0.3.0")
+set(PROJECT_VERSION "0.4.0")
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 

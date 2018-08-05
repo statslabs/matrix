@@ -10,6 +10,11 @@ Statslabs.Matrix is the fundamental package of Statslabs for statistical computi
   + Matrix Implementation: slice; MatrixSlice; MatrixRef; Matrix List Initialization; Matrix Access; Zero-Dimensional Matrix
   + An interface to Intel(R) MKL BLAS operations which apply to the Matrix template
 
+## Prerequisites
+
+    CMake >= 3.0
+    Intel Math Kernel Library (Intel MKL)
+   
 ## Installation on Ubuntu / macOS
 1. Clone the repository.
    ```sh
