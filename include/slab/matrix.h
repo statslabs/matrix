@@ -51,16 +51,14 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
+#include "slab/matrix/packed_matrix.h"
+#include "slab/matrix/hermitian_matrix.h"
 
 #include "slab/matrix/blas_interface.h"
 #include "slab/matrix/lapack_interface.h"
 
 #include "slab/matrix/matrix_ops.h"
-
 #include "slab/matrix/type_alias.h"
-
-#include "slab/matrix/packed_matrix.h"
-#include "slab/matrix/hermitian_matrix.h"
 
 } // namespace slab
 

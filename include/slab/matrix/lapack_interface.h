@@ -68,15 +68,16 @@ int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 
 template<typename T>
 int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
 
   int n = a.n_rows();
   int nrhs = b.n_cols();
   int lda = a.n_cols();
   int ldb = b.n_cols();
 
-  int res = 0;
+  int info = 0;
   if (is_double<T>::value) {
-    res = LAPACKE_dgesv(
+    info = LAPACKE_dgesv(
         LAPACK_ROW_MAJOR,
         n,
         nrhs,
@@ -87,7 +88,7 @@ int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
         ldb
     );
   } else if (is_float<T>::value) {
-    res = LAPACKE_sgesv(
+    info = LAPACKE_sgesv(
         LAPACK_ROW_MAJOR,
         n,
         nrhs,
@@ -98,28 +99,30 @@ int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
         ldb
     );
   } else if (is_complex_double<T>::value) {
-    res = LAPACKE_zgesv(
+    info = LAPACKE_zgesv(
         LAPACK_ROW_MAJOR,
         n,
         nrhs,
-        reinterpret_cast<lapack_complex_double*>(a.data()),
+        reinterpret_cast<lapack_complex_double *>(a.data()),
         lda,
         ipiv.data(),
-        reinterpret_cast<lapack_complex_double*>(b.data()),
+        reinterpret_cast<lapack_complex_double *>(b.data()),
         ldb
     );
   } else if (is_complex_float<T>::value) {
-    res = LAPACKE_cgesv(
+    info = LAPACKE_cgesv(
         LAPACK_ROW_MAJOR,
         n,
         nrhs,
-        reinterpret_cast<lapack_complex_float*>(a.data()),
+        reinterpret_cast<lapack_complex_float *>(a.data()),
         lda,
         ipiv.data(),
-        reinterpret_cast<lapack_complex_float*>(b.data()),
+        reinterpret_cast<lapack_complex_float *>(b.data()),
         ldb
     );
   }
+
+  return info;
 }
 
 /// @}

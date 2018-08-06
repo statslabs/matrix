@@ -483,7 +483,7 @@ auto reshape(const MatrixBase<T, N> &x, Args... args) -> decltype(Matrix<T, size
   return res;
 }
 
-template <typename T, std::size_t N>
+template<typename T, std::size_t N>
 Matrix<T, 1> vectorise(const MatrixBase<T, N> &x) {
   return reshape(x, x.size());
 }
@@ -580,7 +580,7 @@ Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
   return res;
 }
 
-template <typename T>
+template<typename T>
 Matrix<T, 2> kron(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
   const std::size_t a_rows = a.n_rows();
   const std::size_t a_cols = a.n_cols();
@@ -590,11 +590,132 @@ Matrix<T, 2> kron(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
   Matrix<T, 2> res(a_rows * b_rows, a_cols * b_cols);
   for (std::size_t j = 0; j != a_cols; ++j) {
     for (std::size_t i = 0; i != a_rows; ++i) {
-      res(slice{i * b_rows, b_rows}, slice{j * b_cols, b_cols}) = a(i,j) * b;
+      res(slice{i * b_rows, b_rows}, slice{j * b_cols, b_cols}) = a(i, j) * b;
     }
   }
 
   return res;
+}
+
+template<typename T>
+Matrix<T, 2> solve(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+}
+
+template<>
+Matrix<double, 2> solve(const Matrix<double, 2> &a, const Matrix<double, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  int n = a.n_rows();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  Matrix<double, 2> a_copy(a);
+  Matrix<int, 1> ipiv(n);
+  Matrix<double, 2> b_copy(b);
+
+  int info = LAPACKE_dgesv(
+      LAPACK_ROW_MAJOR,
+      n,
+      nrhs,
+      (double *) a_copy.data(),
+      lda,
+      ipiv.data(),
+      (double *) b_copy.data(),
+      ldb
+  );
+
+  return b_copy;
+}
+
+template<>
+Matrix<float, 2> solve(const Matrix<float, 2> &a, const Matrix<float, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  int n = a.n_rows();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  Matrix<float, 2> a_copy(a);
+  Matrix<int, 1> ipiv(n);
+  Matrix<float, 2> b_copy(b);
+
+  int info = LAPACKE_sgesv(
+      LAPACK_ROW_MAJOR,
+      n,
+      nrhs,
+      (float *) a_copy.data(),
+      lda,
+      ipiv.data(),
+      (float *) b_copy.data(),
+      ldb
+  );
+
+  return b_copy;
+}
+
+template<>
+Matrix<std::complex<double>, 2>
+solve(const Matrix<std::complex<double>, 2> &a, const Matrix<std::complex<double>, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  int n = a.n_rows();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  Matrix<std::complex<double>, 2> a_copy(a);
+  Matrix<int, 1> ipiv(n);
+  Matrix<std::complex<double>, 2> b_copy(b);
+
+  int info = LAPACKE_zgesv(
+      LAPACK_ROW_MAJOR,
+      n,
+      nrhs,
+      reinterpret_cast<lapack_complex_double *>(a_copy.data()),
+      lda,
+      ipiv.data(),
+      reinterpret_cast<lapack_complex_double *>(b_copy.data()),
+      ldb
+  );
+
+  return b_copy;
+}
+
+template<>
+Matrix<std::complex<float>, 2>
+solve(const Matrix<std::complex<float>, 2> &a, const Matrix<std::complex<float>, 2> &b) {
+  assert(a.n_rows() == b.n_rows());
+
+  int n = a.n_rows();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  Matrix<std::complex<float>, 2> a_copy(a);
+  Matrix<int, 1> ipiv(n);
+  Matrix<std::complex<float>, 2> b_copy(b);
+
+  int info = LAPACKE_cgesv(
+      LAPACK_ROW_MAJOR,
+      n,
+      nrhs,
+      reinterpret_cast<lapack_complex_float *>(a_copy.data()),
+      lda,
+      ipiv.data(),
+      reinterpret_cast<lapack_complex_float *>(b_copy.data()),
+      ldb
+  );
+
+  return b_copy;
+}
+
+
+template<typename T>
+Matrix<T, 2> solve(const Matrix<T, 2> &a) {
+  Matrix<T, 2> b = eye<Matrix<T, 2>> (a.n_rows(), a.n_cols());
+  return solve(a, b);
 }
 
 #endif // SLAB_MATRIX_OPERATIONS_H_
