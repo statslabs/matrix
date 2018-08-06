@@ -23,6 +23,12 @@
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/traits.h"
 
+/// @addtogroup lapack_interface LAPACK INTERFACE
+/// @{
+
+/// @addtogroup lapack_linear_equation_routines LAPACK Linear Equation Routines
+/// @{
+
 template<typename T>
 int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 
@@ -59,5 +65,64 @@ int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 
   return info;
 }
+
+template<typename T>
+int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
+
+  int n = a.n_rows();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  int res = 0;
+  if (is_double<T>::value) {
+    res = LAPACKE_dgesv(
+        LAPACK_ROW_MAJOR,
+        n,
+        nrhs,
+        (double *) a.data(),
+        lda,
+        ipiv.data(),
+        (double *) b.data(),
+        ldb
+    );
+  } else if (is_float<T>::value) {
+    res = LAPACKE_sgesv(
+        LAPACK_ROW_MAJOR,
+        n,
+        nrhs,
+        (float *) a.data(),
+        lda,
+        ipiv.data(),
+        (float *) b.data(),
+        ldb
+    );
+  } else if (is_complex_double<T>::value) {
+    res = LAPACKE_zgesv(
+        LAPACK_ROW_MAJOR,
+        n,
+        nrhs,
+        reinterpret_cast<lapack_complex_double*>(a.data()),
+        lda,
+        ipiv.data(),
+        reinterpret_cast<lapack_complex_double*>(b.data()),
+        ldb
+    );
+  } else if (is_complex_float<T>::value) {
+    res = LAPACKE_cgesv(
+        LAPACK_ROW_MAJOR,
+        n,
+        nrhs,
+        reinterpret_cast<lapack_complex_float*>(a.data()),
+        lda,
+        ipiv.data(),
+        reinterpret_cast<lapack_complex_float*>(b.data()),
+        ldb
+    );
+  }
+}
+
+/// @}
+/// @}
 
 #endif // SLAB_MATRIX_LAPACK_INTERFACE_H_
