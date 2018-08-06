@@ -35,4 +35,36 @@ using ivec     = Matrix<int, 1>;
 using imat     = Matrix<int, 2>;
 using icube    = Matrix<int, 3>;
 
+// Packed Matrix -- Symmetric Matrix / Triangular Matrix / Hermitian Matrix
+using symm_mat     = SymmetricMatrix<double, upper>;
+using utri_mat     = TriangularMatrix<double, upper>;
+using ltri_mat     = TriangularMatrix<double, lower>;
+using herm_mat     = HermitianMatrix<double, upper>;
+
+using symm_dmat    = SymmetricMatrix<double, upper>;
+using utri_dmat    = TriangularMatrix<double, upper>;
+using ltri_dmat    = TriangularMatrix<double, lower>;
+using herm_dmat    = HermitianMatrix<double, upper>;
+
+using symm_fmat    = SymmetricMatrix<float, upper>;
+using utri_fmat    = TriangularMatrix<float, upper>;
+using ltri_fmat    = TriangularMatrix<float, lower>;
+using herm_fmat    = HermitianMatrix<float, upper>;
+
+using symm_cx_mat  = SymmetricMatrix<std::complex<double>, upper>;
+using utri_cx_mat  = TriangularMatrix<std::complex<double>, upper>;
+using ltri_cx_mat  = TriangularMatrix<std::complex<double>, lower>;
+using herm_cx_mat  = HermitianMatrix<std::complex<double>, upper>;
+
+using symm_cx_dmat = SymmetricMatrix<std::complex<double>, upper>;
+using utri_cx_dmat = TriangularMatrix<std::complex<double>, upper>;
+using ltri_cx_dmat = TriangularMatrix<std::complex<double>, lower>;
+using herm_cx_dmat = HermitianMatrix<std::complex<double>, upper>;
+
+using symm_cx_fmat = SymmetricMatrix<std::complex<float>, upper>;
+using utri_cx_fmat = TriangularMatrix<std::complex<float>, upper>;
+using ltri_cx_fmat = TriangularMatrix<std::complex<float>, lower>;
+using herm_cx_fmat = HermitianMatrix<std::complex<float>, upper>;
+
+
 #endif // SLAB_MATRIX_TYPEDEF_H_
