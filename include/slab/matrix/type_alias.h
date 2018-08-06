@@ -1,7 +1,7 @@
 #ifndef SLAB_MATRIX_TYPEDEF_H_
 #define SLAB_MATRIX_TYPEDEF_H_
 
-#include "slab/matrix/matrix.h"
+// General Matrix -- Vector / Matrix / Cube
 
 using vec      = Matrix<double, 1>;
 using mat      = Matrix<double, 2>;
@@ -36,6 +36,7 @@ using imat     = Matrix<int, 2>;
 using icube    = Matrix<int, 3>;
 
 // Packed Matrix -- Symmetric Matrix / Triangular Matrix / Hermitian Matrix
+
 using symm_mat     = SymmetricMatrix<double, upper>;
 using utri_mat     = TriangularMatrix<double, upper>;
 using ltri_mat     = TriangularMatrix<double, lower>;
@@ -65,6 +66,5 @@ using symm_cx_fmat = SymmetricMatrix<std::complex<float>, upper>;
 using utri_cx_fmat = TriangularMatrix<std::complex<float>, upper>;
 using ltri_cx_fmat = TriangularMatrix<std::complex<float>, lower>;
 using herm_cx_fmat = HermitianMatrix<std::complex<float>, upper>;
-
 
 #endif // SLAB_MATRIX_TYPEDEF_H_
