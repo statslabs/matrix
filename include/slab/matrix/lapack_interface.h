@@ -126,6 +126,65 @@ int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
 }
 
 /// @}
+
+template <typename T>
+int lapack_gesvd(char jobu, char jobvt, Matrix<T, 2> &a,
+                 Matrix<T, 1> &s, Matrix<T, 2> &u, Matrix<T, 2> &vt,
+                 Matrix<T, 1> &superb)
+{
+
+  int m = a.n_rows();
+  int n = a.n_cols();
+  int lda = n;
+  int ldu = m;
+  int ldvt = n;
+
+  s = zeros<Matrix<T, 1>>(std::min(m,n));
+  u = zeros<Matrix<T, 2>>(m, m);
+  vt = zeros<Matrix<T, 2>>(n, n);
+  superb = zeros<Matrix<T, 1>>(std::min(m,n));
+
+  int info = 0;
+  if(is_double<T>::value) {
+    info = LAPACKE_dgesvd(
+      LAPACK_ROW_MAJOR,
+      jobu,
+      jobvt,
+      m,
+      n,
+      (double *) a.data(),
+      lda,
+      (double *) s.data(),
+      (double *) u.data(),
+      ldu,
+      (double *) vt.data(),
+      ldvt,
+      (double *) superb.data()
+    );
+  } else if (is_float<T>::value) {
+    info = LAPACKE_sgesvd(
+        LAPACK_ROW_MAJOR,
+        jobu,
+        jobvt,
+        m,
+        n,
+        (float *) a.data(),
+        lda,
+        (float *) s.data(),
+        (float *) u.data(),
+        ldu,
+        (float *) vt.data(),
+        ldvt,
+        (float *) superb.data()
+    );
+  }
+
+  if(jobu == 'S') u = u.cols(0, std::min(m,n) - 1);
+  if(jobvt == 'S') vt = vt.rows(0, std::min(m,n) - 1);
+
+  return info;
+}
+
 /// @}
 
 #endif // SLAB_MATRIX_LAPACK_INTERFACE_H_

@@ -750,5 +750,37 @@ bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
   return true;
 }
 
+template<typename T>
+bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
+  int m = a.n_rows();
+  int n = a.n_cols();
+  int k = std::min(m, n);
+
+  Matrix<T, 2> a_copy = a, u, vt;
+  Matrix<T, 1> s, superb;
+
+  int info = lapack_gesvd('S', 'S', a_copy, s, u, vt, superb);
+  if (info) return false;
+
+  for(int i=0; i<k; i++)
+  {
+    double ss;
+    if(s[i] > 1.0e-9)
+      ss = 1.0 / s[i];
+    else
+      ss = s[i];
+
+    Matrix<T, 1> ui = u.col(i);
+    blas_scal(ss, ui);
+    u.col(i) = ui;
+  }
+
+  a_inv = zeros<Matrix<T, 2>>(n, m);
+  T alpha = 1.0;
+  T beta = 0.0;
+  blas_gemm(CblasTrans, CblasTrans, alpha, vt, u, beta, a_inv);
+
+  return true;
+}
 
 #endif // SLAB_MATRIX_OPERATIONS_H_

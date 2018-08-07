@@ -46,6 +46,16 @@ int main() {
 
   cout << "inverse of A is " << B << endl;
 
+  slab::mat x = {
+      {1,2,3,4},
+      {5,6,7,8},
+      {3,4,5,6}
+  };
+
+  slab::mat x_inv;
+
+  slab::pinv(x_inv, x);
+  cout << "x_inv = " << x_inv << endl;
 
   return 0;
 }
