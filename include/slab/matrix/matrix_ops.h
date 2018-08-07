@@ -718,4 +718,37 @@ Matrix<T, 2> solve(const Matrix<T, 2> &a) {
   return solve(a, b);
 }
 
+template<typename T>
+bool inv(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
+  return true;
+}
+
+template<>
+bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
+  b = eye<Matrix<double, 2>> (a.n_rows(), a.n_cols());
+
+  int n = a.n_rows();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  Matrix<double, 2> a_copy = a;
+  Matrix<int, 1> ipiv(n);
+
+  int info = LAPACKE_dgesv(
+      LAPACK_ROW_MAJOR,
+      n,
+      nrhs,
+      (double *) a_copy.data(),
+      lda,
+      ipiv.data(),
+      (double *) b.data(),
+      ldb
+  );
+  if (info) return false;
+
+  return true;
+}
+
+
 #endif // SLAB_MATRIX_OPERATIONS_H_

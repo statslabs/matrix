@@ -41,5 +41,11 @@ int main() {
 
   cout << "inverse of A is " << solve(A) << endl;
 
+  slab::mat B;
+  slab::inv(B, A);
+
+  cout << "inverse of A is " << B << endl;
+
+
   return 0;
 }
