@@ -783,4 +783,14 @@ bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
   return true;
 }
 
+template<typename T, std::size_t N>
+T sum(const Matrix<T, N> &x) {
+  return std::accumulate(x.begin(), x.end(), T{0});
+}
+
+template<typename T, std::size_t N>
+T sum(const MatrixRef<T, N> &x) {
+  return std::accumulate(x.begin(), x.end(), T{0});
+}
+
 #endif // SLAB_MATRIX_OPERATIONS_H_
