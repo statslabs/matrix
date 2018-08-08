@@ -131,22 +131,32 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<const T, N - 1> col(size_t n) const;
   ///@}
 
+  //! multiple rows access
+  ///@{
   MatrixRef<T, N> rows(std::size_t i, std::size_t j);
   MatrixRef<const T, N> rows(std::size_t i, std::size_t j) const;
+  ///@}
 
+  //! multiple columns access
+  ///@{
   MatrixRef<T, N> cols(std::size_t i, std::size_t j);
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
+  ///@}
 
+  //! sub-vector access for Matrix<T, 1>
+  ///@{
   template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
   MatrixRef<T, 1> subvec(std::size_t first_index, std::size_t last_index) {
     return this->operator()(slice{first_index, last_index - first_index + 1});
   }
-
   template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
   MatrixRef<const T, 1> subvec(std::size_t first_index, std::size_t last_index) const {
     return this->operator()(slice{first_index, last_index - first_index + 1});
   }
+  ///@}
 
+  //! sub-matrix access for Matrix<T, 2>
+  ///@{
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   MatrixRef<T, 2> submat(std::size_t first_row, std::size_t first_col,
                          std::size_t last_row, std::size_t last_col) {
@@ -155,7 +165,6 @@ class Matrix : public MatrixBase<T, N> {
         slice{first_col, last_col - first_col + 1}
     );
   }
-
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   MatrixRef<const T, 2> submat(std::size_t first_row, std::size_t first_col,
                                std::size_t last_row, std::size_t last_col) const {
@@ -164,7 +173,10 @@ class Matrix : public MatrixBase<T, N> {
         slice{first_col, last_col - first_col + 1}
     );
   }
+  ///@}
 
+  //! diagonal elements access for Matrix<T, 2>
+  ///@{
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   MatrixRef<T, 1> diag() {
     assert(this->n_rows() == this->n_cols());
@@ -187,6 +199,7 @@ class Matrix : public MatrixBase<T, N> {
 
     return {d, data()};
   }
+  ///@}
 
   template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const { return transpose(*this); }
