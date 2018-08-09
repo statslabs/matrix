@@ -10,6 +10,21 @@
 
 namespace slab {
 
+TEST(MatrixOperationTest, Diag_Vec) {
+  vec v = {1,2,3};
+  mat m = diag(v);
+
+  EXPECT_EQ(1, m(0, 0));
+  EXPECT_EQ(0, m(0, 1));
+  EXPECT_EQ(0, m(0, 2));
+  EXPECT_EQ(0, m(1, 0));
+  EXPECT_EQ(2, m(1, 1));
+  EXPECT_EQ(0, m(1, 2));
+  EXPECT_EQ(0, m(2, 0));
+  EXPECT_EQ(0, m(2, 1));
+  EXPECT_EQ(3, m(2, 2));
+}
+
 TEST(MatrixOperationTest, Transpose_Mat) {
   mat m1 = {
       {1, 2, 3},

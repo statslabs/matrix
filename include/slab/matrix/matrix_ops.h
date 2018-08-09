@@ -276,6 +276,14 @@ Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
 }
 
 template<typename T>
+Matrix<T, 2> diag(const Matrix<T, 1> &x) {
+  Matrix<T, 2> res(x.size(), x.size());
+  res.diag() = x;
+
+  return res;
+}
+
+template<typename T>
 T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
   assert(a.size() == b.size());
 
