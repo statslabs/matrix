@@ -106,65 +106,17 @@ class MatrixRef : public MatrixBase<T, N> {
   MatrixRef<const T, N - 1> col(std::size_t n) const;
   ///@}
 
+  //! multiple rows access
+  ///@{
   MatrixRef<T, N> rows(std::size_t i, std::size_t j);
   MatrixRef<const T, N> rows(std::size_t i, std::size_t j) const;
+  ///@}
 
+  //! multiple columns access
+  ///@{
   MatrixRef<T, N> cols(std::size_t i, std::size_t j);
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  MatrixRef<T, 1> subvec(std::size_t first_index, std::size_t last_index) {
-    return this->operator()(slice{first_index, last_index - first_index + 1});
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  MatrixRef<const T, 1> subvec(std::size_t first_index, std::size_t last_index) const {
-    return this->operator()(slice{first_index, last_index - first_index + 1});
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<T, 2> submat(std::size_t first_row, std::size_t first_col,
-                         std::size_t last_row, std::size_t last_col) {
-    return this->operator()(
-        slice{first_row, last_row - first_row + 1},
-        slice{first_col, last_col - first_col + 1}
-    );
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<const T, 2> submat(std::size_t first_row, std::size_t first_col,
-                         std::size_t last_row, std::size_t last_col) const {
-    return this->operator()(
-        slice{first_row, last_row - first_row + 1},
-        slice{first_col, last_col - first_col + 1}
-    );
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<T, 1> diag() {
-    assert(this->n_rows() == this->n_cols());
-
-    MatrixSlice<1> d;
-    d.start = this->desc_.start;
-    d.extents[0] = this->n_rows();
-    d.strides[0] = this->n_rows() + 1;
-
-    return {d, data()};
-  }
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<const T, 1> diag() const {
-    assert(this->n_rows() == this->n_cols());
-
-    MatrixSlice<1> d;
-    d.start = this->desc_.start;
-    d.extents[0] = this->n_rows();
-    d.strides[0] = this->n_rows() + 1;
-
-    return {d, data()};
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
-  Matrix<T, 2> t() const { return transpose(*this); }
+  ///@}
 
   //! @cond Doxygen_Suppress
 
@@ -210,6 +162,70 @@ class MatrixRef : public MatrixBase<T, N> {
 
  private:
   T *ptr_;
+
+ public:
+  //! sub-vector access for Matrix<T, 1>
+  ///@{
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef<T, 1> subvec(std::size_t first_index, std::size_t last_index) {
+    return this->operator()(slice{first_index, last_index - first_index + 1});
+  }
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef<const T, 1> subvec(std::size_t first_index, std::size_t last_index) const {
+    return this->operator()(slice{first_index, last_index - first_index + 1});
+  }
+  ///@}
+
+  //! sub-matrix access for Matrix<T, 2>
+  ///@{
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<T, 2> submat(std::size_t first_row, std::size_t first_col,
+                         std::size_t last_row, std::size_t last_col) {
+    return this->operator()(
+        slice{first_row, last_row - first_row + 1},
+        slice{first_col, last_col - first_col + 1}
+    );
+  }
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<const T, 2> submat(std::size_t first_row, std::size_t first_col,
+                               std::size_t last_row, std::size_t last_col) const {
+    return this->operator()(
+        slice{first_row, last_row - first_row + 1},
+        slice{first_col, last_col - first_col + 1}
+    );
+  }
+  ///@}
+
+  //! diagonal elements access for Matrix<T, 2>
+  ///@{
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<T, 1> diag() {
+    assert(this->n_rows() == this->n_cols());
+
+    MatrixSlice<1> d;
+    d.start = this->desc_.start;
+    d.extents[0] = this->n_rows();
+    d.strides[0] = this->n_rows() + 1;
+
+    return {d, data()};
+  }
+  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<const T, 1> diag() const {
+    assert(this->n_rows() == this->n_cols());
+
+    MatrixSlice<1> d;
+    d.start = this->desc_.start;
+    d.extents[0] = this->n_rows();
+    d.strides[0] = this->n_rows() + 1;
+
+    return {d, data()};
+  }
+  ///@}
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const { return transpose(*this); }
+
 };
 
 template <typename T, std::size_t N>

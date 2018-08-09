@@ -143,6 +143,102 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
   ///@}
 
+  //! @cond Doxygen_Suppress
+
+  template<typename F>
+  Matrix &apply(F f);                          // f(x) for every element x
+
+  // f(x, mx) for corresponding elements of *this and m
+  template<typename M, typename F>
+  Enable_if<Matrix_type<M>(), Matrix &>
+  apply(const M &m, F f);
+
+  Matrix operator-() const;
+
+  Matrix &operator=(const T &value);           // assignment with scalar
+  Matrix &operator+=(const T &value);          // scalar addition
+  Matrix &operator-=(const T &value);          // scalar subtraction
+  Matrix &operator*=(const T &value);          // scalar multiplication
+  Matrix &operator/=(const T &value);          // scalar division
+  Matrix &operator%=(const T &value);          // scalar modulo
+
+  // matrix addition
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator+=(const M &x);
+  // matrix subtraction
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator-=(const M &x);
+  // element-wise multiplication
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator*=(const M &x);
+  // element-wise division
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator/=(const M &x);
+  // element-wise modulus
+  template<typename M>
+  Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
+
+  //! @endcond
+
+  iterator begin() { return elems_.begin(); }
+  const_iterator begin() const { return elems_.cbegin(); }
+  iterator end() { return elems_.end(); }
+  const_iterator end() const { return elems_.cend(); }
+
+  void clear();
+
+ private:
+  std::vector<T> elems_;  // the elements
+
+ public:
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  Matrix(const Matrix<U, 2> &x)
+      : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()}
+  {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+    assert(x.n_cols() == 1);
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  Matrix(const MatrixRef<U, 2> &x)
+    : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()}
+  {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+    assert(x.n_cols() == 1);
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  Matrix &operator=(const Matrix<U, 2> &x) {
+    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+    assert(x.n_cols() == 1);
+
+    this->desc_.size = x.descriptor().size;
+    this->desc_.start = 0;
+    this->desc_.extents[0] = x.n_rows();
+    this->desc_.strides[0] = 1;
+
+    elems_.assign(x.begin(), x.end());
+
+    return *this;
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  Matrix &operator=(const MatrixRef<U, 2> &x) {
+    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+    assert(x.n_cols() == 1);
+
+    this->desc_.size = x.descriptor().size;
+    this->desc_.start = 0;
+    this->desc_.extents[0] = x.n_rows();
+    this->desc_.strides[0] = 1;
+
+    elems_.assign(x.begin(), x.end());
+
+    return *this;
+  }
+
   //! sub-vector access for Matrix<T, 1>
   ///@{
   template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
@@ -204,52 +300,6 @@ class Matrix : public MatrixBase<T, N> {
   template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const { return transpose(*this); }
 
-  //! @cond Doxygen_Suppress
-
-  template<typename F>
-  Matrix &apply(F f);                          // f(x) for every element x
-
-  // f(x, mx) for corresponding elements of *this and m
-  template<typename M, typename F>
-  Enable_if<Matrix_type<M>(), Matrix &>
-  apply(const M &m, F f);
-
-  Matrix operator-() const;
-
-  Matrix &operator=(const T &value);           // assignment with scalar
-  Matrix &operator+=(const T &value);          // scalar addition
-  Matrix &operator-=(const T &value);          // scalar subtraction
-  Matrix &operator*=(const T &value);          // scalar multiplication
-  Matrix &operator/=(const T &value);          // scalar division
-  Matrix &operator%=(const T &value);          // scalar modulo
-
-  // matrix addition
-  template<typename M>
-  Enable_if<Matrix_type<M>(), Matrix &> operator+=(const M &x);
-  // matrix subtraction
-  template<typename M>
-  Enable_if<Matrix_type<M>(), Matrix &> operator-=(const M &x);
-  // element-wise multiplication
-  template<typename M>
-  Enable_if<Matrix_type<M>(), Matrix &> operator*=(const M &x);
-  // element-wise division
-  template<typename M>
-  Enable_if<Matrix_type<M>(), Matrix &> operator/=(const M &x);
-  // element-wise modulus
-  template<typename M>
-  Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
-
-  //! @endcond
-
-  iterator begin() { return elems_.begin(); }
-  const_iterator begin() const { return elems_.cbegin(); }
-  iterator end() { return elems_.end(); }
-  const_iterator end() const { return elems_.cend(); }
-
-  void clear();
-
- private:
-  std::vector<T> elems_;  // the elements
 };
 
 template<typename T, std::size_t N>
