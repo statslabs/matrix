@@ -457,13 +457,13 @@ matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 2> &b) {
   return c;
 }
 
-template <typename T>
-const Matrix<T, 1>& matmul_n(const Matrix<T, 1> &x) { return x; }
+template<typename T>
+const Matrix<T, 1> &matmul_n(const Matrix<T, 1> &x) { return x; }
 
-template <typename T>
-const Matrix<T, 2>& matmul_n(const Matrix<T, 2> &x) { return x; }
+template<typename T>
+const Matrix<T, 2> &matmul_n(const Matrix<T, 2> &x) { return x; }
 
-template <typename T, typename... Args>
+template<typename T, typename... Args>
 auto matmul_n(const Matrix<T, 2> &x, Args... args) -> decltype(matmul(x, matmul_n(args...))) {
   return matmul(x, matmul_n(args...));
 }
@@ -722,10 +722,9 @@ solve(const Matrix<std::complex<float>, 2> &a, const Matrix<std::complex<float>,
   return b_copy;
 }
 
-
 template<typename T>
 Matrix<T, 2> solve(const Matrix<T, 2> &a) {
-  Matrix<T, 2> b = eye<Matrix<T, 2>> (a.n_rows(), a.n_cols());
+  Matrix<T, 2> b = eye<Matrix<T, 2>>(a.n_rows(), a.n_cols());
   return solve(a, b);
 }
 
@@ -736,7 +735,7 @@ bool inv(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
 
 template<>
 bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
-  b = eye<Matrix<double, 2>> (a.n_rows(), a.n_cols());
+  b = eye<Matrix<double, 2>>(a.n_rows(), a.n_cols());
 
   int n = a.n_rows();
   int nrhs = b.n_cols();
@@ -773,10 +772,9 @@ bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
   int info = lapack_gesvd('S', 'S', a_copy, s, u, vt, superb);
   if (info) return false;
 
-  for(int i=0; i<k; i++)
-  {
+  for (int i = 0; i < k; i++) {
     double ss;
-    if(s[i] > 1.0e-9)
+    if (s[i] > 1.0e-9)
       ss = 1.0 / s[i];
     else
       ss = s[i];
@@ -812,6 +810,60 @@ T prod(const Matrix<T, N> &x) {
 template<typename T, std::size_t N>
 T prod(const MatrixRef<T, N> &x) {
   return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> exp(const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::exp(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> exp(const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::exp(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> log(const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::log(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> log(const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::log(a); });
+
+  return res;
+}
+
+template<typename T, typename T1, std::size_t N>
+Matrix<T, N> pow(const Matrix<T, N> &x, const T1 &val) {
+  static_assert(Convertible<T1, T>(),
+                "pow(): incompatible element types");
+
+  Matrix<T, N> res = x;
+  res.apply([&](T &a) { a = std::pow(a, static_cast<T>(val)); });
+
+  return res;
+}
+
+template<typename T, typename T1, std::size_t N>
+Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
+  static_assert(Convertible<T1, T>(),
+                "pow(): incompatible element types");
+
+  Matrix<T, N> res = x;
+  res.apply([&](T &a) { a = std::pow(a, static_cast<T>(val)); });
+
+  return res;
 }
 
 #endif // SLAB_MATRIX_OPERATIONS_H_

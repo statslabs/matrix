@@ -112,6 +112,51 @@ TEST(MatrixOperationTest, Prod) {
   EXPECT_EQ(362880, res);
 }
 
+TEST(MatrixOperationTest, Exp) {
+  mat m = zeros<mat>(3, 3);
+  mat res = exp(m);
+
+  EXPECT_EQ(1, res(0, 0));
+  EXPECT_EQ(1, res(0, 1));
+  EXPECT_EQ(1, res(0, 2));
+  EXPECT_EQ(1, res(1, 0));
+  EXPECT_EQ(1, res(1, 1));
+  EXPECT_EQ(1, res(1, 2));
+  EXPECT_EQ(1, res(2, 0));
+  EXPECT_EQ(1, res(2, 1));
+  EXPECT_EQ(1, res(2, 2));
+}
+
+TEST(MatrixOperationTest, Log) {
+  mat m = ones<mat>(3, 3);
+  mat res = log(m);
+
+  EXPECT_EQ(0, res(0, 0));
+  EXPECT_EQ(0, res(0, 1));
+  EXPECT_EQ(0, res(0, 2));
+  EXPECT_EQ(0, res(1, 0));
+  EXPECT_EQ(0, res(1, 1));
+  EXPECT_EQ(0, res(1, 2));
+  EXPECT_EQ(0, res(2, 0));
+  EXPECT_EQ(0, res(2, 1));
+  EXPECT_EQ(0, res(2, 2));
+}
+
+TEST(MatrixOperationTest, Pow) {
+  mat m = ones<mat>(3, 3) * 2.0;
+  mat res = pow(m, -1);
+
+  EXPECT_EQ(0.5, res(0, 0));
+  EXPECT_EQ(0.5, res(0, 1));
+  EXPECT_EQ(0.5, res(0, 2));
+  EXPECT_EQ(0.5, res(1, 0));
+  EXPECT_EQ(0.5, res(1, 1));
+  EXPECT_EQ(0.5, res(1, 2));
+  EXPECT_EQ(0.5, res(2, 0));
+  EXPECT_EQ(0.5, res(2, 1));
+  EXPECT_EQ(0.5, res(2, 2));
+}
+
 }
 
 #endif //MATRIX_TEST_MATRIX_OPERERATION_H

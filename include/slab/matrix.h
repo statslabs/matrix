@@ -21,6 +21,7 @@
 #define SLAB_MATRIX_H_
 
 #include <cassert>
+#include <cmath>
 #include <cstddef> // std::size_t
 #include <cstdio>
 
