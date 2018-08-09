@@ -59,17 +59,5 @@ int main() {
 
   cout << slab::sum(x) << endl;
 
-  slab::mat m1 = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
-  slab::mat m2 = m1;
-  slab::mat m3 = m1;
-
-  slab::mat res = slab::matmul_n(m1, m2, m3);
-
-  cout << res << endl;
-
   return 0;
 }

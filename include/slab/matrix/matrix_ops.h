@@ -866,4 +866,53 @@ Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
   return res;
 }
 
+template<typename T, std::size_t N>
+Matrix<T, N> sin(const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::sin(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> sin(const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::sin(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> cos(const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::cos(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> cos(const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::cos(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> tan(const Matrix<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::tan(a); });
+
+  return res;
+}
+
+template<typename T, std::size_t N>
+Matrix<T, N> tan(const MatrixRef<T, N> &x) {
+  Matrix<T, N> res = x;
+  res.apply([](T &a) { a = std::tan(a); });
+
+  return res;
+}
+
+
 #endif // SLAB_MATRIX_OPERATIONS_H_
