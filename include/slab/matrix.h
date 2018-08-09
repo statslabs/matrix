@@ -27,10 +27,12 @@
 #include <algorithm>
 #include <array>
 #include <complex>
+#include <fstream>
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
 #include <numeric> // std::inner_product
+#include <string>
 #include <type_traits> // std::enable_if/is_convertible
 #include <vector>
 

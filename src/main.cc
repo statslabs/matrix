@@ -59,13 +59,12 @@ int main() {
 
   cout << slab::sum(x) << endl;
 
-  slab::mat tmp3 = x(slab::slice{0},slab::slice{2, 1});
-  slab::vec tmp(tmp3);
-  slab::vec tmp2 = tmp3;
-  cout << "tmp = " << tmp << endl;
-  cout << "tmp2 = " << tmp2 << endl;
-  cout << tmp.descriptor() << endl;
-  cout << tmp2.descriptor() << endl;
+
+
+  slab::mat matx(3,4);
+  matx.load("matx.dta");
+
+  cout << matx << endl;
 
   return 0;
 }

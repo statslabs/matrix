@@ -186,6 +186,34 @@ class Matrix : public MatrixBase<T, N> {
   const_iterator end() const { return elems_.cend(); }
 
   void clear();
+//  void save(const std::string &filename) {
+//    std::ostream os(filename);
+//  }
+  void load(const std::string &filename) {
+    std::ifstream is(filename);
+    if (is.is_open()) {
+      // read the first line
+      std::string first_line;
+      getline(is, first_line);
+
+      // read the extents into ivec
+      std::istringstream iss(first_line);
+      int val;
+      std::vector<int> ivec;
+      while (iss >> val) ivec.push_back(val);
+
+      if (ivec.size() != this->order()) std::cout << "incorrect extents" << std::endl;
+      this->desc_.start = 0;
+      std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
+      this->desc_.size = matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
+
+      std::istream_iterator<T> start(is), end;
+      elems_.reserve(this->desc_.size);
+      std::copy(start, end, elems_.begin());
+    } else {
+      std::cout << "Fail to open the file" << std::endl;
+    }
+  }
 
  private:
   std::vector<T> elems_;  // the elements
@@ -193,8 +221,7 @@ class Matrix : public MatrixBase<T, N> {
  public:
   template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
   Matrix(const Matrix<U, 2> &x)
-      : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()}
-  {
+      : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()} {
     static_assert(Convertible<U, T>(),
                   "Matrix constructor: incompatible element types");
     assert(x.n_cols() == 1);
@@ -202,8 +229,7 @@ class Matrix : public MatrixBase<T, N> {
 
   template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
   Matrix(const MatrixRef<U, 2> &x)
-    : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()}
-  {
+      : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()} {
     static_assert(Convertible<U, T>(),
                   "Matrix constructor: incompatible element types");
     assert(x.n_cols() == 1);
