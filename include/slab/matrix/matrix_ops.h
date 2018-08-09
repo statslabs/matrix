@@ -457,6 +457,17 @@ matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 2> &b) {
   return c;
 }
 
+template <typename T>
+const Matrix<T, 1>& matmul_n(const Matrix<T, 1> &x) { return x; }
+
+template <typename T>
+const Matrix<T, 2>& matmul_n(const Matrix<T, 2> &x) { return x; }
+
+template <typename T, typename... Args>
+auto matmul_n(const Matrix<T, 2> &x, Args... args) -> decltype(matmul(x, matmul_n(args...))) {
+  return matmul(x, matmul_n(args...));
+}
+
 template<typename T, std::size_t N, typename... Args>
 auto reshape(const MatrixBase<T, N> &x, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
   Matrix<T, sizeof...(args)> res(args...);

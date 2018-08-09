@@ -29,39 +29,8 @@ TEST(MatrixOperationTest, MatTranspose) {
   EXPECT_EQ(9, m2(2, 2));
 }
 
-TEST(MatrixOperationTest, IntMatVecProd) {
-  imat m1 = {
-      {8, 4, 7},
-      {3, 5, 1},
-      {1, 3, 2}
-  };
-  ivec v1 = {-1, 2, 1};
-  ivec v2 = {3, 2, 3};
 
-  ivec res = matmul(m1, v1) + v2;
-
-  EXPECT_EQ(10, res(0));
-  EXPECT_EQ(10, res(1));
-  EXPECT_EQ(10, res(2));
-}
-
-TEST(MatrixOperationTest, FloatMatVecProd) {
-  fmat m1 = {
-      {8, 4, 7},
-      {3, 5, 1},
-      {1, 3, 2}
-  };
-  fvec v1 = {-1, 2, 1};
-  fvec v2 = {3, 2, 3};
-
-  fvec res = matmul(m1, v1) + v2;
-
-  EXPECT_EQ(10, res(0));
-  EXPECT_EQ(10, res(1));
-  EXPECT_EQ(10, res(2));
-}
-
-TEST(MatrixOperationTest, DoubleMatVecProd) {
+TEST(MatrixOperationTest, MATMUL_Mat_Vec) {
   mat m1 = {
       {8, 4, 7},
       {3, 5, 1},
@@ -77,43 +46,7 @@ TEST(MatrixOperationTest, DoubleMatVecProd) {
   EXPECT_EQ(10, res(2));
 }
 
-TEST(MatrixOperationTest, IntMatMatProd) {
-  imat m1 = {
-      {1, 2, 3},
-      {4, 5, 6}
-  };
-  imat m2 = {
-      {7, 8},
-      {9, 10},
-      {11, 12}
-  };
-  imat res = matmul(m1, m2);
-
-  EXPECT_EQ(58, res(0, 0));
-  EXPECT_EQ(64, res(0, 1));
-  EXPECT_EQ(139, res(1, 0));
-  EXPECT_EQ(154, res(1, 1));
-}
-
-TEST(MatrixOperationTest, FloatMatMatProd) {
-  fmat m1 = {
-      {1, 2, 3},
-      {4, 5, 6}
-  };
-  fmat m2 = {
-      {7, 8},
-      {9, 10},
-      {11, 12}
-  };
-  fmat res = matmul(m1, m2);
-
-  EXPECT_EQ(58, res(0, 0));
-  EXPECT_EQ(64, res(0, 1));
-  EXPECT_EQ(139, res(1, 0));
-  EXPECT_EQ(154, res(1, 1));
-}
-
-TEST(MatrixOperationTest, DoublePrecisionMatMatProd) {
+TEST(MatrixOperationTest, MATMUL_Mat_Mat) {
   mat m1 = {
       {1, 2, 3},
       {4, 5, 6}
@@ -129,6 +62,30 @@ TEST(MatrixOperationTest, DoublePrecisionMatMatProd) {
   EXPECT_EQ(64, res(0, 1));
   EXPECT_EQ(139, res(1, 0));
   EXPECT_EQ(154, res(1, 1));
+}
+
+TEST(MatrixOperationTest, MATMUL_N) {
+  mat m1 = {
+      {1, 2, 3},
+      {4, 5, 6},
+      {7, 8, 9}
+  };
+  mat m2 = m1;
+  mat m3 = m1;
+
+  mat res = matmul_n(m1, m2, m3);
+
+  EXPECT_EQ(468, res(0, 0));
+  EXPECT_EQ(576, res(0, 1));
+  EXPECT_EQ(684, res(0, 2));
+
+  EXPECT_EQ(1062, res(1, 0));
+  EXPECT_EQ(1305, res(1, 1));
+  EXPECT_EQ(1548, res(1, 2));
+
+  EXPECT_EQ(1656, res(2, 0));
+  EXPECT_EQ(2034, res(2, 1));
+  EXPECT_EQ(2412, res(2, 2));
 }
 
 }
