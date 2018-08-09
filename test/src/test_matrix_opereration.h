@@ -10,7 +10,7 @@
 
 namespace slab {
 
-TEST(MatrixOperationTest, MatTranspose) {
+TEST(MatrixOperationTest, Transpose_Mat) {
   mat m1 = {
       {1, 2, 3},
       {4, 5, 6},
@@ -30,7 +30,7 @@ TEST(MatrixOperationTest, MatTranspose) {
 }
 
 
-TEST(MatrixOperationTest, MATMUL_Mat_Vec) {
+TEST(MatrixOperationTest, Matmul_Mat_Vec) {
   mat m1 = {
       {8, 4, 7},
       {3, 5, 1},
@@ -46,7 +46,7 @@ TEST(MatrixOperationTest, MATMUL_Mat_Vec) {
   EXPECT_EQ(10, res(2));
 }
 
-TEST(MatrixOperationTest, MATMUL_Mat_Mat) {
+TEST(MatrixOperationTest, Matmul_Mat_Mat) {
   mat m1 = {
       {1, 2, 3},
       {4, 5, 6}
@@ -64,7 +64,7 @@ TEST(MatrixOperationTest, MATMUL_Mat_Mat) {
   EXPECT_EQ(154, res(1, 1));
 }
 
-TEST(MatrixOperationTest, MATMUL_N) {
+TEST(MatrixOperationTest, Matmul_N) {
   mat m1 = {
       {1, 2, 3},
       {4, 5, 6},
@@ -86,6 +86,30 @@ TEST(MatrixOperationTest, MATMUL_N) {
   EXPECT_EQ(1656, res(2, 0));
   EXPECT_EQ(2034, res(2, 1));
   EXPECT_EQ(2412, res(2, 2));
+}
+
+TEST(MatrixOperationTest, Sum) {
+  mat m = {
+      {1, 2, 3},
+      {4, 5, 6},
+      {7, 8, 9}
+  };
+
+  double res = sum(m);
+
+  EXPECT_EQ(45, res);
+}
+
+TEST(MatrixOperationTest, Prod) {
+  mat m = {
+      {1, 2, 3},
+      {4, 5, 6},
+      {7, 8, 9}
+  };
+
+  double res = prod(m);
+
+  EXPECT_EQ(362880, res);
 }
 
 }

@@ -804,4 +804,14 @@ T sum(const MatrixRef<T, N> &x) {
   return std::accumulate(x.begin(), x.end(), T{0});
 }
 
+template<typename T, std::size_t N>
+T prod(const Matrix<T, N> &x) {
+  return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
+}
+
+template<typename T, std::size_t N>
+T prod(const MatrixRef<T, N> &x) {
+  return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
+}
+
 #endif // SLAB_MATRIX_OPERATIONS_H_
