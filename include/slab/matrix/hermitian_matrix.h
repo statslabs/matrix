@@ -20,6 +20,8 @@
 #ifndef STATSLABS_MATRIX_HERMITIAN_MATRIX_H_
 #define STATSLABS_MATRIX_HERMITIAN_MATRIX_H_
 
+#include "slab/matrix/packed_matrix.h"
+
 template<typename T, typename TRI>
 class HermitianMatrix;
 
