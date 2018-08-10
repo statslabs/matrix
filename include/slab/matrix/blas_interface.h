@@ -21,9 +21,11 @@
 #define SLAB_MATRIX_BLAS_INTERFACE_H_
 
 #include "slab/matrix/error.h"
-#include "slab/matrix/matrix.h"
-#include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/traits.h"
+#include "slab/matrix/matrix.h"
+#include "slab/matrix/symmetric_matrix.h"
+#include "slab/matrix/triangular_matrix.h"
+#include "slab/matrix/hermitian_matrix.h"
 
 /// @addtogroup blas_interface BLAS INTERFACE
 /// @{

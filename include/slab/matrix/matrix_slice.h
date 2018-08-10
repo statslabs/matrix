@@ -20,10 +20,6 @@
 #ifndef SLAB_MATRIX_MATRIX_SLICE_H_
 #define SLAB_MATRIX_MATRIX_SLICE_H_
 
-#include <cstddef>
-#include <algorithm>
-#include <array>
-#include <initializer_list>
 #include "slab/matrix/traits.h"
 
 // A matrix slice specifies the N-dimensional matrix properties of a contiguous

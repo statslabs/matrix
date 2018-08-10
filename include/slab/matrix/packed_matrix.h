@@ -1,3 +1,22 @@
+//
+// Copyright 2018 The Statslabs Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+/// @file packed_matrix.h
+/// @brief Packed matrix
+
 #ifndef SLAB_MATRIX_PACKED_MATRIX_H_
 #define SLAB_MATRIX_PACKED_MATRIX_H_
 
@@ -89,54 +108,9 @@ class PackedMatrix {
   std::size_t n_rows() const { return desc_.extents[0]; }
   std::size_t n_cols() const { return desc_.extents[1]; }
 
-  T &operator()(std::size_t i, std::size_t j) {
-    if (!desc_.other_half(i, j))
-      return *(data() + desc_(i, j));
-    else
-      return elem_in_other_half(i, j);
-  }
-
-  const T &operator()(std::size_t i, std::size_t j) const {
-    if (!desc_.other_half(i, j))
-      return *(data() + desc_(i, j));
-    else
-      return elem_in_other_half(i, j);
-  }
-
  protected:
   std::vector<T> elem_;
   TRI desc_;
-
-  virtual T &elem_in_other_half(std::size_t i, std::size_t j) = 0;
-  virtual const T &elem_in_other_half(std::size_t i, std::size_t j) const = 0;
-};
-
-template<typename T, typename TRI>
-class SymmetricMatrix : public PackedMatrix<T, TRI> {
- public:
-  SymmetricMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
-
-  T &elem_in_other_half(std::size_t i, std::size_t j) {
-    return *(this->data() + this->desc_(j, i));
-  }
-
-  const T &elem_in_other_half(std::size_t i, std::size_t j) const {
-    return *(this->data() + this->desc_(j, i));
-  }
-};
-
-template<typename T, typename TRI>
-class TriangularMatrix : public PackedMatrix<T, TRI> {
- public:
-  TriangularMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
-
-  T &elem_in_other_half(std::size_t i, std::size_t j) {
-    return 0;
-  }
-
-  const T &elem_in_other_half(std::size_t i, std::size_t j) const {
-    return 0;
-  }
 };
 
 template<typename T, typename TRI>

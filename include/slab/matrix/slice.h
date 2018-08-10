@@ -20,8 +20,6 @@
 #ifndef SLAB_MATRIX_SLICE_H_
 #define SLAB_MATRIX_SLICE_H_
 
-#include <cstddef>
-
 // A slice describes a sequence of elements in some dimension (or row) of a
 // matrix. It is a triple comprised of a starting index, a number of elements,
 // and the stride between subsequent elements.

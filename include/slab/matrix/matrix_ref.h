@@ -20,10 +20,8 @@
 #ifndef SLAB_MATRIX_MATRIX_REF_H_
 #define SLAB_MATRIX_MATRIX_REF_H_
 
-#include <cstddef>
-#include <iterator> // std::forward_iterator_tag
-#include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
+#include "slab/matrix/matrix.h"
 
 template<typename T, std::size_t N>
 class MatrixRefIterator;

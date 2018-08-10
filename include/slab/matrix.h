@@ -58,7 +58,10 @@ using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
+
 #include "slab/matrix/packed_matrix.h"
+#include "slab/matrix/symmetric_matrix.h"
+#include "slab/matrix/triangular_matrix.h"
 #include "slab/matrix/hermitian_matrix.h"
 
 #include "slab/matrix/blas_interface.h"

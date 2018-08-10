@@ -20,14 +20,10 @@
 #ifndef SLAB_MATRIX_OPERATIONS_H_
 #define SLAB_MATRIX_OPERATIONS_H_
 
-#include <cstddef>
-#include <algorithm>
-#include <type_traits>
-#include "slab/matrix/matrix.h"
 #include "slab/matrix/traits.h"
-
-#include <iostream>
-using namespace std;
+#include "slab/matrix/matrix_base.h"
+#include "slab/matrix/matrix.h"
+#include "slab/matrix/matrix_ref.h"
 
 // Scalar Addtion
 //

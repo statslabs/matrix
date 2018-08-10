@@ -20,9 +20,9 @@
 #ifndef SLAB_MATRIX_MATRIX_H_
 #define SLAB_MATRIX_MATRIX_H_
 
+#include "slab/matrix/traits.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
-#include "slab/matrix/traits.h"
 
 template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
