@@ -57,7 +57,5 @@ int main() {
   slab::pinv(x_inv, x);
   cout << "x_inv = " << x_inv << endl;
 
-  cout << slab::sum(x) << endl;
-
   return 0;
 }

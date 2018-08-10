@@ -21,8 +21,10 @@
 #define SLAB_MATRIX_H_
 
 #include <cassert>
+#include <cerrno>   // for definition of errno
 #include <cmath>
-#include <cstddef> // std::size_t
+#include <cstdarg>  // ISO C variable arguments
+#include <cstddef>  // std::size_t
 #include <cstdio>
 
 #include <algorithm>
@@ -41,6 +43,8 @@
 // #include "slab/matrix/config.h"
 
 namespace slab {
+
+#include "slab/matrix/error.h"
 
 #include "slab/matrix/matrix_fwd.h"
 #include "slab/matrix/traits.h"

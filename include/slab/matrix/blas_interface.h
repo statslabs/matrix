@@ -20,6 +20,7 @@
 #ifndef SLAB_MATRIX_BLAS_INTERFACE_H_
 #define SLAB_MATRIX_BLAS_INTERFACE_H_
 
+#include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/traits.h"
@@ -62,6 +63,8 @@ T blas_asum(const Matrix<T, 1> &x) {
         (const std::complex<float> *) x.data(),
         incx
     );
+  } else {
+    err_quit("blas_asum(): unsupported element type.");
   }
 
   return res;
@@ -112,6 +115,8 @@ void blas_axpy(const T &a, const MatrixBase<T, 1> &x, MatrixBase<T, 1> &y) {
         (std::complex<float> *) (y.data() + y.descriptor().start),
         incy
     );
+  } else {
+    err_quit("blas_axpy(): unsupported element type.");
   }
 }
 
@@ -156,6 +161,8 @@ void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
         (std::complex<float> *) (y.data() + y.descriptor().start),
         incy
     );
+  } else {
+    err_quit("blas_copy(): unsupported element type.");
   }
 }
 
@@ -185,6 +192,8 @@ T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
         (const float *) (y.data() + y.descriptor().start),
         incy
     );
+  } else {
+    err_quit("blas_dot(): unsupported element type.");
   }
 
   return res;
@@ -247,6 +256,8 @@ double blas_nrm2(const Matrix<T, 1> &x) {
         (const std::complex<float> *) (x.data() + x.descriptor().start),
         incx
     );
+  } else {
+    err_quit("blas_nrm2(): unsupported element type.");
   }
 
   return res;
@@ -305,6 +316,8 @@ void blas_scal(const T a, Matrix<T, 1> &x) {
         (std::complex<float> *) (x.data() + x.descriptor().start),
         incx
     );
+  } else {
+    err_quit("blas_scal(): unsupported element type.");
   }
 }
 
@@ -326,6 +339,8 @@ void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
         (const std::complex<float> *) &a,
         (std::complex<float> *) (x.data() + x.descriptor().start),
         incx);
+  } else {
+    err_quit("blas_scal(): unsupported element type.");
   }
 }
 
@@ -373,6 +388,8 @@ void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
         (std::complex<float> *) (y.data() + y.descriptor().start),
         incy
     );
+  } else {
+    err_quit("blas_swap(): unsupported element type.");
   }
 }
 
@@ -406,6 +423,8 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
         (const std::complex<float> *) (x.data() + x.descriptor().start),
         incx
     );
+  } else {
+    err_quit("blas_iamax(): unsupported element type.");
   }
 
   return res;
@@ -490,6 +509,8 @@ void blas_gemv(const CBLAS_TRANSPOSE trans,
         (std::complex<float> *) (y.data() + y.descriptor().start),
         incy
     );
+  } else {
+    err_quit("blas_gemv(): unsupported element type.");
   }
 }
 
@@ -509,7 +530,7 @@ void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI>
         uplo,
         x.size(),
         (const double) alpha,
-        (const double*) x.data(),
+        (const double *) x.data(),
         incx,
         (double *) ap.data()
     );
@@ -519,10 +540,12 @@ void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI>
         uplo,
         x.size(),
         (const float) alpha,
-        (const float*) x.data(),
+        (const float *) x.data(),
         incx,
         (float *) ap.data()
     );
+  } else {
+    err_quit("blas_spr(): unsupported element type.");
   }
 }
 
@@ -544,9 +567,9 @@ void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x, const MatrixBase<T, 1>
         uplo,
         x.size(),
         (const double) alpha,
-        (const double*) x.data(),
+        (const double *) x.data(),
         incx,
-        (const double*) y.data(),
+        (const double *) y.data(),
         incy,
         (double *) ap.data()
     );
@@ -556,12 +579,14 @@ void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x, const MatrixBase<T, 1>
         uplo,
         x.size(),
         (const float) alpha,
-        (const float*) x.data(),
+        (const float *) x.data(),
         incx,
-        (const float*) y.data(),
+        (const float *) y.data(),
         incy,
         (float *) ap.data()
     );
+  } else {
+    err_quit("blas_spr2(): unsupported element type.");
   }
 }
 
@@ -570,14 +595,19 @@ void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x, const MatrixBase<T, 1>
 /// @addtogroup blas_level3 BLAS Level 3
 /// @{
 
-template<typename T>
+template<typename T, typename T1, typename T2>
 void blas_gemm(const CBLAS_TRANSPOSE transa,
                const CBLAS_TRANSPOSE transb,
-               const T &alpha,
+               const T1 &alpha,
                const MatrixBase<T, 2> &a,
                const MatrixBase<T, 2> &b,
-               const T &beta,
+               const T2 &beta,
                MatrixBase<T, 2> &c) {
+  static_assert(Convertible<T1, T>(),
+                "blas_gemm(): incompatible element type for alpha");
+  static_assert(Convertible<T2, T>(),
+                "blas_gemm(): incompatible element type for beta");
+
   const int m = c.n_rows();
   const int n = c.n_cols();
   int k = a.n_cols();
@@ -656,6 +686,8 @@ void blas_gemm(const CBLAS_TRANSPOSE transa,
         (std::complex<float> *) (c.data() + c.descriptor().start),
         ldc
     );
+  } else {
+    err_quit("blas_gemm(): unsupported element type.");
   }
 }
 
