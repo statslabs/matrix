@@ -277,6 +277,53 @@ class Matrix : public MatrixBase<T, N> {
   }
   ///@}
 
+ public:
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix(const Matrix<U, 1> &x)
+      : MatrixBase<T, N>{x.n_rows(), 1}, elems_{x.begin(), x.end()} {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix(const MatrixRef<U, 1> &x)
+      : MatrixBase<T, N>{x.n_rows(), 1}, elems_{x.begin(), x.end()} {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const Matrix<U, 1> &x) {
+    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+
+    this->desc_.size = x.descriptor().size;
+    this->desc_.start = 0;
+    this->desc_.extents[0] = x.n_rows();
+    this->desc_.extents[1] = 1;
+    this->desc_.strides[0] = x.n_rows();
+    this->desc_.strides[1] = 1;
+
+    elems_.assign(x.begin(), x.end());
+
+    return *this;
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const MatrixRef<U, 1> &x) {
+    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+
+    this->desc_.size = x.descriptor().size;
+    this->desc_.start = 0;
+    this->desc_.extents[0] = x.n_rows();
+    this->desc_.extents[1] = 1;
+    this->desc_.strides[0] = x.n_rows();
+    this->desc_.strides[1] = 1;
+
+    elems_.assign(x.begin(), x.end());
+
+    return *this;
+  }
+
   //! sub-matrix access for Matrix<T, 2>
   ///@{
   template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
