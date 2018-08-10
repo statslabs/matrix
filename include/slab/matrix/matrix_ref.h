@@ -164,6 +164,28 @@ class MatrixRef : public MatrixBase<T, N> {
   T *ptr_;
 
  public:
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef &operator=(const MatrixRef<U, 2> &x) {
+    static_assert(Convertible<U, T>(), "MatrixRef =: incompatible element types");
+    assert(this->size() == x.size());
+    assert(x.n_cols() == 1);
+
+    std::copy(x.begin(), x.end(), begin());
+
+    return *this;
+  }
+
+  template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef &operator=(const Matrix<U, 2> &x) {
+    static_assert(Convertible<U, T>(), "MatrixRef =: incompatible element types");
+    assert(this->size() == x.size());
+    assert(x.n_cols() == 1);
+
+    std::copy(x.begin(), x.end(), begin());
+
+    return *this;
+  }
+
   //! sub-vector access for Matrix<T, 1>
   ///@{
   template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
