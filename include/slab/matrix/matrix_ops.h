@@ -507,6 +507,53 @@ Matrix<T, 1> vectorise(const MatrixBase<T, N> &x) {
   return reshape(x, x.size());
 }
 
+// join_vecs()
+template<typename T>
+Matrix<T, 1> join_vecs(const Matrix<T, 1> &a, const Matrix<T, 1> &b) {
+  Matrix<T, 1> res(a.n_rows() + b.n_rows());
+  res(slice{0, a.n_rows()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &a, const MatrixRef<T, 1> &b) {
+  Matrix<T, 1> res(a.n_rows() + b.n_rows());
+  res(slice{0, a.n_rows()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 1> join_vecs(const Matrix<T, 1> &a, const MatrixRef<T, 1> &b) {
+  Matrix<T, 1> res(a.n_rows() + b.n_rows());
+  res(slice{0, a.n_rows()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}) = b;
+
+  return res;
+}
+
+template<typename T>
+Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &a, const Matrix<T, 1> &b) {
+  Matrix<T, 1> res(a.n_rows() + b.n_rows());
+  res(slice{0, a.n_rows()}) = a;
+  res(slice{a.n_rows(), b.n_rows()}) = b;
+
+  return res;
+}
+
+template<typename T, typename... Args>
+Matrix<T, 1> join_vecs(const Matrix<T, 1> &x, Args... args) {
+  return join_vecs(x, join_vecs(args...));
+}
+
+template<typename T, typename... Args>
+Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &x, Args... args) {
+  return join_vecs(x, join_vecs(args...));
+}
+
 // join_rows()
 
 template<typename T>
@@ -921,6 +968,5 @@ Matrix<T, N> tan(const MatrixRef<T, N> &x) {
 
   return res;
 }
-
 
 #endif // SLAB_MATRIX_OPERATIONS_H_
