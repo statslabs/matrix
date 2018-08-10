@@ -113,16 +113,4 @@ class PackedMatrix {
   TRI desc_;
 };
 
-template<typename T, typename TRI>
-std::ostream &operator<<(std::ostream &os, const PackedMatrix<T, TRI> &m) {
-  for (std::size_t i = 0; i != m.n_rows(); ++i) {
-    for (std::size_t j = 0; j != m.n_cols(); ++j) {
-      os << m(i, j) << "\t";
-    }
-    os << std::endl;
-  }
-
-  return os << std::endl;
-}
-
 #endif // SLAB_MATRIX_PACKED_MATRIX_H

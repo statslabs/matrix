@@ -50,4 +50,16 @@ class SymmetricMatrix : public PackedMatrix<T, TRI> {
   }
 };
 
+template<typename T, typename TRI>
+std::ostream &operator<<(std::ostream &os, const SymmetricMatrix<T, TRI> &m) {
+  for (std::size_t i = 0; i != m.n_rows(); ++i) {
+    for (std::size_t j = 0; j != m.n_cols(); ++j) {
+      os << m(i, j) << "\t";
+    }
+    os << std::endl;
+  }
+
+  return os << std::endl;
+}
+
 #endif // STATSLABS_MATRIX_SYMMETRIC_MATRIX_H_

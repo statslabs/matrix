@@ -83,65 +83,41 @@ struct HermitianMatrixElement {
 };
 
 template<typename T, typename TRI>
-class HermitianMatrix {
+class HermitianMatrix : public PackedMatrix<T, TRI> {
  public:
-  using value_type = T;
   using reference = HermitianMatrixElement<T, TRI>;
-  using iterator = typename std::vector<T>::iterator;
-  using const_iterator  = typename std::vector<T>::const_iterator;
 
-  HermitianMatrix() = default;
-  HermitianMatrix(HermitianMatrix &&) = default;
-  HermitianMatrix &operator=(HermitianMatrix &&) = default;
-  HermitianMatrix(HermitianMatrix const &) = default;
-  HermitianMatrix &operator=(HermitianMatrix const &) = default;
-
-  HermitianMatrix(std::size_t n) : elem_(n * n), desc_(n) {}
-
-  const TRI &descriptor() const { return desc_; }
-
-  //! "flat" element access
-  ///@{
-  T *data() { return elem_.data(); }
-  const T *data() const { return elem_.data(); }
-  ///@}
-
-  std::size_t n_rows() const { return desc_.extents[0]; }
-  std::size_t n_cols() const { return desc_.extents[1]; }
+  HermitianMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
 
   reference operator()(std::size_t i, std::size_t j) {
     assert(i < n_rows());
     assert(j < n_cols());
 
-    if (!desc_.other_half(i, j))
-      return HermitianMatrixElement<T, TRI>(*this, i, j, *(data() + desc_(i, j)));
+    if (!this->desc_.other_half(i, j))
+      return HermitianMatrixElement<T, TRI>(*this, i, j, *(this->data() + this->desc_(i, j)));
     else
-      return HermitianMatrixElement<T, TRI>(*this, i, j, std::conj(*(data() + desc_(i, j))));
+      return HermitianMatrixElement<T, TRI>(*this, i, j, std::conj(*(this->data() + this->desc_(i, j))));
   }
 
   const T operator()(std::size_t i, std::size_t j) const {
     assert(i < n_rows());
     assert(j < n_cols());
 
-    if (!desc_.other_half(i, j))
-      return *(data() + desc_(i, j));
+    if (!this->desc_.other_half(i, j))
+      return *(this->data() + this->desc_(i, j));
     else
-      return std::conj(*(data() + desc_(j, i)));
+      return std::conj(*(this->data() + this->desc_(j, i)));
   }
 
   void assign_element(std::size_t i, std::size_t j, const T &val) {
     assert(i < n_rows());
     assert(j < n_cols());
 
-    if (!desc_.other_half(i, j))
-      *(data() + desc_(i, j)) = val;
+    if (!this->desc_.other_half(i, j))
+      *(this->data() + this->desc_(i, j)) = val;
     else
-      *(data() + desc_(i, j)) = std::conj(val);
+      *(this->data() + this->desc_(i, j)) = std::conj(val);
   }
-
- private:
-  std::vector<T> elem_;
-  TRI desc_;
 };
 
 template<typename T, typename TRI>
