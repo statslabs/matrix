@@ -108,7 +108,7 @@ class PackedMatrix {
   PackedMatrix(PackedMatrix const &) = default;
   PackedMatrix &operator=(PackedMatrix const &) = default;
 
-  PackedMatrix(std::size_t n) : elem_(n * n), desc_(n) {}
+  PackedMatrix(std::size_t n) : elems_(n * n), desc_(n) {}
   PackedMatrix(std::size_t n, const Matrix<T, 1> &v) : desc_(n) {
     if (v.size() != desc_.size)
       err_quit("Fail to construct a packed matrix, the size of vector provided is incorrect");
@@ -120,33 +120,33 @@ class PackedMatrix {
 
   //! "flat" element access
   ///@{
-  T *data() { return elem_.data(); }
-  const T *data() const { return elem_.data(); }
+  T *data() { return elems_.data(); }
+  const T *data() const { return elems_.data(); }
   ///@}
 
   std::size_t n_rows() const { return desc_.extents[0]; }
   std::size_t n_cols() const { return desc_.extents[1]; }
 
  protected:
-  std::vector<T> elem_;
+  std::vector<T> elems_;
   TRI desc_;
 
  private:
-  void init(const Matrix<T, 1> &v, upper_tag) { elem_.assign(v.begin(), v.end()) ; }
-  void init(const Matrix<T, 1> &v, lower_tag) { elem_.assign(v.begin(), v.end()) ; }
+  void init(const Matrix<T, 1> &v, upper_tag) { elems_.assign(v.begin(), v.end()) ; }
+  void init(const Matrix<T, 1> &v, lower_tag) { elems_.assign(v.begin(), v.end()) ; }
   void init(const Matrix<T, 1> &v, unit_upper_tag) {
     for (std::size_t j = 0, index = 0; j != desc_.extents[1]; ++j) {
       for (std::size_t i = j; i != desc_.extents[0]; ++i) {
-        if (i == j) elem_.push_back(T{1});
-        else elem_.push_back(v(index++));
+        if (i == j) elems_.push_back(T{1});
+        else elems_.push_back(v(index++));
       }
     }
   }
   void init(const Matrix<T, 1> &v, unit_lower_tag) {
     for (std::size_t i = 0, index = 0; i != desc_.extents[0]; ++i) {
       for (std::size_t j = 0; j <= i; ++j) {
-        if (i == j) elem_.push_back(T{1});
-        else elem_.push_back(v(index++));
+        if (i == j) elems_.push_back(T{1});
+        else elems_.push_back(v(index++));
       }
     }
   }
