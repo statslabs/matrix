@@ -56,20 +56,29 @@ using icube    = Matrix<int, 3>;
 
 // Packed Matrix -- Symmetric Matrix / Triangular Matrix / Hermitian Matrix
 
-using symm_mat     = SymmetricMatrix<double, upper>;
-using utri_mat     = TriangularMatrix<double, upper>;
-using ltri_mat     = TriangularMatrix<double, lower>;
-using herm_mat     = HermitianMatrix<double, upper>;
+using symm_mat       = SymmetricMatrix<double, upper>;
+using unit_symm_mat  = SymmetricMatrix<double, unit_upper>;
+using utri_mat       = TriangularMatrix<double, upper>;
+using ltri_mat       = TriangularMatrix<double, lower>;
+using unit_utri_mat  = TriangularMatrix<double, unit_upper>;
+using unit_ltri_mat  = TriangularMatrix<double, unit_lower>;
+using herm_mat       = HermitianMatrix<double, upper>;
 
-using symm_dmat    = SymmetricMatrix<double, upper>;
-using utri_dmat    = TriangularMatrix<double, upper>;
-using ltri_dmat    = TriangularMatrix<double, lower>;
-using herm_dmat    = HermitianMatrix<double, upper>;
+using symm_dmat      = SymmetricMatrix<double, upper>;
+using unit_symm_mat  = SymmetricMatrix<double, unit_upper>;
+using utri_dmat      = TriangularMatrix<double, upper>;
+using ltri_dmat      = TriangularMatrix<double, lower>;
+using unit_utri_dmat = TriangularMatrix<double, unit_upper>;
+using unit_ltri_dmat = TriangularMatrix<double, unit_lower>;
+using herm_dmat      = HermitianMatrix<double, upper>;
 
-using symm_fmat    = SymmetricMatrix<float, upper>;
-using utri_fmat    = TriangularMatrix<float, upper>;
-using ltri_fmat    = TriangularMatrix<float, lower>;
-using herm_fmat    = HermitianMatrix<float, upper>;
+using symm_fmat      = SymmetricMatrix<float, upper>;
+using unit_symm_fmat = SymmetricMatrix<float, unit_upper>;
+using utri_fmat      = TriangularMatrix<float, upper>;
+using ltri_fmat      = TriangularMatrix<float, lower>;
+using unit_utri_fmat = TriangularMatrix<float, unit_upper>;
+using unit_ltri_fmat = TriangularMatrix<float, unit_lower>;
+using herm_fmat      = HermitianMatrix<float, upper>;
 
 using symm_cx_mat  = SymmetricMatrix<std::complex<double>, upper>;
 using utri_cx_mat  = TriangularMatrix<std::complex<double>, upper>;

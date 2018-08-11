@@ -20,6 +20,8 @@
 #ifndef SLAB_MATRIX_PACKED_MATRIX_H_
 #define SLAB_MATRIX_PACKED_MATRIX_H_
 
+#include "slab/matrix/error.h"
+
 // Triangular matrix type
 struct lower_tag {};
 struct upper_tag {};
@@ -48,6 +50,11 @@ struct upper {
   std::array<std::size_t, 2> extents;
 };
 
+struct unit_upper : public upper {
+  using triangular_type = unit_upper_tag;
+  unit_upper(std::size_t n) : upper(n) { size -= n; }
+};
+
 struct lower {
   using triangular_type = lower_tag;
 
@@ -70,6 +77,11 @@ struct lower {
   std::array<std::size_t, 2> extents;
 };
 
+struct unit_lower : public lower {
+  using triangular_type = unit_lower_tag;
+  unit_lower(std::size_t n) : lower(n) { size -= n; }
+};
+
 template<typename T>
 struct is_upper : public std::false_type {};
 
@@ -88,6 +100,7 @@ class PackedMatrix {
   using value_type = T;
   using iterator = typename std::vector<T>::iterator;
   using const_iterator  = typename std::vector<T>::const_iterator;
+  using triangular_type = typename TRI::triangular_type;
 
   PackedMatrix() = default;
   PackedMatrix(PackedMatrix &&) = default;
@@ -96,6 +109,12 @@ class PackedMatrix {
   PackedMatrix &operator=(PackedMatrix const &) = default;
 
   PackedMatrix(std::size_t n) : elem_(n * n), desc_(n) {}
+  PackedMatrix(std::size_t n, const Matrix<T, 1> &v) : desc_(n) {
+    if (v.size() != desc_.size)
+      err_quit("Fail to construct a packed matrix, the size of vector provided is incorrect");
+
+    init(v, triangular_type());
+  }
 
   const TRI &descriptor() const { return desc_; }
 
@@ -111,6 +130,26 @@ class PackedMatrix {
  protected:
   std::vector<T> elem_;
   TRI desc_;
+
+ private:
+  void init(const Matrix<T, 1> &v, upper_tag) { elem_.assign(v.begin(), v.end()) ; }
+  void init(const Matrix<T, 1> &v, lower_tag) { elem_.assign(v.begin(), v.end()) ; }
+  void init(const Matrix<T, 1> &v, unit_upper_tag) {
+    for (std::size_t j = 0, index = 0; j != desc_.extents[1]; ++j) {
+      for (std::size_t i = j; i != desc_.extents[0]; ++i) {
+        if (i == j) elem_.push_back(T{1});
+        else elem_.push_back(v(index++));
+      }
+    }
+  }
+  void init(const Matrix<T, 1> &v, unit_lower_tag) {
+    for (std::size_t i = 0, index = 0; i != desc_.extents[0]; ++i) {
+      for (std::size_t j = 0; j <= i; ++j) {
+        if (i == j) elem_.push_back(T{1});
+        else elem_.push_back(v(index++));
+      }
+    }
+  }
 };
 
 #endif // SLAB_MATRIX_PACKED_MATRIX_H

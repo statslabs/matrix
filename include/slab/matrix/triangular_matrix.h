@@ -26,6 +26,7 @@ template<typename T, typename TRI>
 class TriangularMatrix : public PackedMatrix<T, TRI> {
  public:
   TriangularMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
+  TriangularMatrix(std::size_t n, const Matrix<T, 1> &v) : PackedMatrix<T, TRI>(n, v) {}
 
   T &operator()(std::size_t i, std::size_t j) {
     if (!this->desc_.other_half(i, j))
@@ -42,11 +43,11 @@ class TriangularMatrix : public PackedMatrix<T, TRI> {
   }
 
   T &elem_in_other_half(std::size_t i, std::size_t j) {
-    return 0;
+    return T{0};
   }
 
   const T &elem_in_other_half(std::size_t i, std::size_t j) const {
-    return 0;
+    return T{0};
   }
 };
 
