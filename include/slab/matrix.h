@@ -26,6 +26,7 @@
 #include <cstdarg>  // ISO C variable arguments
 #include <cstddef>  // std::size_t
 #include <cstdio>
+#include <cstring>
 
 #include <algorithm>
 #include <array>
