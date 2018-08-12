@@ -23,6 +23,7 @@
 #include "slab/matrix/traits.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
+#include "slab/matrix/packed_matrix.h"
 
 template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
@@ -322,6 +323,42 @@ class Matrix : public MatrixBase<T, N> {
     elems_.assign(x.begin(), x.end());
 
     return *this;
+  }
+
+  template<typename U, typename TRI, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix(const SymmetricMatrix<U, TRI> &x)
+      : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+    for (std::size_t i = 0; i != x.n_rows(); ++i) {
+      for (std::size_t j = 0; j != x.n_cols(); ++j) {
+        elems_.push_back(x(i, j));
+      }
+    }
+  }
+
+  template<typename U, typename TRI, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix(const TriangularMatrix<U, TRI> &x)
+      : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+    for (std::size_t i = 0; i != x.n_rows(); ++i) {
+      for (std::size_t j = 0; j != x.n_cols(); ++j) {
+        elems_.push_back(x(i, j));
+      }
+    }
+  }
+
+  template<typename U, typename TRI, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix(const HermitianMatrix<U, TRI> &x)
+      : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
+    static_assert(Convertible<U, T>(),
+                  "Matrix constructor: incompatible element types");
+    for (std::size_t i = 0; i != x.n_rows(); ++i) {
+      for (std::size_t j = 0; j != x.n_cols(); ++j) {
+        elems_.push_back(x(i, j));
+      }
+    }
   }
 
   //! sub-matrix access for Matrix<T, 2>
