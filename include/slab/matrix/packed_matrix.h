@@ -174,10 +174,17 @@ class PackedMatrix {
   PackedMatrix &operator=(PackedMatrix const &) = default;
 
   PackedMatrix(std::size_t n) : elems_(n * n), desc_(n) {}
-  PackedMatrix(std::size_t n, const std::initializer_list<T> &v) : desc_(n) {
+  PackedMatrix(std::size_t n, const std::vector<T> &v) : desc_(n) {
     if (v.size() != desc_.size)
       err_quit("Fail to construct a packed matrix, the size of vector provided is incorrect");
 
+    init(v, triangular_type());
+  }
+  PackedMatrix(std::size_t n, const std::initializer_list<T> &il) : desc_(n) {
+    if (il.size() != desc_.size)
+      err_quit("Fail to construct a packed matrix, the size of vector provided is incorrect");
+
+    std::vector<T> v(il);
     init(v, triangular_type());
   }
 
@@ -235,9 +242,9 @@ class PackedMatrix {
   virtual void update_element_in_base_half(T &elem, const T &val) = 0;
 
  private:
-  void init(const std::initializer_list<T> &v, upper_tag) { elems_.assign(v.begin(), v.end()) ; }
-  void init(const std::initializer_list<T> &v, lower_tag) { elems_.assign(v.begin(), v.end()) ; }
-  void init(const std::initializer_list<T> &v, unit_upper_tag) {
+  void init(const std::vector<T> &v, upper_tag) { elems_.assign(v.begin(), v.end()) ; }
+  void init(const std::vector<T> &v, lower_tag) { elems_.assign(v.begin(), v.end()) ; }
+  void init(const std::vector<T> &v, unit_upper_tag) {
     auto iter = v.begin();
     for (std::size_t j = 0; j != desc_.extents[1]; ++j) {
       for (std::size_t i = j; i != desc_.extents[0]; ++i) {
@@ -246,7 +253,7 @@ class PackedMatrix {
       }
     }
   }
-  void init(const std::initializer_list<T> &v, unit_lower_tag) {
+  void init(const std::vector<T> &v, unit_lower_tag) {
     auto iter = v.begin();
     for (std::size_t i = 0; i != desc_.extents[0]; ++i) {
       for (std::size_t j = 0; j <= i; ++j) {
@@ -261,7 +268,7 @@ template<typename T, typename TRI>
 class SymmetricMatrix : public PackedMatrix<T, TRI> {
  public:
   SymmetricMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
-  SymmetricMatrix(std::size_t n, const std::initializer_list<T> &v) : PackedMatrix<T, TRI>(n, v) {}
+  SymmetricMatrix(std::size_t n, const std::vector<T> &v) : PackedMatrix<T, TRI>(n, v) {}
 
  private:
   T element_in_other_half(const T &val) const override { return val; }
@@ -272,7 +279,7 @@ template<typename T, typename TRI>
 class TriangularMatrix : public PackedMatrix<T, TRI> {
  public:
   TriangularMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
-  TriangularMatrix(std::size_t n, const std::initializer_list<T> &v) : PackedMatrix<T, TRI>(n, v) {}
+  TriangularMatrix(std::size_t n, const std::vector<T> &v) : PackedMatrix<T, TRI>(n, v) {}
 
  private:
   T element_in_other_half(const T &val) const override { return 0; }
