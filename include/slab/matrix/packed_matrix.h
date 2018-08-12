@@ -95,12 +95,77 @@ template<>
 struct is_lower<lower> : public std::true_type {};
 
 template<typename T, typename TRI>
+class PackedMatrix;
+
+template<typename T, typename TRI>
+struct PackedMatrixElement {
+  using value_type = T;
+
+  PackedMatrixElement(PackedMatrix<T, TRI> &hm, std::size_t i, std::size_t j, T elem)
+  : hm_(hm), i_(i), j_(j), elem_(elem), is_elem_changed_(false) {}
+
+  ~PackedMatrixElement() {
+    if (is_elem_changed_) {
+      hm_.assign_element(i_, j_, elem_);
+    }
+  }
+
+  PackedMatrixElement &operator=(const PackedMatrixElement &hme) {
+    elem_ = hme.elem_;
+    is_elem_changed_ = true;
+    return *this;
+  }
+
+  PackedMatrixElement &operator=(const T &elem) {
+    elem_ = elem;
+    is_elem_changed_ = true;
+    return *this;
+  }
+
+  PackedMatrixElement &operator+=(const T &elem) {
+    elem_ += elem;
+    is_elem_changed_ = true;
+    return *this;
+  }
+
+  PackedMatrixElement &operator-=(const T &elem) {
+    elem_ -= elem;
+    is_elem_changed_ = true;
+    return *this;
+  }
+
+  PackedMatrixElement &operator*=(const T &elem) {
+    elem_ *= elem;
+    is_elem_changed_ = true;
+    return *this;
+  }
+
+  PackedMatrixElement &operator/=(const T &elem) {
+    elem_ /= elem;
+    is_elem_changed_ = true;
+    return *this;
+  }
+
+  bool operator==(const T &elem) const { return elem_ == elem; }
+  bool operator!=(const T &elem) const { return elem_ != elem; }
+  operator T() const { return elem_; }
+
+ private:
+  PackedMatrix<T, TRI> &hm_;
+  std::size_t i_;
+  std::size_t j_;
+  T elem_;
+  bool is_elem_changed_;
+};
+
+template<typename T, typename TRI>
 class PackedMatrix {
  public:
   using value_type = T;
   using iterator = typename std::vector<T>::iterator;
   using const_iterator  = typename std::vector<T>::const_iterator;
   using triangular_type = typename TRI::triangular_type;
+  using reference = PackedMatrixElement<T, TRI>;
 
   PackedMatrix() = default;
   PackedMatrix(PackedMatrix &&) = default;
@@ -127,9 +192,47 @@ class PackedMatrix {
   std::size_t n_rows() const { return desc_.extents[0]; }
   std::size_t n_cols() const { return desc_.extents[1]; }
 
+  reference operator()(std::size_t i, std::size_t j) {
+    assert(i < n_rows());
+    assert(j < n_cols());
+
+    if (!this->desc_.other_half(i, j))
+      return PackedMatrixElement<T, TRI>(*this, i, j, *(this->data() + this->desc_(i, j)));
+    else
+      return PackedMatrixElement<T, TRI>(*this, i, j, element_in_other_half(*(this->data() + this->desc_(j, i))));
+  }
+
+  const T operator()(std::size_t i, std::size_t j) const {
+    assert(i < n_rows());
+    assert(j < n_cols());
+
+    if (!this->desc_.other_half(i, j))
+      return *(this->data() + this->desc_(i, j));
+    else
+      return element_in_other_half(*(this->data() + this->desc_(j, i)));
+  }
+
+  void assign_element(std::size_t i, std::size_t j, const T &val) {
+    assert(i < n_rows());
+    assert(j < n_cols());
+
+    if (!this->desc_.other_half(i, j))
+      *(this->data() + this->desc_(i, j)) = val;
+    else
+      update_element_in_base_half(*(this->data() + this->desc_(j, i)), val);
+  }
+
  protected:
   std::vector<T> elems_;
   TRI desc_;
+
+  // Given the element in the base half,
+  // return the value of element in the corresponding other half
+  virtual T element_in_other_half(const T &val) const = 0;
+
+  // Given the value of element in the other half,
+  // update the value of element in the corresponding base half
+  virtual void update_element_in_base_half(T &elem, const T &val) = 0;
 
  private:
   void init(const Matrix<T, 1> &v, upper_tag) { elems_.assign(v.begin(), v.end()) ; }
@@ -151,5 +254,49 @@ class PackedMatrix {
     }
   }
 };
+
+template<typename T, typename TRI>
+class SymmetricMatrix : public PackedMatrix<T, TRI> {
+ public:
+  SymmetricMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
+  SymmetricMatrix(std::size_t n, const Matrix<T, 1> &v) : PackedMatrix<T, TRI>(n, v) {}
+
+ private:
+  T element_in_other_half(const T &val) const override { return val; }
+  void update_element_in_base_half(T &elem, const T &val) override { elem = val; }
+};
+
+template<typename T, typename TRI>
+class TriangularMatrix : public PackedMatrix<T, TRI> {
+ public:
+  TriangularMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
+  TriangularMatrix(std::size_t n, const Matrix<T, 1> &v) : PackedMatrix<T, TRI>(n, v) {}
+
+ private:
+  T element_in_other_half(const T &val) const override { return 0; }
+  void update_element_in_base_half(T &elem, const T &val) override {}
+};
+
+template<typename T, typename TRI>
+class HermitianMatrix : public PackedMatrix<T, TRI> {
+ public:
+  HermitianMatrix(std::size_t n) : PackedMatrix<T, TRI>{n} {}
+
+ private:
+  T element_in_other_half(const T &val) const override { return std::conj(val); }
+  void update_element_in_base_half(T &elem, const T &val) override { elem = std::conj(val); }
+};
+
+template<typename T, typename TRI>
+std::ostream &operator<<(std::ostream &os, const PackedMatrix<T, TRI> &m) {
+  for (std::size_t i = 0; i != m.n_rows(); ++i) {
+    for (std::size_t j = 0; j != m.n_cols(); ++j) {
+      os << m(i, j) << "\t";
+    }
+    os << std::endl;
+  }
+
+  return os << std::endl;
+}
 
 #endif // SLAB_MATRIX_PACKED_MATRIX_H
