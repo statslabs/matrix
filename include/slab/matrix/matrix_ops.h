@@ -481,34 +481,16 @@ auto matmul_n(const Matrix<T, 2> &x, Args... args) -> decltype(matmul(x, matmul_
 
 template<typename T, std::size_t N, typename... Args>
 inline
-auto reshape(const MatrixBase<T, N> &x, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
+auto reshape(const Matrix<T, N> &x, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
   Matrix<T, sizeof...(args)> res(args...);
-
-  const int incx = x.descriptor().strides[0];
-
-  if (is_double<T>::value)
-    cblas_dcopy(
-        x.size(),
-        (double *) (x.data() + x.descriptor().start),
-        incx,
-        (double *) res.data(),
-        1
-    );
-  else if (is_float<T>::value)
-    cblas_scopy(
-        x.size(),
-        (float *) (x.data() + x.descriptor().start),
-        incx,
-        (float *) res.data(),
-        1
-    );
+  std::copy(x.begin(), x.end(), res.begin());
 
   return res;
 }
 
 template<typename T, std::size_t N>
 inline
-Matrix<T, 1> vectorise(const MatrixBase<T, N> &x) {
+Matrix<T, 1> vectorise(const Matrix<T, N> &x) {
   return reshape(x, x.size());
 }
 

@@ -31,6 +31,7 @@ class MatrixBase {
   MatrixBase &operator=(MatrixBase &&) = default;
   MatrixBase(MatrixBase const &) = default;
   MatrixBase &operator=(MatrixBase const &) = default;
+  ~MatrixBase() = default;
 
   template<typename... Exts>
   explicit MatrixBase(Exts... exts) : desc_{exts...} {}
