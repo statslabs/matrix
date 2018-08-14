@@ -20,8 +20,6 @@
 #ifndef SLAB_MATRIX_MATRIX_SLICE_H_
 #define SLAB_MATRIX_MATRIX_SLICE_H_
 
-#include "slab/matrix/traits.h"
-
 // A matrix slice specifies the N-dimensional matrix properties of a contiguous
 // region of memory. The slice is primarily described by 3 parameters:
 // A sequence of extents, a sequence of strides, and a starting offset. An

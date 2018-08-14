@@ -20,11 +20,6 @@
 #ifndef SLAB_MATRIX_MATRIX_H_
 #define SLAB_MATRIX_MATRIX_H_
 
-#include "slab/matrix/traits.h"
-#include "slab/matrix/matrix_base.h"
-#include "slab/matrix/matrix_ref.h"
-#include "slab/matrix/packed_matrix.h"
-
 template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
 
@@ -680,11 +675,8 @@ void Matrix<T, N>::clear() {
 }
 
 template<typename T>
-class Matrix<T, 0> {
+class Matrix<T, 0> : public MatrixBase<T, 0> {
  public:
-  static constexpr std::size_t order_ = 0;
-  using value_type = T;
-
   Matrix(const T &x = T{}) : elem_(x) {}
 
   Matrix &operator=(const T &value) {
@@ -692,14 +684,18 @@ class Matrix<T, 0> {
     return *this;
   }
 
-  T &operator()() { return elem_; }
+  std::size_t size() const { return 1; }
 
+  T *data() { return &elem_; }
+  const T *data() const { return &elem_; }
+
+  T &operator()() { return elem_; }
   const T &operator()() const { return elem_; }
 
-  const MatrixSlice<0> &descriptor() const { return desc_; }
-
+  operator T&() { return elem_; }
+  operator const T&() { return elem_; }
+  
  private:
-  MatrixSlice<0> desc_;
   T elem_;
 };
 

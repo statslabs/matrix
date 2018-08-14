@@ -20,9 +20,6 @@
 #ifndef SLAB_MATRIX_LAPACK_INTERFACE_H_
 #define SLAB_MATRIX_LAPACK_INTERFACE_H_
 
-#include "slab/matrix/matrix.h"
-#include "slab/matrix/traits.h"
-
 /// @addtogroup lapack_interface LAPACK INTERFACE
 /// @{
 
@@ -30,6 +27,7 @@
 /// @{
 
 template<typename T>
+inline
 int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 
   int info = 0;
@@ -67,6 +65,7 @@ int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 }
 
 template<typename T>
+inline
 int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -128,6 +127,7 @@ int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
 /// @}
 
 template <typename T>
+inline
 int lapack_gesvd(char jobu, char jobvt, Matrix<T, 2> &a,
                  Matrix<T, 1> &s, Matrix<T, 2> &u, Matrix<T, 2> &vt,
                  Matrix<T, 1> &superb)

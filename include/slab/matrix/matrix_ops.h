@@ -20,11 +20,6 @@
 #ifndef SLAB_MATRIX_OPERATIONS_H_
 #define SLAB_MATRIX_OPERATIONS_H_
 
-#include "slab/matrix/traits.h"
-#include "slab/matrix/matrix_base.h"
-#include "slab/matrix/matrix.h"
-#include "slab/matrix/matrix_ref.h"
-
 // Scalar Addtion
 //
 // res = X + val or res = val + X
@@ -272,6 +267,7 @@ Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> diag(const Matrix<T, 1> &x) {
   Matrix<T, 2> res(x.size(), x.size());
   res.diag() = x;
@@ -280,6 +276,7 @@ Matrix<T, 2> diag(const Matrix<T, 1> &x) {
 }
 
 template<typename T>
+inline
 T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
   assert(a.size() == b.size());
 
@@ -292,6 +289,7 @@ T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> matmul(const MatrixBase<T, 1> &a, const MatrixBase<T, 2> &b) {
   assert(b.n_rows() == 1);
 
@@ -302,6 +300,7 @@ Matrix<T, 2> matmul(const MatrixBase<T, 1> &a, const MatrixBase<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 1> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x) {
   assert(a.extent(1) == x.extent(0));
 
@@ -317,6 +316,7 @@ Matrix<T, 1> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x) {
 }
 
 template<>
+inline
 Matrix<double, 1> matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 1> &x) {
   assert(a.extent(1) == x.extent(0));
   const int m = a.n_rows();
@@ -345,6 +345,7 @@ Matrix<double, 1> matmul(const MatrixBase<double, 2> &a, const MatrixBase<double
 }
 
 template<>
+inline
 Matrix<float, 1> matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 1> &x) {
   assert(a.extent(1) == x.extent(0));
   const int m = a.n_rows();
@@ -373,6 +374,7 @@ Matrix<float, 1> matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 1
 }
 
 template<typename T>
+inline
 Matrix<T, 2> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
@@ -394,6 +396,7 @@ Matrix<T, 2> matmul(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
 }
 
 template<>
+inline
 Matrix<double, 2>
 matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 2> &b) {
   assert(a.extent(1) == b.extent(0));
@@ -428,6 +431,7 @@ matmul(const MatrixBase<double, 2> &a, const MatrixBase<double, 2> &b) {
 }
 
 template<>
+inline
 Matrix<float, 2>
 matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 2> &b) {
   assert(a.extent(1) == b.extent(0));
@@ -462,17 +466,21 @@ matmul(const MatrixBase<float, 2> &a, const MatrixBase<float, 2> &b) {
 }
 
 template<typename T>
+inline
 const Matrix<T, 1> &matmul_n(const Matrix<T, 1> &x) { return x; }
 
 template<typename T>
+inline
 const Matrix<T, 2> &matmul_n(const Matrix<T, 2> &x) { return x; }
 
 template<typename T, typename... Args>
+inline
 auto matmul_n(const Matrix<T, 2> &x, Args... args) -> decltype(matmul(x, matmul_n(args...))) {
   return matmul(x, matmul_n(args...));
 }
 
 template<typename T, std::size_t N, typename... Args>
+inline
 auto reshape(const MatrixBase<T, N> &x, Args... args) -> decltype(Matrix<T, sizeof...(args)>()) {
   Matrix<T, sizeof...(args)> res(args...);
 
@@ -499,12 +507,14 @@ auto reshape(const MatrixBase<T, N> &x, Args... args) -> decltype(Matrix<T, size
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, 1> vectorise(const MatrixBase<T, N> &x) {
   return reshape(x, x.size());
 }
 
 // join_vecs()
 template<typename T>
+inline
 Matrix<T, 1> join_vecs(const Matrix<T, 1> &a, const Matrix<T, 1> &b) {
   Matrix<T, 1> res(a.n_rows() + b.n_rows());
   res(slice{0, a.n_rows()}) = a;
@@ -514,6 +524,7 @@ Matrix<T, 1> join_vecs(const Matrix<T, 1> &a, const Matrix<T, 1> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &a, const MatrixRef<T, 1> &b) {
   Matrix<T, 1> res(a.n_rows() + b.n_rows());
   res(slice{0, a.n_rows()}) = a;
@@ -523,6 +534,7 @@ Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &a, const MatrixRef<T, 1> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 1> join_vecs(const Matrix<T, 1> &a, const MatrixRef<T, 1> &b) {
   Matrix<T, 1> res(a.n_rows() + b.n_rows());
   res(slice{0, a.n_rows()}) = a;
@@ -532,6 +544,7 @@ Matrix<T, 1> join_vecs(const Matrix<T, 1> &a, const MatrixRef<T, 1> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &a, const Matrix<T, 1> &b) {
   Matrix<T, 1> res(a.n_rows() + b.n_rows());
   res(slice{0, a.n_rows()}) = a;
@@ -541,11 +554,13 @@ Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &a, const Matrix<T, 1> &b) {
 }
 
 template<typename T, typename... Args>
+inline
 Matrix<T, 1> join_vecs(const Matrix<T, 1> &x, Args... args) {
   return join_vecs(x, join_vecs(args...));
 }
 
 template<typename T, typename... Args>
+inline
 Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &x, Args... args) {
   return join_vecs(x, join_vecs(args...));
 }
@@ -553,6 +568,7 @@ Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &x, Args... args) {
 // join_rows()
 
 template<typename T>
+inline
 Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -564,6 +580,7 @@ Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const MatrixRef<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -575,6 +592,7 @@ Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const MatrixRef<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const MatrixRef<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -586,6 +604,7 @@ Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const MatrixRef<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -599,6 +618,7 @@ Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
 // join_cols()
 
 template<typename T>
+inline
 Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   assert(a.n_cols() == b.n_cols());
 
@@ -610,6 +630,7 @@ Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const MatrixRef<T, 2> &b) {
   assert(a.n_cols() == b.n_cols());
 
@@ -621,6 +642,7 @@ Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const MatrixRef<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const MatrixRef<T, 2> &b) {
   assert(a.n_cols() == b.n_cols());
 
@@ -632,6 +654,7 @@ Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const MatrixRef<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
   assert(a.n_cols() == b.n_cols());
 
@@ -643,7 +666,8 @@ Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
 }
 
 template<typename T>
-Matrix<T, 2> kron(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
+inline
+Matrix<T, 2> kron(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   const std::size_t a_rows = a.n_rows();
   const std::size_t a_cols = a.n_cols();
   const std::size_t b_rows = b.n_rows();
@@ -660,10 +684,12 @@ Matrix<T, 2> kron(const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b) {
 }
 
 template<typename T>
+inline
 Matrix<T, 2> solve(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
 }
 
 template<>
+inline
 Matrix<double, 2> solve(const Matrix<double, 2> &a, const Matrix<double, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -691,6 +717,7 @@ Matrix<double, 2> solve(const Matrix<double, 2> &a, const Matrix<double, 2> &b) 
 }
 
 template<>
+inline
 Matrix<float, 2> solve(const Matrix<float, 2> &a, const Matrix<float, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
@@ -718,6 +745,7 @@ Matrix<float, 2> solve(const Matrix<float, 2> &a, const Matrix<float, 2> &b) {
 }
 
 template<>
+inline
 Matrix<std::complex<double>, 2>
 solve(const Matrix<std::complex<double>, 2> &a, const Matrix<std::complex<double>, 2> &b) {
   assert(a.n_rows() == b.n_rows());
@@ -746,6 +774,7 @@ solve(const Matrix<std::complex<double>, 2> &a, const Matrix<std::complex<double
 }
 
 template<>
+inline
 Matrix<std::complex<float>, 2>
 solve(const Matrix<std::complex<float>, 2> &a, const Matrix<std::complex<float>, 2> &b) {
   assert(a.n_rows() == b.n_rows());
@@ -774,17 +803,20 @@ solve(const Matrix<std::complex<float>, 2> &a, const Matrix<std::complex<float>,
 }
 
 template<typename T>
+inline
 Matrix<T, 2> solve(const Matrix<T, 2> &a) {
   Matrix<T, 2> b = eye<Matrix<T, 2>>(a.n_rows(), a.n_cols());
   return solve(a, b);
 }
 
 template<typename T>
+inline
 bool inv(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
   return true;
 }
 
 template<>
+inline
 bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
   b = eye<Matrix<double, 2>>(a.n_rows(), a.n_cols());
 
@@ -812,6 +844,7 @@ bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
 }
 
 template<typename T>
+inline
 bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
   int m = a.n_rows();
   int n = a.n_cols();
@@ -844,26 +877,31 @@ bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
 }
 
 template<typename T, std::size_t N>
+inline
 T sum(const Matrix<T, N> &x) {
   return std::accumulate(x.begin(), x.end(), T{0});
 }
 
 template<typename T, std::size_t N>
+inline
 T sum(const MatrixRef<T, N> &x) {
   return std::accumulate(x.begin(), x.end(), T{0});
 }
 
 template<typename T, std::size_t N>
+inline
 T prod(const Matrix<T, N> &x) {
   return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
 }
 
 template<typename T, std::size_t N>
+inline
 T prod(const MatrixRef<T, N> &x) {
   return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> exp(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });
@@ -872,6 +910,7 @@ Matrix<T, N> exp(const Matrix<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> exp(const MatrixRef<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });
@@ -880,6 +919,7 @@ Matrix<T, N> exp(const MatrixRef<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> log(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::log(a); });
@@ -888,6 +928,7 @@ Matrix<T, N> log(const Matrix<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> log(const MatrixRef<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::log(a); });
@@ -896,6 +937,7 @@ Matrix<T, N> log(const MatrixRef<T, N> &x) {
 }
 
 template<typename T, typename T1, std::size_t N>
+inline
 Matrix<T, N> pow(const Matrix<T, N> &x, const T1 &val) {
   static_assert(Convertible<T1, T>(),
                 "pow(): incompatible element types");
@@ -907,6 +949,7 @@ Matrix<T, N> pow(const Matrix<T, N> &x, const T1 &val) {
 }
 
 template<typename T, typename T1, std::size_t N>
+inline
 Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
   static_assert(Convertible<T1, T>(),
                 "pow(): incompatible element types");
@@ -918,6 +961,7 @@ Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> sin(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::sin(a); });
@@ -926,6 +970,7 @@ Matrix<T, N> sin(const Matrix<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> sin(const MatrixRef<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::sin(a); });
@@ -934,6 +979,7 @@ Matrix<T, N> sin(const MatrixRef<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> cos(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::cos(a); });
@@ -942,6 +988,7 @@ Matrix<T, N> cos(const Matrix<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> cos(const MatrixRef<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::cos(a); });
@@ -950,6 +997,7 @@ Matrix<T, N> cos(const MatrixRef<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> tan(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::tan(a); });
@@ -958,6 +1006,7 @@ Matrix<T, N> tan(const Matrix<T, N> &x) {
 }
 
 template<typename T, std::size_t N>
+inline
 Matrix<T, N> tan(const MatrixRef<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::tan(a); });

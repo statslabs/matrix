@@ -20,8 +20,6 @@
 #ifndef SLAB_MATRIX_PACKED_MATRIX_H_
 #define SLAB_MATRIX_PACKED_MATRIX_H_
 
-#include "slab/matrix/error.h"
-
 // Triangular matrix type
 struct lower_tag {};
 struct upper_tag {};

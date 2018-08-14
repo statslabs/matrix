@@ -20,8 +20,6 @@
 #ifndef SLAB_MATRIX_MATRIX_BASE_H_
 #define SLAB_MATRIX_MATRIX_BASE_H_
 
-#include "slab/matrix/matrix_slice.h"
-
 template<typename T, std::size_t N>
 class MatrixBase {
  public:

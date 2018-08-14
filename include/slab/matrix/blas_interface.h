@@ -20,11 +20,6 @@
 #ifndef SLAB_MATRIX_BLAS_INTERFACE_H_
 #define SLAB_MATRIX_BLAS_INTERFACE_H_
 
-#include "slab/matrix/error.h"
-#include "slab/matrix/traits.h"
-#include "slab/matrix/matrix.h"
-#include "slab/matrix/packed_matrix.h"
-
 /// @addtogroup blas_interface BLAS INTERFACE
 /// @{
 
@@ -34,6 +29,7 @@
 /// @brief Computes the sum of magnitudes of the vector elements
 /// @param x a vector.
 template<typename T>
+inline
 T blas_asum(const Matrix<T, 1> &x) {
   const int n = x.size();
   const int incx = x.descriptor().strides[0];
@@ -72,6 +68,7 @@ T blas_asum(const Matrix<T, 1> &x) {
 
 /// @brief Computes a vector-scalar product and adds the result to a vector
 template<typename T>
+inline
 void blas_axpy(const T &a, const MatrixBase<T, 1> &x, MatrixBase<T, 1> &y) {
   assert(x.size() == y.size());
 
@@ -122,6 +119,7 @@ void blas_axpy(const T &a, const MatrixBase<T, 1> &x, MatrixBase<T, 1> &y) {
 
 /// @brief Copies vector to another vector
 template<typename T>
+inline
 void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   y.clear();
   y = Matrix<T, 1>(x.size());
@@ -168,6 +166,7 @@ void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
 
 /// @brief Computes a vector-vector dot product
 template<typename T>
+inline
 T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
   assert(x.size() == y.size());
 
@@ -200,6 +199,7 @@ T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
 }
 
 /// @brief Computes a vector-vector dot product with double precision
+inline
 float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
                   const Matrix<float, 1> &sy) {
   assert(sx.size() == sy.size());
@@ -213,6 +213,7 @@ float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
 }
 
 /// @brief Computes a vector-vector dot product with double precision
+inline
 double blas_dsdot(const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
   assert(sx.size() == sy.size());
 
@@ -226,6 +227,7 @@ double blas_dsdot(const Matrix<float, 1> &sx, const Matrix<float, 1> &sy) {
 
 /// @brief Computes the Euclidean norm of a vector
 template<typename T>
+inline
 double blas_nrm2(const Matrix<T, 1> &x) {
   double res = 0.0;
 
@@ -284,6 +286,7 @@ double blas_nrm2(const Matrix<T, 1> &x) {
 
 /// @brief Computes the product of a vector by a scalar
 template<typename T>
+inline
 void blas_scal(const T a, Matrix<T, 1> &x) {
   const int n = x.size();
   const int incx = x.descriptor().strides[0];
@@ -322,6 +325,7 @@ void blas_scal(const T a, Matrix<T, 1> &x) {
 }
 
 template<typename T>
+inline
 void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   const int n = x.size();
   const int incx = x.descriptor().strides[0];
@@ -349,6 +353,7 @@ void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
 /// @param x a vector.
 /// @param y another vector.
 template<typename T>
+inline
 void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   assert(x.size() == y.size());
 
@@ -395,6 +400,7 @@ void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
 
 /// @brief Finds the index of the element with maximum absolute value
 template<typename T>
+inline
 std::size_t blas_iamax(const Matrix<T, 1> &x) {
   std::size_t res = 0;
   std::size_t incx = x.descriptor().strides[0];
@@ -435,6 +441,7 @@ std::size_t blas_iamax(const Matrix<T, 1> &x) {
 /// @{
 
 template<typename T>
+inline
 void blas_gemv(const CBLAS_TRANSPOSE trans,
                const T &alpha,
                const MatrixBase<T, 2> &a,
@@ -515,6 +522,7 @@ void blas_gemv(const CBLAS_TRANSPOSE trans,
 }
 
 template<typename T, typename TRI>
+inline
 void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI> &ap) {
   assert(x.size() == ap.n_rows());
 
@@ -550,6 +558,7 @@ void blas_spr(const T &alpha, const MatrixBase<T, 1> &x, SymmetricMatrix<T, TRI>
 }
 
 template<typename T, typename TRI>
+inline
 void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x, const MatrixBase<T, 1> &y, SymmetricMatrix<T, TRI> &ap) {
   assert(x.size() == y.size());
   assert(x.size() == ap.n_rows());
@@ -596,6 +605,7 @@ void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x, const MatrixBase<T, 1>
 /// @{
 
 template<typename T, typename T1, typename T2>
+inline
 void blas_gemm(const CBLAS_TRANSPOSE transa,
                const CBLAS_TRANSPOSE transb,
                const T1 &alpha,

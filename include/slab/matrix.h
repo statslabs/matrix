@@ -49,17 +49,18 @@ namespace slab {
 
 #include "slab/matrix/matrix_fwd.h"
 #include "slab/matrix/traits.h"
-
 #include "slab/matrix/slice.h"
 #include "slab/matrix/support.h"
 
 template<typename T, std::size_t N>
 using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 
+#include "slab/matrix/packed_matrix.h"
+
 #include "slab/matrix/matrix_slice.h"
+#include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
-#include "slab/matrix/packed_matrix.h"
 
 #include "slab/matrix/blas_interface.h"
 #include "slab/matrix/lapack_interface.h"
