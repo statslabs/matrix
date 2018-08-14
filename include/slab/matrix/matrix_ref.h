@@ -82,7 +82,7 @@ class MatrixRef : public MatrixBase<T, N> {
   operator()(const Args &... args);
 
   template<typename... Args>
-  Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
+  Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<const T, N>>
   operator()(const Args &... args) const;
   ///@}
 
@@ -326,7 +326,7 @@ MatrixRef<T, N>::operator()(const Args &... args) {
 
 template<typename T, size_t N>
 template<typename... Args>
-Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
+Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<const T, N>>
 MatrixRef<T, N>::operator()(const Args &... args) const {
   MatrixSlice<N> d;
   d.start = this->desc_.start + matrix_impl::do_slice(this->desc_, d, args...);
