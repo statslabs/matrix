@@ -278,6 +278,11 @@ class Matrix : public MatrixBase<T, N> {
   }
   ///@}
 
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  std::vector<T> std_vec() const {
+    return std::vector<T>(begin(), end());
+  }
+
  public:
   template<typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   Matrix(const Matrix<U, 1> &x)
