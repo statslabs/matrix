@@ -20,6 +20,22 @@
 #ifndef SLAB_MATRIX_OPERATIONS_H_
 #define SLAB_MATRIX_OPERATIONS_H_
 
+template <typename M1, typename M2>
+inline Enable_if<Matrix_type<M1>() && Matrix_type<M2>(), bool>
+operator==(const M1& a, const M2& b)
+{
+  assert(same_extents(a.descriptor(), b.descriptor()));
+  return std::equal(a.begin(), a.end(), b.begin());
+}
+
+template <typename M1, typename M2>
+inline Enable_if<Matrix_type<M1>() && Matrix_type<M2>(), bool>
+operator!=(const M1& a, const M2& b)
+{
+  return !(a == b);
+}
+
+
 // Scalar Addtion
 //
 // res = X + val or res = val + X
@@ -552,9 +568,13 @@ Matrix<T, 1> join_vecs(const MatrixRef<T, 1> &x, Args... args) {
 template<typename T>
 inline
 Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
-  assert(a.n_rows() == b.n_rows());
+  Matrix<T, 2> res;
+  if (a.empty() && b.empty()) return res;
+  else if (a.empty()) return b;
+  else if (b.empty()) return a;
+  else if (a.n_rows() != b.n_rows()) err_quit("joint_rows(): inconsistent number of rows");
 
-  Matrix<T, 2> res(a.n_rows(), a.n_cols() + b.n_cols());
+  res = slab::zeros<Matrix<T, 2>>(a.n_rows(), a.n_cols() + b.n_cols());
   res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
   res(slice{0, a.n_rows()}, slice{a.n_cols(), b.n_cols()}) = b;
 
@@ -602,9 +622,13 @@ Matrix<T, 2> join_rows(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
 template<typename T>
 inline
 Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
-  assert(a.n_cols() == b.n_cols());
+  Matrix<T, 2> res;
+  if (a.empty() && b.empty()) return res;
+  else if (a.empty()) return b;
+  else if (b.empty()) return a;
+  else if (a.n_cols() != b.n_cols()) err_quit("joint_rows(): inconsistent number of columns");
 
-  Matrix<T, 2> res(a.n_rows() + b.n_rows(), a.n_cols());
+  res = slab::zeros<Matrix<T, 2>>(a.n_rows() + b.n_rows(), a.n_cols());
   res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
   res(slice{a.n_rows(), b.n_rows()}, slice{0, a.n_cols()}) = b;
 

@@ -193,6 +193,7 @@ class Matrix : public MatrixBase<T, N> {
   iterator end() { return elems_.end(); }
   const_iterator end() const { return elems_.cend(); }
 
+  bool empty() const { return begin() == end(); }
   void clear();
 //  void save(const std::string &filename) {
 //    std::ostream os(filename);
