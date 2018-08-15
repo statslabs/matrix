@@ -47,6 +47,18 @@ class Matrix : public MatrixBase<T, N> {
   Matrix &operator=(Matrix const &) = default;
   ~Matrix() = default;
 
+  template <typename M, typename = Enable_if<Matrix_type<M>()>>
+  Matrix(const M& x) : MatrixBase<T, N>(x.descriptor()), elems_(x.begin(), x.end()) {
+    static_assert(Convertible<typename M::value_type, T>(), "");
+  }
+
+  template <typename M, typename = Enable_if<Matrix_type<M>()>>
+  Matrix& operator=(const M& x) {
+    this->desc_ = x.descriptor();
+    elems_.assign(x.begin(), x.end());
+    return *this;
+  }
+
   //! construct from MatrixRef
   template<typename U>
   Matrix(const MatrixRef<U, N> &);
@@ -203,9 +215,8 @@ class Matrix : public MatrixBase<T, N> {
       std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
       this->desc_.size = matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
 
-      std::istream_iterator<T> start(is), end;
-      elems_.reserve(this->desc_.size);
-      std::copy(start, end, elems_.begin());
+      std::istream_iterator<T> in(is), end;
+      elems_.assign(in, end);
     } else {
       std::cout << "Fail to open the file" << std::endl;
     }
