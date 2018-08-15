@@ -513,7 +513,7 @@ MatrixRef<const T, N - 1> Matrix<T, N>::col(std::size_t n) const {
 
 template<typename T, std::size_t N>
 MatrixRef<T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) {
-  assert(i < j);
+  assert(i <= j);
   assert(j < this->n_rows());
 
   MatrixSlice<N> d;
@@ -529,7 +529,7 @@ MatrixRef<T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) {
 
 template<typename T, std::size_t N>
 MatrixRef<const T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) const {
-  assert(i < j);
+  assert(i <= j);
   assert(j < this->n_rows());
 
   MatrixSlice<N> d;
@@ -546,7 +546,7 @@ MatrixRef<const T, N> Matrix<T, N>::rows(std::size_t i, std::size_t j) const {
 template<typename T, std::size_t N>
 MatrixRef<T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) {
   assert(N >= 2);
-  assert(i < j);
+  assert(i <= j);
   assert(j < this->n_cols());
 
   MatrixSlice<N> d;
@@ -565,7 +565,7 @@ MatrixRef<T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) {
 template<typename T, std::size_t N>
 MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
   assert(N >= 2);
-  assert(i < j);
+  assert(i <= j);
   assert(j < this->n_cols());
 
   MatrixSlice<N> d;
