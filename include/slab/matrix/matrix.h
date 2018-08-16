@@ -438,6 +438,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const MatrixRef<U, N> &x) {
   static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   this->desc_ = x.descriptor();
+  this->desc_.start = 0;
   elems_.assign(x.begin(), x.end());
   return *this;
 }
