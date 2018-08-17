@@ -18,3 +18,6 @@ target_link_libraries(demo Statslabs::matrix)
 
 add_executable(dgemm_example dgemm_example.cc)
 target_link_libraries(dgemm_example Statslabs::matrix)
+
+add_executable(lapacke_dgels lapack/lapacke_dgels.cc)
+target_link_libraries(lapacke_dgels Statslabs::matrix)

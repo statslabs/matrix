@@ -126,12 +126,11 @@ int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
 
 /// @}
 
-template <typename T>
+template<typename T>
 inline
 int lapack_gesvd(char jobu, char jobvt, Matrix<T, 2> &a,
                  Matrix<T, 1> &s, Matrix<T, 2> &u, Matrix<T, 2> &vt,
-                 Matrix<T, 1> &superb)
-{
+                 Matrix<T, 1> &superb) {
 
   int m = a.n_rows();
   int n = a.n_cols();
@@ -139,27 +138,27 @@ int lapack_gesvd(char jobu, char jobvt, Matrix<T, 2> &a,
   int ldu = m;
   int ldvt = n;
 
-  s = zeros<Matrix<T, 1>>(std::min(m,n));
+  s = zeros<Matrix<T, 1>>(std::min(m, n));
   u = zeros<Matrix<T, 2>>(m, m);
   vt = zeros<Matrix<T, 2>>(n, n);
-  superb = zeros<Matrix<T, 1>>(std::min(m,n));
+  superb = zeros<Matrix<T, 1>>(std::min(m, n));
 
   int info = 0;
-  if(is_double<T>::value) {
+  if (is_double<T>::value) {
     info = LAPACKE_dgesvd(
-      LAPACK_ROW_MAJOR,
-      jobu,
-      jobvt,
-      m,
-      n,
-      (double *) a.data(),
-      lda,
-      (double *) s.data(),
-      (double *) u.data(),
-      ldu,
-      (double *) vt.data(),
-      ldvt,
-      (double *) superb.data()
+        LAPACK_ROW_MAJOR,
+        jobu,
+        jobvt,
+        m,
+        n,
+        (double *) a.data(),
+        lda,
+        (double *) s.data(),
+        (double *) u.data(),
+        ldu,
+        (double *) vt.data(),
+        ldvt,
+        (double *) superb.data()
     );
   } else if (is_float<T>::value) {
     info = LAPACKE_sgesvd(
@@ -179,12 +178,74 @@ int lapack_gesvd(char jobu, char jobvt, Matrix<T, 2> &a,
     );
   }
 
-  if(jobu == 'S') u = u.cols(0, std::min(m,n) - 1);
-  if(jobvt == 'S') vt = vt.rows(0, std::min(m,n) - 1);
+  if (jobu == 'S') u = u.cols(0, std::min(m, n) - 1);
+  if (jobvt == 'S') vt = vt.rows(0, std::min(m, n) - 1);
 
   return info;
 }
 
+template<typename T>
+inline
+int lapack_gels(char trans, Matrix<T, 2> &a, Matrix<T, 2> &b) {
+  int m = a.n_rows();
+  int n = a.n_cols();
+  int nrhs = b.n_cols();
+  int lda = a.n_cols();
+  int ldb = b.n_cols();
+
+  int info = 0;
+  if (is_double<T>::value) {
+    info = LAPACKE_dgels(
+        LAPACK_ROW_MAJOR,
+        trans,
+        m,
+        n,
+        nrhs,
+        (double *) a.data(),
+        lda,
+        (double *) b.data(),
+        ldb
+    );
+  } else if (is_float<T>::value) {
+    info = LAPACKE_sgels(
+        LAPACK_ROW_MAJOR,
+        trans,
+        m,
+        n,
+        nrhs,
+        (float *) a.data(),
+        lda,
+        (float *) b.data(),
+        ldb
+    );
+  } else if (is_complex_double<T>::value) {
+    info = LAPACKE_zgels(
+        LAPACK_ROW_MAJOR,
+        trans,
+        m,
+        n,
+        nrhs,
+        reinterpret_cast<lapack_complex_double *>(a.data()),
+        lda,
+        reinterpret_cast<lapack_complex_double *>(b.data()),
+        ldb
+    );
+  } else if (is_complex_float<T>::value) {
+    info = LAPACKE_cgels(
+        LAPACK_ROW_MAJOR,
+        trans,
+        m,
+        n,
+        nrhs,
+        reinterpret_cast<lapack_complex_float *>(a.data()),
+        lda,
+        reinterpret_cast<lapack_complex_float *>(b.data()),
+        ldb
+    );
+  }
+
+  return info;
+}
 /// @}
 
 #endif // SLAB_MATRIX_LAPACK_INTERFACE_H_
