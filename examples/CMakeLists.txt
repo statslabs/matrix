@@ -13,8 +13,8 @@ target_link_libraries(04_matrix_arithmetric_operations Statslabs::matrix)
 add_executable(05_solving_linear_equations 05_solving_linear_equations.cc)
 target_link_libraries(05_solving_linear_equations Statslabs::matrix)
 
-add_executable(example example.cc)
-target_link_libraries(example Statslabs::matrix)
+add_executable(demo demo.cc)
+target_link_libraries(demo Statslabs::matrix)
 
 add_executable(dgemm_example dgemm_example.cc)
 target_link_libraries(dgemm_example Statslabs::matrix)

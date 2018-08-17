@@ -33,7 +33,7 @@ Statslabs.Matrix is the fundamental package of Statslabs for statistical computi
    ```
 
 ## Example program
-`demo.cc`:
+`examples/demo.cc`:
 ```c
 #include <iostream>
 #include "slab/matrix.h"
