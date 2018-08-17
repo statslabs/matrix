@@ -26,6 +26,9 @@ Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
 template<typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 2> &a);
 
+template<typename M>
+void raw_print(const M &m);
+
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
  * \tparam T value type.
@@ -47,13 +50,13 @@ class Matrix : public MatrixBase<T, N> {
   Matrix &operator=(Matrix const &) = default;
   ~Matrix() = default;
 
-  template <typename M, typename = Enable_if<Matrix_type<M>()>>
-  Matrix(const M& x) : MatrixBase<T, N>(x.descriptor()), elems_(x.begin(), x.end()) {
+  template<typename M, typename = Enable_if<Matrix_type<M>()>>
+  Matrix(const M &x) : MatrixBase<T, N>(x.descriptor()), elems_(x.begin(), x.end()) {
     static_assert(Convertible<typename M::value_type, T>(), "");
   }
 
-  template <typename M, typename = Enable_if<Matrix_type<M>()>>
-  Matrix& operator=(const M& x) {
+  template<typename M, typename = Enable_if<Matrix_type<M>()>>
+  Matrix& operator=(const M &x) {
     this->desc_ = x.descriptor();
     elems_.assign(x.begin(), x.end());
     return *this;
@@ -420,8 +423,16 @@ class Matrix : public MatrixBase<T, N> {
   ///@}
 
   template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
-  Matrix<T, 2> t() const { return transpose(*this); }
+  void print(const std::string &str = "") const {
+    printf("\n %s\n", str.c_str());
+    for (std::size_t i = 0; i != this->n_rows(); ++i) {
+      raw_print(row(i));
+      printf("\n");
+    }
+  }
 
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const { return transpose(*this); }
 };
 
 template<typename T, std::size_t N>
@@ -690,26 +701,39 @@ void Matrix<T, N>::clear() {
 template<typename T>
 class Matrix<T, 0> : public MatrixBase<T, 0> {
  public:
-  Matrix(const T &x = T{}) : elem_(x) {}
+  using iterator = typename std::array<T, 1>::iterator;
+  using const_iterator = typename std::array<T, 1>::const_iterator;
+
+  Matrix(const T &x = T{}) : elem_{x} {}
 
   Matrix &operator=(const T &value) {
-    elem_ = value;
+    elem_[0] = value;
     return *this;
   }
 
+  //! total number of elements
   std::size_t size() const { return 1; }
 
-  T *data() { return &elem_; }
-  const T *data() const { return &elem_; }
+  //! "flat" element access
+  ///@{
+  T *data() { return elem_.data(); }
+  const T *data() const { return elem_.data(); }
+  ///@}
 
-  T &operator()() { return elem_; }
-  const T &operator()() const { return elem_; }
 
-  operator T&() { return elem_; }
-  operator const T&() { return elem_; }
-  
+  T &operator()() { return elem_[0]; }
+  const T &operator()() const { return elem_[0]; }
+
+  operator T &() { return elem_[0]; }
+  operator const T &() { return elem_[0]; }
+
+  iterator begin() { return elem_.begin(); }
+  const_iterator begin() const { return elem_.cbegin(); }
+  iterator end() { return elem_.end(); }
+  const_iterator end() const { return elem_.end(); }
+
  private:
-  T elem_;
+  std::array<T, 1> elem_;
 };
 
 ////////////////////////////////////////
@@ -736,6 +760,13 @@ class Matrix<T, 0> : public MatrixBase<T, 0> {
 //  }
 //  return os << '}' << std::endl;
 //}
+
+template<typename M>
+void raw_print(const M &m) {
+  for (auto iter = m.begin(); iter != m.end(); ++iter) {
+    printf(" %6.2f", *iter);
+  }
+}
 
 template<typename M>
 Enable_if<Matrix_type<M>(), std::ostream &>

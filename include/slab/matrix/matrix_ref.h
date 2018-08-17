@@ -535,18 +535,32 @@ Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator%=(const
 }
 
 template<typename T>
-class MatrixRef<T, 0> {
+class MatrixRef<T, 0> : public MatrixBase<T, 0> {
  public:
-  static constexpr size_t order_ = 0;
-  using value_type = T;
+  using iterator = T*;
+  using const_iterator = const T*;
 
   MatrixRef(const MatrixSlice<0> &s, T *p) : ptr_{p + s.start} {}
+
+  //! total number of elements
+  std::size_t size() const { return 1; }
+
+  //! "flat" element access
+  ///@{
+  T *data() { return ptr_; }
+  const T *data() const { return ptr_; }
+  ///@}
 
   T &operator()() { return *ptr_; };
   const T &operator()() const { return *ptr_; }
 
   operator T &() { return *ptr_; }
   operator const T &() const { return *ptr_; }
+
+  iterator begin() { return iterator(data()); }
+  const_iterator begin() const { return const_iterator(data()); }
+  iterator end() { return iterator(data() + 1); }
+  const_iterator end() const { return const_iterator(data() + 1); }
 
  private:
   T *ptr_;
