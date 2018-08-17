@@ -264,6 +264,15 @@ class MatrixRef : public MatrixBase<T, N> {
   ///@}
 
   template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  void print(const std::string &str = "") const {
+    printf("\n %s\n", str.c_str());
+    for (std::size_t i = 0; i != this->n_rows(); ++i) {
+      raw_print(row(i));
+      printf("\n");
+    }
+  }
+
+  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const { return transpose(*this); }
 
 };

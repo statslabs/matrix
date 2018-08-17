@@ -81,4 +81,22 @@ const T &MatrixBase<T, N>::operator()(Args... args) const {
   return *(data() + this->desc_(args...));
 }
 
+template<typename M>
+Enable_if<Matrix_type<M>(), std::ostream &>
+operator<<(std::ostream &os, const M &m) {
+  os << '{';
+  for (std::size_t i = 0; i != m.n_rows(); ++i) {
+    os << m[i];
+    if (i + 1 != m.n_rows()) os << ',';
+  }
+  return os << '}';
+}
+
+template<typename M>
+void raw_print(const M &m) {
+  for (auto iter = m.begin(); iter != m.end(); ++iter) {
+    printf(" %6.2f", *iter);
+  }
+}
+
 #endif // SLAB_MATRIX_MATRIX_BASE_H_
