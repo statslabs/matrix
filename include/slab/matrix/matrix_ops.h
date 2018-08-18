@@ -692,12 +692,14 @@ Matrix<T, 2> kron(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
 template<typename T>
 inline
 Matrix<T, 2> solve(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+  err_quit("solve(): unsupported element type");
 }
 
 template<>
 inline
 Matrix<double, 2> solve(const Matrix<double, 2> &a, const Matrix<double, 2> &b) {
   assert(a.n_rows() == b.n_rows());
+  assert(a.n_rows() == a.n_cols());
 
   int n = a.n_rows();
   int nrhs = b.n_cols();
@@ -726,6 +728,7 @@ template<>
 inline
 Matrix<float, 2> solve(const Matrix<float, 2> &a, const Matrix<float, 2> &b) {
   assert(a.n_rows() == b.n_rows());
+  assert(a.n_rows() == a.n_cols());
 
   int n = a.n_rows();
   int nrhs = b.n_cols();
@@ -755,6 +758,7 @@ inline
 Matrix<std::complex<double>, 2>
 solve(const Matrix<std::complex<double>, 2> &a, const Matrix<std::complex<double>, 2> &b) {
   assert(a.n_rows() == b.n_rows());
+  assert(a.n_rows() == a.n_cols());
 
   int n = a.n_rows();
   int nrhs = b.n_cols();
@@ -784,6 +788,7 @@ inline
 Matrix<std::complex<float>, 2>
 solve(const Matrix<std::complex<float>, 2> &a, const Matrix<std::complex<float>, 2> &b) {
   assert(a.n_rows() == b.n_rows());
+  assert(a.n_rows() == a.n_cols());
 
   int n = a.n_rows();
   int nrhs = b.n_cols();
@@ -811,6 +816,8 @@ solve(const Matrix<std::complex<float>, 2> &a, const Matrix<std::complex<float>,
 template<typename T>
 inline
 Matrix<T, 2> solve(const Matrix<T, 2> &a) {
+  if (a.n_rows() != a.n_cols()) err_quit("solve(): matrix A should be a square matrix");
+
   Matrix<T, 2> b = eye<Matrix<T, 2>>(a.n_rows(), a.n_cols());
   return solve(a, b);
 }
