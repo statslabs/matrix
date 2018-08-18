@@ -20,18 +20,16 @@
 #ifndef SLAB_MATRIX_OPERATIONS_H_
 #define SLAB_MATRIX_OPERATIONS_H_
 
-template <typename M1, typename M2>
+template<typename M1, typename M2>
 inline Enable_if<Matrix_type<M1>() && Matrix_type<M2>(), bool>
-operator==(const M1& a, const M2& b)
-{
+operator==(const M1 &a, const M2 &b) {
   assert(same_extents(a.descriptor(), b.descriptor()));
   return std::equal(a.begin(), a.end(), b.begin());
 }
 
-template <typename M1, typename M2>
+template<typename M1, typename M2>
 inline Enable_if<Matrix_type<M1>() && Matrix_type<M2>(), bool>
-operator!=(const M1& a, const M2& b)
-{
+operator!=(const M1 &a, const M2 &b) {
   return !(a == b);
 }
 
@@ -1023,6 +1021,25 @@ inline
 Matrix<T, N> tan(const MatrixRef<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::tan(a); });
+
+  return res;
+}
+
+template<typename T>
+inline
+Matrix<T, 2> chol(const Matrix<T, 2> &x) {
+  assert(x.n_rows() == x.n_cols());
+
+  Matrix<T, 2> x_copy(x);
+  int info = lapack_potrf(x_copy);
+  if (info) err_quit("chol(): unsuccessful");
+
+  Matrix<T, 2> res = zeros<Matrix<T, 2>>(x.n_rows(), x.n_cols());
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = i; j != x.n_cols(); ++j) {
+      res(i, j) = x_copy(i, j);
+    }
+  }
 
   return res;
 }

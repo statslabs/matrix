@@ -66,6 +66,52 @@ int lapack_getrf(Matrix<T, 2> &a, Matrix<int, 1> &ipiv) {
 
 template<typename T>
 inline
+int lapack_potrf(Matrix<T, 2> &a) {
+
+  char uplo = 'U';
+  int n = a.n_rows();
+  int lda = a.n_cols();
+
+  int info = 0;
+  if (is_double<T>::value) {
+    info = LAPACKE_dpotrf(
+        LAPACK_ROW_MAJOR,
+        uplo,
+        n,
+        (double *) a.data(),
+        lda
+    );
+  } else if (is_float<T>::value) {
+    info = LAPACKE_spotrf(
+        LAPACK_ROW_MAJOR,
+        uplo,
+        n,
+        (float *) a.data(),
+        lda
+    );
+  } else if (is_complex_double<T>::value) {
+    info = LAPACKE_zpotrf(
+        LAPACK_ROW_MAJOR,
+        uplo,
+        n,
+        reinterpret_cast<lapack_complex_double *>(a.data()),
+        lda
+    );
+  } else if (is_complex_float<T>::value) {
+    info = LAPACKE_cpotrf(
+        LAPACK_ROW_MAJOR,
+        uplo,
+        n,
+        reinterpret_cast<lapack_complex_float *>(a.data()),
+        lda
+    );
+  }
+
+  return info;
+}
+
+template<typename T>
+inline
 int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
 
