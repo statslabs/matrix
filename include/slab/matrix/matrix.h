@@ -61,9 +61,10 @@ class Matrix : public MatrixBase<T, N> {
   Matrix &operator=(Matrix const &) = default;
   ~Matrix() = default;
 
+  //! construct from Matrix
   template <typename M, typename = Enable_if<Matrix_type<M>()>>
   Matrix(const M &x);
-
+  //! assign from Matrix
   template <typename M, typename = Enable_if<Matrix_type<M>()>>
   Matrix &operator=(const M &x);
 
