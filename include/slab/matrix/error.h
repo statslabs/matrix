@@ -22,6 +22,8 @@
 
 #include <cerrno>   // for definition of errno
 #include <cstdarg>  // ISO C variable arguments
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 namespace slab {
