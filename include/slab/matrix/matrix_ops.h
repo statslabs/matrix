@@ -355,21 +355,10 @@ inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
   const int incy = 1;
 
   Matrix<double, 1> y(m);
-  cblas_dgemv(
-      CblasRowMajor,  // Layout: row-major (CblasRowMajor) or column-major
-      // (CblasColMajor).
-      CblasNoTrans,       // trans : CblasNoTrans/CblasTrans/CblasTrans.
-      m,                  // m     : the number of rows of the matrix A.
-      n,                  // n     : the number of cols of the matrix A.
-      (const double)1.0,  // alpha : the scalar alpha.
-      (const double *)(a.data() + a.descriptor().start),  // the matrix A.
-      lda,  // lda   : the leading dimension of a.
-      (const double *)(x.data() + x.descriptor().start),  // the vector x.
-      incx,                // incx  : the increment for the elements of x.
-      (const double)0.0,   // beta  : the scalar beta.
-      (double *)y.data(),  // y     : the vector y.
-      incy                 // incy  : the increment for the elements of y.
-  );
+  cblas_dgemv(CblasRowMajor, CblasNoTrans, m, n, (const double)1.0,
+              (const double *)(a.data() + a.descriptor().start), lda,
+              (const double *)(x.data() + x.descriptor().start), incx,
+              (const double)0.0, (double *)y.data(), incy);
 
   return y;
 }
@@ -429,24 +418,11 @@ inline Matrix<double, 2> matmul(const MatrixBase<double, 2> &a,
   const int ldc = b.n_cols();
 
   Matrix<double, 2> c(m, n);
-  cblas_dgemm(
-      CblasRowMajor,  // Layout: row-major (CblasRowMajor) or column-major
-      // (CblasColMajor).
-      CblasNoTrans,  // transa: CblasNoTrans/CblasTrans/CblasConjTrans.
-      CblasNoTrans,  // transb: CblasNoTrans/CblasTrans/CblasConjTrans.
-      m,  // m     : the number of rows of the matrix op(A) and of the matrix C.
-      n,  // n     : the number of cols of the matrix op(B) and of the matrix C.
-      k,  // k     : the number of cols of the matrix op(A) and the number of
-      // rows of the matrix op(B).
-      (const double)1.0,  // alpha : the scalar alpha.
-      (const double *)(a.data() + a.descriptor().start),  // the matrix A.
-      lda,  // lda   : the leading dimension of a.
-      (const double *)(b.data() + b.descriptor().start),  // the matrix B.
-      ldb,                 // ldb   : the leading dimension of b.
-      (const double)0.0,   // beta  : the scalar beta.
-      (double *)c.data(),  // c     : the matrix C.
-      ldc                  // ldc   : the leading dimension of c.
-  );
+  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k,
+              (const double)1.0,
+              (const double *)(a.data() + a.descriptor().start), lda,
+              (const double *)(b.data() + b.descriptor().start), ldb,
+              (const double)0.0, (double *)c.data(), ldc);
 
   return c;
 }

@@ -450,7 +450,8 @@ class Matrix : public MatrixBase<T, N> {
 template <typename T, std::size_t N>
 template <typename U>
 Matrix<T, N>::Matrix(const MatrixRef<U, N> &x)  // copy desc_ and elements
-    : MatrixBase<T, N>{x.descriptor().extents}, elems_{x.begin(), x.end()} {
+    : MatrixBase<T, N>{x.descriptor().extents},
+      elems_{x.begin(), x.end()} {
   static_assert(Convertible<U, T>(),
                 "Matrix constructor: incompatible element types");
 }

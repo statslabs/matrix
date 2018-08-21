@@ -339,21 +339,11 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
   const int incy = y.descriptor().strides[0];
 
   if (is_double<T>::value) {
-    cblas_dgemv(
-        CblasRowMajor,  // Layout: row-major (CblasRowMajor) or column-major
-        // (CblasColMajor).
-        trans,                // trans : CblasNoTrans/CblasTrans/CblasTrans.
-        m,                    // m     : the number of rows of the matrix A.
-        n,                    // n     : the number of cols of the matrix A.
-        (const double)alpha,  // alpha : the scalar alpha.
-        (const double *)(a.data() + a.descriptor().start),  // the matrix A.
-        lda,  // lda   : the leading dimension of a.
-        (const double *)(x.data() + x.descriptor().start),  // the vector x.
-        incx,                // incx  : the increment for the elements of x.
-        (const double)beta,  // beta  : the scalar beta.
-        (double *)(y.data() + y.descriptor().start),  // the vector y.
-        incy  // incy  : the increment for the elements of y.
-    );
+    cblas_dgemv(CblasRowMajor, trans, m, n, (const double)alpha,
+                (const double *)(a.data() + a.descriptor().start), lda,
+                (const double *)(x.data() + x.descriptor().start), incx,
+                (const double)beta, (double *)(y.data() + y.descriptor().start),
+                incy);
   } else if (is_float<T>::value) {
     cblas_sgemv(CblasRowMajor, trans, m, n, (const float)alpha,
                 (const float *)(a.data() + a.descriptor().start), lda,
@@ -457,26 +447,11 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
   const int ldc = c.n_cols();
 
   if (is_double<T>::value) {
-    cblas_dgemm(
-        CblasRowMajor,  // Layout: row-major (CblasRowMajor) or column-major
-        // (CblasColMajor).
-        transa,  // transa: CblasNoTrans/CblasTrans/CblasConjTrans.
-        transb,  // transb: CblasNoTrans/CblasTrans/CblasConjTrans.
-        m,  // m     : the number of rows of the matrix op(A) and of the matrix
-        // C.
-        n,  // n     : the number of cols of the matrix op(B) and of the matrix
-        // C.
-        k,  // k     : the number of cols of the matrix op(A) and the number of
-        // rows of the matrix op(B).
-        (const double)alpha,  // alpha : the scalar alpha.
-        (const double *)(a.data() + a.descriptor().start),  // the matrix A.
-        lda,  // lda   : the leading dimension of a.
-        (const double *)(b.data() + b.descriptor().start),  // the matrix B.
-        ldb,                 // ldb   : the leading dimension of b.
-        (const double)beta,  // beta  : the scalar beta.
-        (double *)(c.data() + c.descriptor().start),  // the matrix C.
-        ldc  // ldc   : the leading dimension of c.
-    );
+    cblas_dgemm(CblasRowMajor, transa, transb, m, n, k, (const double)alpha,
+                (const double *)(a.data() + a.descriptor().start), lda,
+                (const double *)(b.data() + b.descriptor().start), ldb,
+                (const double)beta, (double *)(c.data() + c.descriptor().start),
+                ldc);
   } else if (is_float<T>::value) {
     cblas_sgemm(CblasRowMajor, transa, transb, m, n, k, (const float)alpha,
                 (const float *)(a.data() + a.descriptor().start), lda,
