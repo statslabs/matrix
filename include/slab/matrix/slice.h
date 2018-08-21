@@ -20,6 +20,12 @@
 #ifndef SLAB_MATRIX_SLICE_H_
 #define SLAB_MATRIX_SLICE_H_
 
+#include <cstddef>
+
+#include <iostream>
+
+namespace slab {
+
 // A slice describes a sequence of elements in some dimension (or row) of a
 // matrix. It is a triple comprised of a starting index, a number of elements,
 // and the stride between subsequent elements.
@@ -36,18 +42,21 @@ struct slice {
 
   static slice all;
 
-  std::size_t start;   // first index
-  std::size_t length;  // number of indices included (can be used for range checking)
+  std::size_t start;  // first index
+  std::size_t
+      length;  // number of indices included (can be used for range checking)
   std::size_t stride;  // distance between elements in sequence
 };
 
 // slice slice::all {0, (size_t)-1, 1};
 
-//std::ostream &operator<<(std::ostream &os, const slice &s) {
+// std::ostream &operator<<(std::ostream &os, const slice &s) {
 //  os << "start: " << s.start
 //     << ", length: " << s.length
 //     << ", stride: " << s.stride;
 //  return os;
 //}
 
-#endif // SLAB_MATRIX_SLICE_H_
+}  // namespace slab
+
+#endif  // SLAB_MATRIX_SLICE_H_

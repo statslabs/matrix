@@ -6,10 +6,7 @@
 
 namespace slab {
 TEST(MatrixSubscriptTest, SubscriptByFortranStyle) {
-  Matrix<int,2> m {
-      {01,02,03},
-      {11,12,13}
-  };
+  Matrix<int, 2> m{{01, 02, 03}, {11, 12, 13}};
   m(1, 2) = 99;
 
   EXPECT_EQ(1, m(0, 0));
@@ -20,6 +17,6 @@ TEST(MatrixSubscriptTest, SubscriptByFortranStyle) {
   EXPECT_EQ(99, m(1, 2));
 }
 
-}
+}  // namespace slab
 
-#endif //MATRIX_TEST_MATRIX_SUBSCRIPT_H_
+#endif  // MATRIX_TEST_MATRIX_SUBSCRIPT_H_

@@ -5,17 +5,9 @@ using namespace std;
 using namespace slab;
 
 int main() {
-  mat A = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
+  mat A = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
-  mat B = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
+  mat B = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
   // Element-wise addition
   cout << "A + B = " << A + B << endl;

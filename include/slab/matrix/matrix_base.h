@@ -20,7 +20,19 @@
 #ifndef SLAB_MATRIX_MATRIX_BASE_H_
 #define SLAB_MATRIX_MATRIX_BASE_H_
 
-template<typename T, std::size_t N>
+#include <cassert>
+#include <cstddef>
+#include <cstdio>
+
+#include <iostream>
+
+#include "slab/matrix/matrix_slice.h"
+#include "slab/matrix/support.h"
+#include "slab/matrix/traits.h"
+
+namespace slab {
+
+template <typename T, std::size_t N>
 class MatrixBase {
  public:
   static constexpr std::size_t order_ = N;
@@ -33,7 +45,7 @@ class MatrixBase {
   MatrixBase &operator=(MatrixBase const &) = default;
   ~MatrixBase() = default;
 
-  template<typename... Exts>
+  template <typename... Exts>
   explicit MatrixBase(Exts... exts) : desc_{exts...} {}
 
   explicit MatrixBase(const MatrixSlice<N> &ms) : desc_{ms} {}
@@ -57,33 +69,33 @@ class MatrixBase {
   std::size_t n_cols() const { return desc_.extents[1]; }
 
   // m(i,j,k) subscripting with integers
-  template<typename... Args>
+  template <typename... Args>
   T &operator()(Args... args);
 
-  template<typename... Args>
+  template <typename... Args>
   const T &operator()(Args... args) const;
 
  protected:
   MatrixSlice<N> desc_;
 };
 
-template<typename T, std::size_t N>
-template<typename... Args>
+template <typename T, std::size_t N>
+template <typename... Args>
 T &MatrixBase<T, N>::operator()(Args... args) {
   assert(matrix_impl::check_bounds(this->desc_, args...));
   return *(data() + this->desc_(args...));
 }
 
-template<typename T, std::size_t N>
-template<typename... Args>
+template <typename T, std::size_t N>
+template <typename... Args>
 const T &MatrixBase<T, N>::operator()(Args... args) const {
   assert(matrix_impl::check_bounds(this->desc_, args...));
   return *(data() + this->desc_(args...));
 }
 
-template<typename M>
-Enable_if<Matrix_type<M>(), std::ostream &>
-operator<<(std::ostream &os, const M &m) {
+template <typename M>
+Enable_if<Matrix_type<M>(), std::ostream &> operator<<(std::ostream &os,
+                                                       const M &m) {
   os << '{';
   for (std::size_t i = 0; i != m.n_rows(); ++i) {
     os << m[i];
@@ -92,11 +104,13 @@ operator<<(std::ostream &os, const M &m) {
   return os << '}';
 }
 
-template<typename M>
+template <typename M>
 void raw_print(const M &m) {
   for (auto iter = m.begin(); iter != m.end(); ++iter) {
     printf(" %6.2f", *iter);
   }
 }
 
-#endif // SLAB_MATRIX_MATRIX_BASE_H_
+}  // namespace slab
+
+#endif  // SLAB_MATRIX_MATRIX_BASE_H_

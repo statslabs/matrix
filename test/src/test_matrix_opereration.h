@@ -11,7 +11,7 @@
 namespace slab {
 
 TEST(MatrixOperationTest, Diag_Vec) {
-  vec v = {1,2,3};
+  vec v = {1, 2, 3};
   mat m = diag(v);
 
   EXPECT_EQ(1, m(0, 0));
@@ -26,11 +26,7 @@ TEST(MatrixOperationTest, Diag_Vec) {
 }
 
 TEST(MatrixOperationTest, Transpose_Mat) {
-  mat m1 = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
+  mat m1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
   mat m2 = transpose(m1);
 
   EXPECT_EQ(1, m2(0, 0));
@@ -44,13 +40,8 @@ TEST(MatrixOperationTest, Transpose_Mat) {
   EXPECT_EQ(9, m2(2, 2));
 }
 
-
 TEST(MatrixOperationTest, Matmul_Mat_Vec) {
-  mat m1 = {
-      {8, 4, 7},
-      {3, 5, 1},
-      {1, 3, 2}
-  };
+  mat m1 = {{8, 4, 7}, {3, 5, 1}, {1, 3, 2}};
   vec v1 = {-1, 2, 1};
   vec v2 = {3, 2, 3};
 
@@ -62,15 +53,8 @@ TEST(MatrixOperationTest, Matmul_Mat_Vec) {
 }
 
 TEST(MatrixOperationTest, Matmul_Mat_Mat) {
-  mat m1 = {
-      {1, 2, 3},
-      {4, 5, 6}
-  };
-  mat m2 = {
-      {7, 8},
-      {9, 10},
-      {11, 12}
-  };
+  mat m1 = {{1, 2, 3}, {4, 5, 6}};
+  mat m2 = {{7, 8}, {9, 10}, {11, 12}};
   mat res = matmul(m1, m2);
 
   EXPECT_EQ(58, res(0, 0));
@@ -80,11 +64,7 @@ TEST(MatrixOperationTest, Matmul_Mat_Mat) {
 }
 
 TEST(MatrixOperationTest, Matmul_N) {
-  mat m1 = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
+  mat m1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
   mat m2 = m1;
   mat m3 = m1;
 
@@ -104,11 +84,7 @@ TEST(MatrixOperationTest, Matmul_N) {
 }
 
 TEST(MatrixOperationTest, Sum) {
-  mat m = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
+  mat m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
   double res = sum(m);
 
@@ -116,11 +92,7 @@ TEST(MatrixOperationTest, Sum) {
 }
 
 TEST(MatrixOperationTest, Prod) {
-  mat m = {
-      {1, 2, 3},
-      {4, 5, 6},
-      {7, 8, 9}
-  };
+  mat m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
   double res = prod(m);
 
@@ -172,6 +144,6 @@ TEST(MatrixOperationTest, Pow) {
   EXPECT_EQ(0.5, res(2, 2));
 }
 
-}
+}  // namespace slab
 
-#endif //MATRIX_TEST_MATRIX_OPERERATION_H
+#endif  // MATRIX_TEST_MATRIX_OPERERATION_H

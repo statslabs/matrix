@@ -20,7 +20,8 @@ struct Back_subst_failure : public exception {
   const char *what() const noexcept { return "back substitution failure"; }
 };
 
-Vec scale_and_add(const MatrixRef<double, 1> &v1, double s, const MatrixRef<double, 1> &v2) {
+Vec scale_and_add(const MatrixRef<double, 1> &v1, double s,
+                  const MatrixRef<double, 1> &v2) {
   Vec res = v2;
   blas_axpy(s, v1, res);
 
@@ -43,7 +44,7 @@ void classical_elimination(Mat2d &A, Vec &b) {
     // fill zeros into each element under the diagonal of the ith row:
     for (std::size_t i = j + 1; i != n; ++i) {
       const double mult = A(i, j) / pivot;
-      A[i](slice(j)) = scale_and_add(A[j](slice(j)), -mult,  A[i](slice(j)));
+      A[i](slice(j)) = scale_and_add(A[j](slice(j)), -mult, A[i](slice(j)));
       b(i) -= mult * b(j);  // make the corresponding change to b
     }
   }
@@ -69,11 +70,7 @@ Vec classical_gaussian_elimination(Mat2d A, Vec b) {
 }
 
 int main() {
-  Mat2d A = {
-      {2, 1, -1},
-      {-3, -1, 2},
-      {-2, 1, 2}
-  };
+  Mat2d A = {{2, 1, -1}, {-3, -1, 2}, {-2, 1, 2}};
 
   Vec b = {8, -11, -3};
 

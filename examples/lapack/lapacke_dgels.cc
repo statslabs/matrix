@@ -56,8 +56,8 @@
   -0.29   0.46   0.41   0.24
 */
 
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include "slab/matrix.h"
 
@@ -66,22 +66,11 @@ int main() {
   /* Locals */
   int info;
   /* Local arrays */
-  slab::mat a = {
-      {1.44, -7.84, -4.39, 4.53},
-      {-9.96, -0.28, -3.24, 3.83},
-      {-7.55, 3.24, 6.27, -6.64},
-      {8.34, 8.09, 5.28, 2.06},
-      {7.08, 2.52, 0.74, -2.47},
-      {-5.45, -5.70, -1.19, 4.70}
-  };
-  slab::mat b = {
-      {8.58, 9.35},
-      {8.26, -4.43},
-      {8.48, -0.70},
-      {-5.28, -0.26},
-      {5.72, -7.36},
-      {8.93, -2.52}
-  };
+  slab::mat a = {{1.44, -7.84, -4.39, 4.53}, {-9.96, -0.28, -3.24, 3.83},
+                 {-7.55, 3.24, 6.27, -6.64}, {8.34, 8.09, 5.28, 2.06},
+                 {7.08, 2.52, 0.74, -2.47},  {-5.45, -5.70, -1.19, 4.70}};
+  slab::mat b = {{8.58, 9.35},   {8.26, -4.43}, {8.48, -0.70},
+                 {-5.28, -0.26}, {5.72, -7.36}, {8.93, -2.52}};
   /* Executable statements */
   printf("lapack_dgels Example Program Results\n");
   /* Solve the equations AX = B */
@@ -98,7 +87,8 @@ int main() {
   /* Print residual sum of squares for the solution */
   printf("\n %s\n", "Residual sum of squares for the solution");
   for (std::size_t j = 0; j < b.n_cols(); ++j) {
-    slab::vec tmp = b(slab::slice{a.n_cols(), a.n_rows() - a.n_cols()}, slab::slice{j, 1});
+    slab::vec tmp =
+        b(slab::slice{a.n_cols(), a.n_rows() - a.n_cols()}, slab::slice{j, 1});
     double norm = slab::dot(tmp, tmp);
     printf(" %6.2f", norm);
   }
@@ -107,5 +97,3 @@ int main() {
   a.print("Details of QR factorization");
   exit(0);
 } /* End of lapack_gels Example */
-
-
