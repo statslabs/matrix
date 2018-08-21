@@ -62,17 +62,10 @@ class Matrix : public MatrixBase<T, N> {
   ~Matrix() = default;
 
   template <typename M, typename = Enable_if<Matrix_type<M>()>>
-  Matrix(const M &x)
-      : MatrixBase<T, N>(x.descriptor()), elems_(x.begin(), x.end()) {
-    static_assert(Convertible<typename M::value_type, T>(), "");
-  }
+  Matrix(const M &x);
 
   template <typename M, typename = Enable_if<Matrix_type<M>()>>
-  Matrix &operator=(const M &x) {
-    this->desc_ = x.descriptor();
-    elems_.assign(x.begin(), x.end());
-    return *this;
-  }
+  Matrix &operator=(const M &x);
 
   //! construct from MatrixRef
   template <typename U>
@@ -446,6 +439,23 @@ class Matrix : public MatrixBase<T, N> {
     return transpose(*this);
   }
 };
+
+template <typename T, std::size_t N>
+template <typename M, typename X>
+Matrix<T, N>::Matrix(const M &x)
+    : MatrixBase<T, N>(x.descriptor()), elems_(x.begin(), x.end()) {
+  static_assert(Convertible<typename M::value_type, T>(), "");
+}
+
+template <typename T, std::size_t N>
+template <typename M, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const M &x) {
+  static_assert(Convertible<typename M::value_type, T>(), "");
+
+  this->desc_ = x.descriptor();
+  elems_.assign(x.begin(), x.end());
+  return *this;
+}
 
 template <typename T, std::size_t N>
 template <typename U>
