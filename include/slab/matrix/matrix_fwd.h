@@ -20,16 +20,22 @@
 #ifndef SLAB_MATRIX_MATRIX_FWD_H_
 #define SLAB_MATRIX_MATRIX_FWD_H_
 
+#include <cstddef>
+
+namespace slab {
+
 // Declarations
 struct slice;
 
-template<std::size_t N>
+template <std::size_t N>
 struct MatrixSlice;
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 class Matrix;
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 class MatrixRef;
 
-#endif // SLAB_MATRIX_MATRIX_FWD_H_
+}  // namespace slab
+
+#endif  // SLAB_MATRIX_MATRIX_FWD_H_

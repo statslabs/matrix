@@ -1,7 +1,3 @@
-//
-// Created by Yi Pan (Institute of Cancer and Genomic Sciences) on 19/03/2018.
-//
-
 #ifndef MATRIX_TEST_MATRIX_BLAS_H
 #define MATRIX_TEST_MATRIX_BLAS_H
 
@@ -109,20 +105,12 @@ TEST(BLASlevel1Test, IAMAX) {
 }
 
 TEST(BLASlevel2Test, GEMV) {
-  Matrix<double, 2> a1 = {
-      {8.0, 3.0, 1.0},
-      {4.0, 5.0, 3.0},
-      {7.0, 1.0, 2.0}
-  };
+  Matrix<double, 2> a1 = {{8.0, 3.0, 1.0}, {4.0, 5.0, 3.0}, {7.0, 1.0, 2.0}};
 
   Matrix<double, 1> x1 = {-1.0, 2.0, 1.0};
   Matrix<double, 1> y1 = {1.5, 1.0, 1.5};
 
-  Matrix<float, 2> a2 = {
-      {8.0, 3.0, 1.0},
-      {4.0, 5.0, 3.0},
-      {7.0, 1.0, 2.0}
-  };
+  Matrix<float, 2> a2 = {{8.0, 3.0, 1.0}, {4.0, 5.0, 3.0}, {7.0, 1.0, 2.0}};
 
   Matrix<float, 1> x2 = {-1.0, 2.0, 1.0};
   Matrix<float, 1> y2 = {1.5, 1.0, 1.5};
@@ -136,35 +124,81 @@ TEST(BLASlevel2Test, GEMV) {
   EXPECT_EQ(10, y2(0));
   EXPECT_EQ(10, y2(1));
   EXPECT_EQ(10, y2(2));
+}
 
+TEST(BLASlevel2Test, SPR) {
+  Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
+  SymmetricMatrix<double, upper> ap1(3);
+
+  Matrix<float, 1> x2 = {1.0, 2.0, 3.0};
+  SymmetricMatrix<float, upper> ap2(3);
+
+  for (size_t i = 0; i != 3; ++i) {
+    for (size_t j = 0; j <= i; ++j) {
+      ap1(i, j) = i * 10 + j;
+      ap2(i, j) = i * 10 + j;
+    }
+  }
+
+  blas_spr(2.0, x1, ap1);
+  blas_spr(2.0f, x2, ap2);
+
+  EXPECT_EQ(2, ap1(0, 0));
+  EXPECT_EQ(14, ap1(0, 1));
+  EXPECT_EQ(26, ap1(0, 2));
+  EXPECT_EQ(19, ap1(1, 1));
+  EXPECT_EQ(33, ap1(1, 2));
+  EXPECT_EQ(40, ap1(2, 2));
+  EXPECT_EQ(2, ap2(0, 0));
+  EXPECT_EQ(14, ap2(0, 1));
+  EXPECT_EQ(26, ap2(0, 2));
+  EXPECT_EQ(19, ap2(1, 1));
+  EXPECT_EQ(33, ap2(1, 2));
+  EXPECT_EQ(40, ap2(2, 2));
+}
+
+TEST(BLASlevel2Test, SPR2) {
+  Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
+  Matrix<double, 1> y1 = {1.0, 2.0, 3.0};
+  SymmetricMatrix<double, upper> ap1(3);
+
+  Matrix<float, 1> x2 = {1.0, 2.0, 3.0};
+  Matrix<float, 1> y2 = {1.0, 2.0, 3.0};
+  SymmetricMatrix<float, upper> ap2(3);
+
+  for (size_t i = 0; i != 3; ++i) {
+    for (size_t j = 0; j <= i; ++j) {
+      ap1(i, j) = i * 10 + j;
+      ap2(i, j) = i * 10 + j;
+    }
+  }
+
+  blas_spr2(1.0, x1, y1, ap1);
+  blas_spr2(1.0f, x2, y2, ap2);
+
+  EXPECT_EQ(2, ap1(0, 0));
+  EXPECT_EQ(14, ap1(0, 1));
+  EXPECT_EQ(26, ap1(0, 2));
+  EXPECT_EQ(19, ap1(1, 1));
+  EXPECT_EQ(33, ap1(1, 2));
+  EXPECT_EQ(40, ap1(2, 2));
+  EXPECT_EQ(2, ap2(0, 0));
+  EXPECT_EQ(14, ap2(0, 1));
+  EXPECT_EQ(26, ap2(0, 2));
+  EXPECT_EQ(19, ap2(1, 1));
+  EXPECT_EQ(33, ap2(1, 2));
+  EXPECT_EQ(40, ap2(2, 2));
 }
 
 TEST(BLASlevel3Test, GEMM) {
-
-  Matrix<double, 2> a1 = {
-      {1.0, -3.0},
-      {2.0, 4.0},
-      {1.0, -1.0}
-  };
-  Matrix<float, 2> a2 = {
-      {1.0, -3.0},
-      {2.0, 4.0},
-      {1.0, -1.0}
-  };
+  Matrix<double, 2> a1 = {{1.0, -3.0}, {2.0, 4.0}, {1.0, -1.0}};
+  Matrix<float, 2> a2 = {{1.0, -3.0}, {2.0, 4.0}, {1.0, -1.0}};
 
   Matrix<double, 2> b1 = a1;
   Matrix<float, 2> b2 = a2;
 
-  Matrix<double, 2> c1 = {
-      {0.5, 0.5, 0.5},
-      {0.5, 0.5, 0.5},
-      {0.5, 0.5, 0.5}
-  };
-  Matrix<float, 2> c2 = {
-      {0.5, 0.5, 0.5},
-      {0.5, 0.5, 0.5},
-      {0.5, 0.5, 0.5}
-  };
+  Matrix<double, 2> c1 = {{0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}};
+  Matrix<float, 2> c2 = {{0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}};
 
   blas_gemm(CblasNoTrans, CblasTrans, 1.0, a1, b1, 2.0, c1);
   blas_gemm(CblasNoTrans, CblasTrans, 1.0f, a2, b2, 2.0f, c2);
@@ -190,6 +224,6 @@ TEST(BLASlevel3Test, GEMM) {
   EXPECT_EQ(3.0, c2(2, 2));
 }
 
-}
+}  // namespace slab
 
-#endif //MATRIX_TEST_MATRIX_BLAS_H
+#endif  // MATRIX_TEST_MATRIX_BLAS_H

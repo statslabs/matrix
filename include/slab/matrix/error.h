@@ -1,0 +1,146 @@
+//
+// Copyright 2018 The Statslabs Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+/// @file error.h
+/// @brief Error routines
+
+#ifndef STATSLABS_MATRIX_ERROR_H_
+#define STATSLABS_MATRIX_ERROR_H_
+
+#include <cerrno>   // for definition of errno
+#include <cstdarg>  // ISO C variable arguments
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+namespace slab {
+
+static void err_doit(int, int, const char *, va_list);
+
+/*
+ * Nonfatal error related to a system call.
+ * Print a message and return.
+ */
+inline void err_ret(const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(1, errno, fmt, ap);
+  va_end(ap);
+}
+
+/*
+ * Fatal error related to a system call.
+ * Print a message and terminate.
+ */
+inline void err_sys(const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(1, errno, fmt, ap);
+  va_end(ap);
+  exit(1);
+}
+
+/*
+ * Nonfatal error unrelated to a system call.
+ * Error code passed as explict parameter.
+ * Print a message and return.
+ */
+inline void err_cont(int error, const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(1, error, fmt, ap);
+  va_end(ap);
+}
+
+/*
+ * Fatal error unrelated to a system call.
+ * Error code passed as explict parameter.
+ * Print a message and terminate.
+ */
+inline void err_exit(int error, const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(1, error, fmt, ap);
+  va_end(ap);
+  exit(1);
+}
+
+/*
+ * Fatal error related to a system call.
+ * Print a message, dump core, and terminate.
+ */
+inline void err_dump(const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(1, errno, fmt, ap);
+  va_end(ap);
+  abort(); /* dump core and terminate */
+  exit(1); /* shouldn't get here */
+}
+
+/*
+ * Nonfatal error unrelated to a system call.
+ * Print a message and return.
+ */
+inline void err_msg(const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(0, 0, fmt, ap);
+  va_end(ap);
+}
+
+/*
+ * Fatal error unrelated to a system call.
+ * Print a message and terminate.
+ */
+inline void err_quit(const char *fmt, ...) {
+  va_list ap;
+
+  va_start(ap, fmt);
+  err_doit(0, 0, fmt, ap);
+  va_end(ap);
+  exit(1);
+}
+
+// Print a message and return to caller
+// Caller specifies "errnoflag".
+inline static void err_doit(int errnoflag, int error, const char *fmt,
+                            va_list ap) {
+  char buf[4096];
+
+  vsnprintf(buf, 4096 - 1, fmt, ap);
+  if (errnoflag)
+    snprintf(buf + strlen(buf), 4096 - strlen(buf) - 1, ": %s",
+             strerror(error));
+  strcat(buf, "\n");
+  //  if (log_to_stderr) {
+  fflush(stdout);
+  fputs(buf, stderr);
+  fflush(stderr);
+  //  } else {
+  //    syslog(priority, "%s", buf);
+  //  }
+}
+
+}  // namespace slab
+
+#endif  // STATSLABS_MATRIX_ERROR_H_

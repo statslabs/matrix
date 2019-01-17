@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.0)
 
 set(PROJECT_NAME "Statslabs.Matrix")
 set(PROJECT_FULL_NAME "Statslabs.Matrix C++ Linear Algebra Library")
-set(PROJECT_VERSION "0.3.0")
+set(PROJECT_VERSION "0.4.0")
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
@@ -59,7 +59,7 @@ endif(DOXYGEN_FOUND)
 ##################################################
 
 add_executable(main
-        src/main.cpp)
+        src/main.cc)
 
 target_link_libraries(main PUBLIC ${MKL_LINKER_LIBS})
 
@@ -73,7 +73,7 @@ target_include_directories(main
         )
 
 add_library(matrix
-        src/library.cpp)
+        src/library.cc)
 
 target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
 

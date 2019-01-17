@@ -20,32 +20,42 @@
 #ifndef SLAB_MATRIX_MATRIX_REF_H_
 #define SLAB_MATRIX_MATRIX_REF_H_
 
+#include <cassert>
 #include <cstddef>
-#include <iterator> // std::forward_iterator_tag
+
+#include <array>
+#include <iterator>
+#include <string>
+
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
+#include "slab/matrix/matrix_slice.h"
+#include "slab/matrix/packed_matrix.h"
+#include "slab/matrix/support.h"
 
-template<typename T, std::size_t N>
+namespace slab {
+
+template <typename T, std::size_t N>
 class MatrixRefIterator;
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 class MatrixRef : public MatrixBase<T, N> {
  public:
   using iterator = MatrixRefIterator<T, N>;
   using const_iterator = MatrixRefIterator<const T, N>;
 
   MatrixRef() = delete;
-  MatrixRef(MatrixRef &&) = default;                 // move
+  MatrixRef(MatrixRef &&) = default;  // move
   MatrixRef &operator=(MatrixRef &&);
-  MatrixRef(MatrixRef const &) = default;            // copy
+  MatrixRef(MatrixRef const &) = default;  // copy
   MatrixRef &operator=(MatrixRef const &);
   ~MatrixRef() = default;
 
   //! construct from Matrix
-  template<typename U>
+  template <typename U>
   MatrixRef(const Matrix<U, N> &);
   //! assign from Matrix
-  template<typename U>
+  template <typename U>
   MatrixRef &operator=(const Matrix<U, N> &);
 
   //! assign from list
@@ -64,27 +74,27 @@ class MatrixRef : public MatrixBase<T, N> {
 
   //! m(i,j,k) subscripting with integers
   ///@{
-  template<typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), T &>
-  operator()(Args... args) {
-    return MatrixBase<T, N>::template operator() < Args...>(args...);
+  template <typename... Args>
+  Enable_if<matrix_impl::Requesting_element<Args...>(), T &> operator()(
+      Args... args) {
+    return MatrixBase<T, N>::template operator()<Args...>(args...);
   }
 
-  template<typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
-  operator()(Args... args) const {
-    return MatrixBase<T, N>::template operator() < Args...>(args...);
+  template <typename... Args>
+  Enable_if<matrix_impl::Requesting_element<Args...>(), const T &> operator()(
+      Args... args) const {
+    return MatrixBase<T, N>::template operator()<Args...>(args...);
   }
   ///@}
 
   //! m(s1, s2, s3) subscripting with slides
   ///@{
-  template<typename... Args>
+  template <typename... Args>
   Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
   operator()(const Args &... args);
 
-  template<typename... Args>
-  Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
+  template <typename... Args>
+  Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<const T, N>>
   operator()(const Args &... args) const;
   ///@}
 
@@ -106,99 +116,50 @@ class MatrixRef : public MatrixBase<T, N> {
   MatrixRef<const T, N - 1> col(std::size_t n) const;
   ///@}
 
+  //! multiple rows access
+  ///@{
   MatrixRef<T, N> rows(std::size_t i, std::size_t j);
   MatrixRef<const T, N> rows(std::size_t i, std::size_t j) const;
+  ///@}
 
+  //! multiple columns access
+  ///@{
   MatrixRef<T, N> cols(std::size_t i, std::size_t j);
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  MatrixRef<T, 1> subvec(std::size_t first_index, std::size_t last_index) {
-    return this->operator()(slice{first_index, last_index - first_index + 1});
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  MatrixRef<const T, 1> subvec(std::size_t first_index, std::size_t last_index) const {
-    return this->operator()(slice{first_index, last_index - first_index + 1});
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<T, 2> submat(std::size_t first_row, std::size_t first_col,
-                         std::size_t last_row, std::size_t last_col) {
-    return this->operator()(
-        slice{first_row, last_row - first_row + 1},
-        slice{first_col, last_col - first_col + 1}
-    );
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<const T, 2> submat(std::size_t first_row, std::size_t first_col,
-                         std::size_t last_row, std::size_t last_col) const {
-    return this->operator()(
-        slice{first_row, last_row - first_row + 1},
-        slice{first_col, last_col - first_col + 1}
-    );
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<T, 1> diag() {
-    assert(this->n_rows() == this->n_cols());
-
-    MatrixSlice<1> d;
-    d.start = this->desc_.start;
-    d.extents[0] = this->n_rows();
-    d.strides[0] = this->n_rows() + 1;
-
-    return {d, data()};
-  }
-  template<std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef<const T, 1> diag() const {
-    assert(this->n_rows() == this->n_cols());
-
-    MatrixSlice<1> d;
-    d.start = this->desc_.start;
-    d.extents[0] = this->n_rows();
-    d.strides[0] = this->n_rows() + 1;
-
-    return {d, data()};
-  }
-
-  template<std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
-  Matrix<T, 2> t() const { return transpose(*this); }
+  ///@}
 
   //! @cond Doxygen_Suppress
 
-  template<typename F>
-  MatrixRef &apply(F f);                             // f(x) for every element x
+  template <typename F>
+  MatrixRef &apply(F f);  // f(x) for every element x
 
   // f(x, mx) for corresponding elements of *this and m
-  template<typename M, typename F>
-  Enable_if<Matrix_type<M>(), MatrixRef &>
-  apply(const M &m, F f);
+  template <typename M, typename F>
+  Enable_if<Matrix_type<M>(), MatrixRef &> apply(const M &m, F f);
 
   Matrix<T, N> operator-() const;
 
-  MatrixRef &operator=(const T &value);              // assignment with scalar
-  MatrixRef &operator+=(const T &value);             // scalar addition
-  MatrixRef &operator-=(const T &value);             // scalar subtraction
-  MatrixRef &operator*=(const T &value);             // scalar multiplication
-  MatrixRef &operator/=(const T &value);             // scalar division
-  MatrixRef &operator%=(const T &value);             // scalar modulo
+  MatrixRef &operator=(const T &value);   // assignment with scalar
+  MatrixRef &operator+=(const T &value);  // scalar addition
+  MatrixRef &operator-=(const T &value);  // scalar subtraction
+  MatrixRef &operator*=(const T &value);  // scalar multiplication
+  MatrixRef &operator/=(const T &value);  // scalar division
+  MatrixRef &operator%=(const T &value);  // scalar modulo
 
   // matrix addition
-  template<typename M>
+  template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator+=(const M &x);
   // matrix subtraction
-  template<typename M>
+  template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator-=(const M &x);
   // element-wise multiplication
-  template<typename M>
+  template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator*=(const M &x);
   // element-wise division
-  template<typename M>
+  template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator/=(const M &x);
   // element-wise modulus
-  template<typename M>
+  template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator%=(const M &x);
 
   //! @endcond
@@ -210,10 +171,131 @@ class MatrixRef : public MatrixBase<T, N> {
 
  private:
   T *ptr_;
+
+ public:
+  template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef &operator=(const MatrixRef<U, 2> &x) {
+    static_assert(Convertible<U, T>(),
+                  "MatrixRef =: incompatible element types");
+    assert(this->size() == x.size());
+    assert(x.n_cols() == 1);
+
+    std::copy(x.begin(), x.end(), begin());
+
+    return *this;
+  }
+
+  template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef &operator=(const Matrix<U, 2> &x) {
+    static_assert(Convertible<U, T>(),
+                  "MatrixRef =: incompatible element types");
+    assert(this->size() == x.size());
+    assert(x.n_cols() == 1);
+
+    std::copy(x.begin(), x.end(), begin());
+
+    return *this;
+  }
+
+  //! sub-vector access for Matrix<T, 1>
+  ///@{
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef<T, 1> subvec(std::size_t first_index, std::size_t last_index) {
+    return this->operator()(slice{first_index, last_index - first_index + 1});
+  }
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+  MatrixRef<const T, 1> subvec(std::size_t first_index,
+                               std::size_t last_index) const {
+    return this->operator()(slice{first_index, last_index - first_index + 1});
+  }
+  ///@}
+
+ public:
+  template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef &operator=(const MatrixRef<U, 1> &x) {
+    static_assert(Convertible<U, T>(),
+                  "MatrixRef =: incompatible element types");
+    assert(this->size() == x.size());
+    assert(this->n_cols() == 1);
+
+    std::copy(x.begin(), x.end(), begin());
+
+    return *this;
+  }
+
+  template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef &operator=(const Matrix<U, 1> &x) {
+    static_assert(Convertible<U, T>(),
+                  "MatrixRef =: incompatible element types");
+    assert(this->size() == x.size());
+    assert(this->n_cols() == 1);
+
+    std::copy(x.begin(), x.end(), begin());
+
+    return *this;
+  }
+
+  //! sub-matrix access for Matrix<T, 2>
+  ///@{
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<T, 2> submat(std::size_t first_row, std::size_t first_col,
+                         std::size_t last_row, std::size_t last_col) {
+    return this->operator()(slice{first_row, last_row - first_row + 1},
+                            slice{first_col, last_col - first_col + 1});
+  }
+
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<const T, 2> submat(std::size_t first_row, std::size_t first_col,
+                               std::size_t last_row,
+                               std::size_t last_col) const {
+    return this->operator()(slice{first_row, last_row - first_row + 1},
+                            slice{first_col, last_col - first_col + 1});
+  }
+  ///@}
+
+  //! diagonal elements access for Matrix<T, 2>
+  ///@{
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<T, 1> diag() {
+    assert(this->n_rows() == this->n_cols());
+
+    MatrixSlice<1> d;
+    d.start = this->desc_.start;
+    d.extents[0] = this->n_rows();
+    d.strides[0] = this->n_rows() + 1;
+
+    return {d, data()};
+  }
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  MatrixRef<const T, 1> diag() const {
+    assert(this->n_rows() == this->n_cols());
+
+    MatrixSlice<1> d;
+    d.start = this->desc_.start;
+    d.extents[0] = this->n_rows();
+    d.strides[0] = this->n_rows() + 1;
+
+    return {d, data()};
+  }
+  ///@}
+
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  void print(const std::string &str = "") const {
+    printf("\n %s\n", str.c_str());
+    for (std::size_t i = 0; i != this->n_rows(); ++i) {
+      raw_print(row(i));
+      printf("\n");
+    }
+  }
+
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const {
+    return transpose(*this);
+  }
 };
 
 template <typename T, std::size_t N>
-MatrixRef<T, N> &MatrixRef<T,N>::operator=(MatrixRef &&x) {
+MatrixRef<T, N> &MatrixRef<T, N>::operator=(MatrixRef &&x) {
   assert(same_extents(this->desc_, x.desc_));
   std::move(x.begin(), x.end(), begin());
 
@@ -221,21 +303,20 @@ MatrixRef<T, N> &MatrixRef<T,N>::operator=(MatrixRef &&x) {
 }
 
 template <typename T, std::size_t N>
-MatrixRef<T, N> &MatrixRef<T,N>::operator=(MatrixRef const &x) {
+MatrixRef<T, N> &MatrixRef<T, N>::operator=(MatrixRef const &x) {
   assert(same_extents(this->desc_, x.desc_));
   std::copy(x.begin(), x.end(), begin());
 
   return *this;
 }
 
-template<typename T, std::size_t N>
-template<typename U>
+template <typename T, std::size_t N>
+template <typename U>
 MatrixRef<T, N>::MatrixRef(const Matrix<U, N> &x)
-    : MatrixBase<T, N>{x.descriptor()}, ptr_(x.data()) {
-}
+    : MatrixBase<T, N>{x.descriptor()}, ptr_(x.data()) {}
 
-template<typename T, std::size_t N>
-template<typename U>
+template <typename T, std::size_t N>
+template <typename U>
 MatrixRef<T, N> &MatrixRef<T, N>::operator=(const Matrix<U, N> &x) {
   static_assert(Convertible<U, T>(), "MatrixRef =: incompatible element types");
   assert(this->desc_.extents == x.descriptor().extents);
@@ -244,9 +325,9 @@ MatrixRef<T, N> &MatrixRef<T, N>::operator=(const Matrix<U, N> &x) {
   return *this;
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator=(MatrixInitializer<T, N> init) {
-  //std::array<std::size_t, N> extents = matrix_impl::derive_extents<N>(init);
+  // std::array<std::size_t, N> extents = matrix_impl::derive_extents<N>(init);
   assert(matrix_impl::derive_extents<N>(init) == this->desc_.extents);
 
   auto iter = begin();
@@ -255,8 +336,8 @@ MatrixRef<T, N> &MatrixRef<T, N>::operator=(MatrixInitializer<T, N> init) {
   return *this;
 }
 
-template<typename T, size_t N>
-template<typename... Args>
+template <typename T, size_t N>
+template <typename... Args>
 Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<T, N>>
 MatrixRef<T, N>::operator()(const Args &... args) {
   MatrixSlice<N> d;
@@ -265,9 +346,9 @@ MatrixRef<T, N>::operator()(const Args &... args) {
   return {d, data()};
 }
 
-template<typename T, size_t N>
-template<typename... Args>
-Enable_if<matrix_impl::Requesting_slice<Args...>(), const MatrixRef<T, N>>
+template <typename T, size_t N>
+template <typename... Args>
+Enable_if<matrix_impl::Requesting_slice<Args...>(), MatrixRef<const T, N>>
 MatrixRef<T, N>::operator()(const Args &... args) const {
   MatrixSlice<N> d;
   d.start = this->desc_.start + matrix_impl::do_slice(this->desc_, d, args...);
@@ -276,7 +357,7 @@ MatrixRef<T, N>::operator()(const Args &... args) const {
 }
 
 // row
-template<typename T, size_t N>
+template <typename T, size_t N>
 MatrixRef<T, N - 1> MatrixRef<T, N>::row(size_t n) {
   assert(n < this->n_rows());
   MatrixSlice<N - 1> row;
@@ -284,7 +365,7 @@ MatrixRef<T, N - 1> MatrixRef<T, N>::row(size_t n) {
   return {row, ptr_};
 }
 
-template<typename T, size_t N>
+template <typename T, size_t N>
 MatrixRef<const T, N - 1> MatrixRef<T, N>::row(size_t n) const {
   assert(n < this->n_rows());
   MatrixSlice<N - 1> row;
@@ -293,7 +374,7 @@ MatrixRef<const T, N - 1> MatrixRef<T, N>::row(size_t n) const {
 }
 
 // col
-template<typename T, size_t N>
+template <typename T, size_t N>
 MatrixRef<T, N - 1> MatrixRef<T, N>::col(size_t n) {
   assert(n < this->cols());
   MatrixSlice<N - 1> col;
@@ -301,7 +382,7 @@ MatrixRef<T, N - 1> MatrixRef<T, N>::col(size_t n) {
   return {col, ptr_};
 }
 
-template<typename T, size_t N>
+template <typename T, size_t N>
 MatrixRef<const T, N - 1> MatrixRef<T, N>::col(size_t n) const {
   assert(n < this->cols());
   MatrixSlice<N - 1> col;
@@ -309,7 +390,7 @@ MatrixRef<const T, N - 1> MatrixRef<T, N>::col(size_t n) const {
   return {col, ptr_};
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> MatrixRef<T, N>::rows(std::size_t i, std::size_t j) {
   assert(i < j);
   assert(j < this->n_rows());
@@ -325,8 +406,9 @@ MatrixRef<T, N> MatrixRef<T, N>::rows(std::size_t i, std::size_t j) {
   return {d, data()};
 }
 
-template<typename T, std::size_t N>
-MatrixRef<const T, N> MatrixRef<T, N>::rows(std::size_t i, std::size_t j) const {
+template <typename T, std::size_t N>
+MatrixRef<const T, N> MatrixRef<T, N>::rows(std::size_t i,
+                                            std::size_t j) const {
   assert(i < j);
   assert(j < this->n_rows());
 
@@ -341,7 +423,7 @@ MatrixRef<const T, N> MatrixRef<T, N>::rows(std::size_t i, std::size_t j) const 
   return {d, data()};
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) {
   assert(N >= 2);
   assert(i < j);
@@ -350,7 +432,8 @@ MatrixRef<T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) {
   MatrixSlice<N> d;
   d.start = this->desc_.start;
   d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
-  d.start += matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
+  d.start +=
+      matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
 
   std::size_t NRest = N - 2;
   while (NRest >= 1) {
@@ -360,8 +443,9 @@ MatrixRef<T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) {
   return {d, data()};
 }
 
-template<typename T, std::size_t N>
-MatrixRef<const T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) const {
+template <typename T, std::size_t N>
+MatrixRef<const T, N> MatrixRef<T, N>::cols(std::size_t i,
+                                            std::size_t j) const {
   assert(N >= 2);
   assert(i < j);
   assert(j < this->n_cols());
@@ -369,7 +453,8 @@ MatrixRef<const T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) const 
   MatrixSlice<N> d;
   d.start = this->desc_.start;
   d.start += matrix_impl::do_slice_dim<N>(this->desc_, d, slice{0});
-  d.start += matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
+  d.start +=
+      matrix_impl::do_slice_dim<N - 1>(this->desc_, d, slice{i, j - i + 1});
 
   std::size_t NRest = N - 2;
   while (NRest >= 1) {
@@ -379,17 +464,17 @@ MatrixRef<const T, N> MatrixRef<T, N>::cols(std::size_t i, std::size_t j) const 
   return {d, data()};
 }
 
-template<typename T, std::size_t N>
-template<typename F>
+template <typename T, std::size_t N>
+template <typename F>
 MatrixRef<T, N> &MatrixRef<T, N>::apply(F f) {
-  for (auto iter = begin(); iter != end(); ++iter)
-    f(*iter);
+  for (auto iter = begin(); iter != end(); ++iter) f(*iter);
   return *this;
 }
 
-template<typename T, std::size_t N>
-template<typename M, typename F>
-Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::apply(const M &m, F f) {
+template <typename T, std::size_t N>
+template <typename M, typename F>
+Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::apply(
+    const M &m, F f) {
   assert(same_extents(this->desc_, m.descriptor()));
   auto j = m.begin();
   for (auto i = begin(); i != end(); ++i) {
@@ -400,91 +485,105 @@ Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::apply(const M &m
   return *this;
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 Matrix<T, N> MatrixRef<T, N>::operator-() const {
   Matrix<T, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator=(const T &val) {
   return apply([&](T &a) { a = val; });
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator+=(const T &val) {
   return apply([&](T &a) { a += val; });
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator-=(const T &val) {
   return apply([&](T &a) { a -= val; });
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator*=(const T &val) {
   return apply([&](T &a) { a *= val; });
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator/=(const T &val) {
   return apply([&](T &a) { a /= val; });
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator%=(const T &val) {
   return apply([&](T &a) { a %= val; });
 }
 
-template<typename T, std::size_t N>
-template<typename M>
-Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator+=(const M &m) {
-  //static_assert(m.order_ == N, "+=: mismatched Matrix dimensions");
+template <typename T, std::size_t N>
+template <typename M>
+Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator+=(
+    const M &m) {
+  // static_assert(m.order_ == N, "+=: mismatched Matrix dimensions");
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a += b; });
 }
 
-template<typename T, std::size_t N>
-template<typename M>
-Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator-=(const M &m) {
-  //static_assert(m.order_ == N, "+=: mismatched Matrix dimensions");
+template <typename T, std::size_t N>
+template <typename M>
+Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator-=(
+    const M &m) {
+  // static_assert(m.order_ == N, "+=: mismatched Matrix dimensions");
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a -= b; });
 }
 
-template<typename T, std::size_t N>
-template<typename M>
-Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator*=(const M &m) {
+template <typename T, std::size_t N>
+template <typename M>
+Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator*=(
+    const M &m) {
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a *= b; });
 }
 
-template<typename T, std::size_t N>
-template<typename M>
-Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator/=(const M &m) {
+template <typename T, std::size_t N>
+template <typename M>
+Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator/=(
+    const M &m) {
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a /= b; });
 }
 
-template<typename T, std::size_t N>
-template<typename M>
-Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator%=(const M &m) {
+template <typename T, std::size_t N>
+template <typename M>
+Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator%=(
+    const M &m) {
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a %= b; });
 }
 
-template<typename T>
-class MatrixRef<T, 0> {
+template <typename T>
+class MatrixRef<T, 0> : public MatrixBase<T, 0> {
  public:
-  static constexpr size_t order_ = 0;
-  using value_type = T;
+  using iterator = T *;
+  using const_iterator = const T *;
 
   MatrixRef(const MatrixSlice<0> &s, T *p) : ptr_{p + s.start} {}
+
+  //! total number of elements
+  std::size_t size() const { return 1; }
+
+  //! "flat" element access
+  ///@{
+  T *data() { return ptr_; }
+  const T *data() const { return ptr_; }
+  ///@}
 
   T &operator()() { return *ptr_; };
   const T &operator()() const { return *ptr_; }
@@ -492,19 +591,25 @@ class MatrixRef<T, 0> {
   operator T &() { return *ptr_; }
   operator const T &() const { return *ptr_; }
 
+  iterator begin() { return iterator(data()); }
+  const_iterator begin() const { return const_iterator(data()); }
+  iterator end() { return iterator(data() + 1); }
+  const_iterator end() const { return const_iterator(data() + 1); }
+
  private:
   T *ptr_;
 };
 
-template<typename T>
+template <typename T>
 std::ostream &operator<<(std::ostream &os, const MatrixRef<T, 0> &mr0) {
-  return os << (const T &) mr0;
+  return os << (const T &)mr0;
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 class MatrixRefIterator {
-  template<typename U, size_t NN>
-  friend std::ostream &operator<<(std::ostream &os, const MatrixRefIterator<U, NN> &iter);
+  template <typename U, size_t NN>
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const MatrixRefIterator<U, NN> &iter);
 
  public:
   using iterator_category = std::forward_iterator_tag;
@@ -535,8 +640,9 @@ class MatrixRefIterator {
   T *ptr_;
 };
 
-template<typename T, std::size_t N>
-MatrixRefIterator<T, N>::MatrixRefIterator(const MatrixSlice<N> &s, T *base, bool limit)
+template <typename T, std::size_t N>
+MatrixRefIterator<T, N>::MatrixRefIterator(const MatrixSlice<N> &s, T *base,
+                                           bool limit)
     : desc_(s) {
   std::fill(indx_.begin(), indx_.end(), 0);
 
@@ -548,30 +654,29 @@ MatrixRefIterator<T, N>::MatrixRefIterator(const MatrixSlice<N> &s, T *base, boo
   }
 }
 
-template<typename T, std::size_t N>
-MatrixRefIterator<T, N> &MatrixRefIterator<T, N>::operator=(const MatrixRefIterator &iter) {
+template <typename T, std::size_t N>
+MatrixRefIterator<T, N> &MatrixRefIterator<T, N>::operator=(
+    const MatrixRefIterator &iter) {
   std::copy(iter.indx_.begin(), iter.indx_.end(), indx_.begin());
   ptr_ = iter.ptr_;
 
   return *this;
 }
 
-template<typename T, std::size_t N>
-MatrixRefIterator<T, N> &
-MatrixRefIterator<T, N>::operator++() {
+template <typename T, std::size_t N>
+MatrixRefIterator<T, N> &MatrixRefIterator<T, N>::operator++() {
   increment();
   return *this;
 }
 
-template<typename T, std::size_t N>
-MatrixRefIterator<T, N>
-MatrixRefIterator<T, N>::operator++(int) {
+template <typename T, std::size_t N>
+MatrixRefIterator<T, N> MatrixRefIterator<T, N>::operator++(int) {
   MatrixRefIterator<T, N> x = *this;
   increment();
   return *x;
 }
 
-template<typename T, std::size_t N>
+template <typename T, std::size_t N>
 void MatrixRefIterator<T, N>::increment() {
   std::size_t d = N - 1;
 
@@ -591,23 +696,26 @@ void MatrixRefIterator<T, N>::increment() {
   }
 }
 
-template<typename T, size_t N>
-std::ostream &operator<<(std::ostream &os, const MatrixRefIterator<T, N> &iter) {
+template <typename T, size_t N>
+std::ostream &operator<<(std::ostream &os,
+                         const MatrixRefIterator<T, N> &iter) {
   os << "target: " << *iter.ptr_ << ", indx: " << iter.indx_ << std::endl;
   return os;
 }
 
-template<typename T, std::size_t N>
-inline bool
-operator==(const MatrixRefIterator<T, N> &a, const MatrixRefIterator<T, N> &b) {
+template <typename T, std::size_t N>
+inline bool operator==(const MatrixRefIterator<T, N> &a,
+                       const MatrixRefIterator<T, N> &b) {
   assert(a.descriptor() == b.descriptor());
   return &*a == &*b;
 }
 
-template<typename T, std::size_t N>
-inline bool
-operator!=(const MatrixRefIterator<T, N> &a, const MatrixRefIterator<T, N> &b) {
+template <typename T, std::size_t N>
+inline bool operator!=(const MatrixRefIterator<T, N> &a,
+                       const MatrixRefIterator<T, N> &b) {
   return !(a == b);
 }
 
-#endif // SLAB_MATRIX_MATRIX_REF_H_
+}  // namespace slab
+
+#endif  // SLAB_MATRIX_MATRIX_REF_H_

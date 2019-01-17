@@ -12,12 +12,8 @@ int main() {
   Matrix<int, 2> m4{{1, 2}, {3, 4}, {5, 6}};  // 3-by-2
   Matrix<int, 2> m5 = matmul(m1, m4);         // multiply: {{44,56}, {98,128}}
 
-  cout << "\nm1 = " << m1
-       << "\nm2 = " << m2
-       << "\nm3 = " << m3
-       << "\nm4 = " << m4
-       << "\nm5 = " << m5
-       << endl;
+  cout << "\nm1 = " << m1 << "\nm2 = " << m2 << "\nm3 = " << m3
+       << "\nm4 = " << m4 << "\nm5 = " << m5 << endl;
 
   return 0;
 }

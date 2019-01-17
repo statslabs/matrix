@@ -20,45 +20,16 @@
 #ifndef SLAB_MATRIX_H_
 #define SLAB_MATRIX_H_
 
-#include <cassert>
-#include <cstddef> // std::size_t
-#include <cstdio>
-
-#include <algorithm>
-#include <array>
-#include <complex>
-#include <initializer_list>
-#include <iostream>
-#include <iterator>
-#include <numeric> // std::inner_product
-#include <type_traits> // std::enable_if/is_convertible
-#include <vector>
-
-#include "mkl.h"
-// #include "slab/matrix/config.h"
-
-namespace slab {
-
-#include "slab/matrix/matrix_fwd.h"
-#include "slab/matrix/traits.h"
-
+#include "slab/matrix/error.h"
 #include "slab/matrix/slice.h"
-#include "slab/matrix/support.h"
 
-template<typename T, std::size_t N>
-using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
-
-#include "slab/matrix/matrix_slice.h"
-#include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix.h"
+#include "slab/matrix/packed_matrix.h"
 
 #include "slab/matrix/blas_interface.h"
 #include "slab/matrix/lapack_interface.h"
 
 #include "slab/matrix/matrix_ops.h"
-
 #include "slab/matrix/type_alias.h"
- 
-} // namespace slab
 
-#endif // SLAB_MATRIX_H_
+#endif  // SLAB_MATRIX_H_
