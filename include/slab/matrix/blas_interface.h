@@ -38,6 +38,8 @@ extern "C" {
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/traits.h"
 
+#include "slab/matrix/blas/gemm.h"
+
 namespace slab {
 
 /// @addtogroup blas_interface BLAS INTERFACE
