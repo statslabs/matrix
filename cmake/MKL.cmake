@@ -132,13 +132,6 @@ if(HAVE_MKL)
     add_definitions(-DUSE_MKL -DUSE_CBLAS)
     include_directories(AFTER ${MKLINC})
     list(APPEND MKL_LINKER_LIBS ${MKLLIB})
-#if (HAVE_MKL AND NOT TARGET MKL::MKL)
-#    add_library(MKL::MKL INTERFACE IMPORTED)
-#    target_compile_definitions(MKL::MKL PUBLIC -DUSE_MKL -DUSE_CBLAS)
-#    set_target_properties(MKL::MKL PROPERTIES
-#            INTERFACE_INCLUDE_DIRECTORIES "${MKLINC}")
-#    list(APPEND MKL_LINKER_LIBS ${MKLLIB})
-#    target_link_libraries(MKL::MKL PUBLIC ${MKL_LINKER_LIBS})
 
     set(MSG "Intel(R) MKL:")
     message(STATUS "${MSG} include ${MKLINC}")

@@ -25,7 +25,14 @@
 
 #include <complex>
 
+#ifdef USE_MKL
 #include "mkl.h"
+#else
+extern "C" {
+  #include "cblas.h"
+}
+#endif
+
 #include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
@@ -52,9 +59,9 @@ inline T blas_asum(const Matrix<T, 1> &x) {
   } else if (is_float<T>::value) {
     res = cblas_sasum(n, (const float *)x.data(), incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dzasum(n, (const std::complex<double> *)x.data(), incx);
+    res = cblas_dzasum(n, reinterpret_cast<const double *>(x.data()), incx);
   } else if (is_complex_float<T>::value) {
-    res = cblas_scasum(n, (const std::complex<float> *)x.data(), incx);
+    res = cblas_scasum(n, reinterpret_cast<const float *>(x.data()), incx);
   } else {
     err_quit("blas_asum(): unsupported element type.");
   }
@@ -80,12 +87,12 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
                 (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
     cblas_zaxpy(
-        n, &a, (const std::complex<double> *)(x.data() + x.descriptor().start),
-        incx, (std::complex<double> *)(y.data() + y.descriptor().start), incy);
+	n, reinterpret_cast<const double *>(&a), reinterpret_cast<const double *>(x.data() + x.descriptor().start),
+        incx, reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
     cblas_caxpy(
-        n, &a, (const std::complex<float> *)(x.data() + x.descriptor().start),
-        incx, (std::complex<float> *)(y.data() + y.descriptor().start), incy);
+	n, reinterpret_cast<const float *>(&a), reinterpret_cast<const float *>(x.data() + x.descriptor().start),
+        incx, reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
   } else {
     err_quit("blas_axpy(): unsupported element type.");
   }
@@ -108,13 +115,13 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
                 incx, (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
     cblas_zcopy(x.size(),
-                (const std::complex<double> *)(x.data() + x.descriptor().start),
-                incx, (std::complex<double> *)(y.data() + y.descriptor().start),
+                reinterpret_cast<const double *>(x.data() + x.descriptor().start),
+                incx, reinterpret_cast<double *>(y.data() + y.descriptor().start),
                 incy);
   } else if (is_complex_float<T>::value) {
     cblas_ccopy(x.size(),
-                (const std::complex<float> *)(x.data() + x.descriptor().start),
-                incx, (std::complex<float> *)(y.data() + y.descriptor().start),
+                reinterpret_cast<const float *>(x.data() + x.descriptor().start),
+                incx, reinterpret_cast<float *>(y.data() + y.descriptor().start),
                 incy);
   } else {
     err_quit("blas_copy(): unsupported element type.");
@@ -186,11 +193,11 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
         cblas_snrm2(n, (const float *)(x.data() + x.descriptor().start), incx);
   } else if (is_complex_double<T>::value) {
     res = cblas_dznrm2(
-        n, (const std::complex<double> *)(x.data() + x.descriptor().start),
+        n, reinterpret_cast<const double*>(x.data() + x.descriptor().start),
         incx);
   } else if (is_complex_float<T>::value) {
     res = cblas_scnrm2(
-        n, (const std::complex<float> *)(x.data() + x.descriptor().start),
+        n, reinterpret_cast<const float*>(x.data() + x.descriptor().start),
         incx);
   } else {
     err_quit("blas_nrm2(): unsupported element type.");
@@ -236,11 +243,11 @@ inline void blas_scal(const T a, Matrix<T, 1> &x) {
                 incx);
   } else if (is_complex_double<T>::value) {
     cblas_zdscal(n, (const double)a,
-                 (std::complex<double> *)(x.data() + x.descriptor().start),
+                 reinterpret_cast<double *>(x.data() + x.descriptor().start),
                  incx);
   } else if (is_complex_float<T>::value) {
     cblas_csscal(n, (const float)a,
-                 (std::complex<float> *)(x.data() + x.descriptor().start),
+                 reinterpret_cast<float *>(x.data() + x.descriptor().start),
                  incx);
   } else {
     err_quit("blas_scal(): unsupported element type.");
@@ -253,12 +260,12 @@ inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   const int incx = x.descriptor().strides[0];
 
   if (is_double<T>::value) {
-    cblas_zscal(n, (const std::complex<double> *)&a,
-                (std::complex<double> *)(x.data() + x.descriptor().start),
+    cblas_zscal(n, reinterpret_cast<const double *>(&a),
+                reinterpret_cast<double *>(x.data() + x.descriptor().start),
                 incx);
   } else if (is_float<T>::value) {
-    cblas_cscal(n, (const std::complex<float> *)&a,
-                (std::complex<float> *)(x.data() + x.descriptor().start), incx);
+    cblas_cscal(n, reinterpret_cast<const float *>(&a),
+                reinterpret_cast<float *>(x.data() + x.descriptor().start), incx);
   } else {
     err_quit("blas_scal(): unsupported element type.");
   }
@@ -283,12 +290,12 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
     cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
                 (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zswap(n, (std::complex<double> *)(x.data() + x.descriptor().start),
-                incx, (std::complex<double> *)(y.data() + y.descriptor().start),
+    cblas_zswap(n, reinterpret_cast<double *>(x.data() + x.descriptor().start),
+                incx, reinterpret_cast<double *>(y.data() + y.descriptor().start),
                 incy);
   } else if (is_complex_float<T>::value) {
-    cblas_cswap(n, (std::complex<float> *)(x.data() + x.descriptor().start),
-                incx, (std::complex<float> *)(y.data() + y.descriptor().start),
+    cblas_cswap(n, reinterpret_cast<float *>(x.data() + x.descriptor().start),
+                incx, reinterpret_cast<float *>(y.data() + y.descriptor().start),
                 incy);
   } else {
     err_quit("blas_swap(): unsupported element type.");
@@ -310,11 +317,11 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
   } else if (is_complex_double<T>::value) {
     res = cblas_izamax(
         x.size(),
-        (const std::complex<double> *)(x.data() + x.descriptor().start), incx);
+        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx);
   } else if (is_complex_float<T>::value) {
     res = cblas_icamax(
         x.size(),
-        (const std::complex<float> *)(x.data() + x.descriptor().start), incx);
+        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx);
   } else {
     err_quit("blas_iamax(): unsupported element type.");
   }
@@ -352,18 +359,18 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
                 incy);
   } else if (is_complex_double<T>::value) {
     cblas_zgemv(
-        CblasRowMajor, trans, m, n, (const std::complex<double> *)&alpha,
-        (const std::complex<double> *)(a.data() + a.descriptor().start), lda,
-        (const std::complex<double> *)(x.data() + x.descriptor().start), incx,
-        (const std::complex<double> *)&beta,
-        (std::complex<double> *)(y.data() + y.descriptor().start), incy);
+        CblasRowMajor, trans, m, n, reinterpret_cast<const double *>(&alpha),
+        reinterpret_cast<const double *>(a.data() + a.descriptor().start), lda,
+        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
+        reinterpret_cast<const double *>(&beta),
+        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
-    cblas_cgemv(CblasRowMajor, trans, m, n, (const std::complex<float> *)&alpha,
-                (const std::complex<float> *)(a.data() + a.descriptor().start),
+    cblas_cgemv(CblasRowMajor, trans, m, n, reinterpret_cast<const float *>(&alpha),
+                reinterpret_cast<const float *>(a.data() + a.descriptor().start),
                 lda,
-                (const std::complex<float> *)(x.data() + x.descriptor().start),
-                incx, (const std::complex<float> *)&beta,
-                (std::complex<float> *)(y.data() + y.descriptor().start), incy);
+                reinterpret_cast<const float *>(x.data() + x.descriptor().start),
+                incx, reinterpret_cast<const float *>(&beta),
+                reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
   } else {
     err_quit("blas_gemv(): unsupported element type.");
   }
@@ -460,20 +467,20 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
                 ldc);
   } else if (is_complex_double<T>::value) {
     cblas_zgemm(CblasRowMajor, transa, transb, m, n, k,
-                (const std::complex<double> *)&alpha,
-                (const std::complex<double> *)(a.data() + a.descriptor().start),
+                reinterpret_cast<const double *>(&alpha),
+                reinterpret_cast<const double *>(a.data() + a.descriptor().start),
                 lda,
-                (const std::complex<double> *)(b.data() + b.descriptor().start),
-                ldb, (const std::complex<double> *)&beta,
-                (std::complex<double> *)(c.data() + c.descriptor().start), ldc);
+                reinterpret_cast<const double *>(b.data() + b.descriptor().start),
+                ldb, reinterpret_cast<const double *>(&beta),
+                reinterpret_cast<double *>(c.data() + c.descriptor().start), ldc);
   } else if (is_complex_float<T>::value) {
     cblas_cgemm(CblasRowMajor, transa, transb, m, n, k,
-                (const std::complex<float> *)&alpha,
-                (const std::complex<float> *)(a.data() + a.descriptor().start),
+                reinterpret_cast<const float *>(&alpha),
+                reinterpret_cast<const float *>(a.data() + a.descriptor().start),
                 lda,
-                (const std::complex<float> *)(b.data() + b.descriptor().start),
-                ldb, (const std::complex<float> *)&beta,
-                (std::complex<float> *)(c.data() + c.descriptor().start), ldc);
+                reinterpret_cast<const float *>(b.data() + b.descriptor().start),
+                ldb, reinterpret_cast<const float *>(&beta),
+                reinterpret_cast<float *>(c.data() + c.descriptor().start), ldc);
   } else {
     err_quit("blas_gemm(): unsupported element type.");
   }
