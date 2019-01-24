@@ -20,20 +20,6 @@
 #ifndef SLAB_MATRIX_BLAS_GEMM_H_
 #define SLAB_MATRIX_BLAS_GEMM_H_
 
-#include <complex>
-
-#ifdef USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-  #include "cblas.h"
-}
-#endif
-
-#include "slab/matrix/error.h"
-#include "slab/matrix/matrix_base.h"
-#include "slab/matrix/traits.h"
-
 namespace slab {
 
 /// @addtogroup blas_interface BLAS INTERFACE
@@ -43,7 +29,7 @@ namespace slab {
 /// @{
 
 template <typename T, typename T1, typename T2>
-inline void blas_gemx(const CBLAS_TRANSPOSE transa,
+inline void blas_gemm(const CBLAS_TRANSPOSE transa,
                       const CBLAS_TRANSPOSE transb, const T1 &alpha,
                       const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b,
                       const T2 &beta, MatrixBase<T, 2> &c) {

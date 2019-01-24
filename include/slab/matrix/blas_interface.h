@@ -38,6 +38,15 @@ extern "C" {
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/traits.h"
 
+// BLAS Level 1 Routines and Functions
+#include "slab/matrix/blas/asum.h"
+#include "slab/matrix/blas/axpy.h"
+#include "slab/matrix/blas/copy.h"
+#include "slab/matrix/blas/dot.h"
+#include "slab/matrix/blas/sdot.h"
+#include "slab/matrix/blas/nrm2.h"
+
+// BLAS Level 3 Routines and Functions
 #include "slab/matrix/blas/gemm.h"
 
 namespace slab {
@@ -47,166 +56,6 @@ namespace slab {
 
 /// @addtogroup blas_level1 BLAS Level 1
 /// @{
-
-/// @brief Computes the sum of magnitudes of the vector elements
-/// @param x a vector.
-template <typename T>
-inline T blas_asum(const Matrix<T, 1> &x) {
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-
-  T res;
-  if (is_double<T>::value) {
-    res = cblas_dasum(n, (const double *)x.data(), incx);
-  } else if (is_float<T>::value) {
-    res = cblas_sasum(n, (const float *)x.data(), incx);
-  } else if (is_complex_double<T>::value) {
-    res = cblas_dzasum(n, reinterpret_cast<const double *>(x.data()), incx);
-  } else if (is_complex_float<T>::value) {
-    res = cblas_scasum(n, reinterpret_cast<const float *>(x.data()), incx);
-  } else {
-    err_quit("blas_asum(): unsupported element type.");
-  }
-
-  return res;
-}
-
-/// @brief Computes a vector-scalar product and adds the result to a vector
-template <typename T>
-inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
-                      MatrixBase<T, 1> &y) {
-  assert(x.size() == y.size());
-
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    cblas_daxpy(n, a, (const double *)(x.data() + x.descriptor().start), incx,
-                (double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
-    cblas_saxpy(n, a, (const float *)(x.data() + x.descriptor().start), incx,
-                (float *)(y.data() + y.descriptor().start), incy);
-  } else if (is_complex_double<T>::value) {
-    cblas_zaxpy(
-	n, reinterpret_cast<const double *>(&a), reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
-  } else if (is_complex_float<T>::value) {
-    cblas_caxpy(
-	n, reinterpret_cast<const float *>(&a), reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
-  } else {
-    err_quit("blas_axpy(): unsupported element type.");
-  }
-}
-
-/// @brief Copies vector to another vector
-template <typename T>
-inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
-  y.clear();
-  y = Matrix<T, 1>(x.size());
-
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
-
-  if (is_double<T>::value)
-    cblas_dcopy(x.size(), (const double *)(x.data() + x.descriptor().start),
-                incx, (double *)(y.data() + y.descriptor().start), incy);
-  else if (is_float<T>::value) {
-    cblas_scopy(x.size(), (const float *)(x.data() + x.descriptor().start),
-                incx, (float *)(y.data() + y.descriptor().start), incy);
-  } else if (is_complex_double<T>::value) {
-    cblas_zcopy(x.size(),
-                reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-                incx, reinterpret_cast<double *>(y.data() + y.descriptor().start),
-                incy);
-  } else if (is_complex_float<T>::value) {
-    cblas_ccopy(x.size(),
-                reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-                incx, reinterpret_cast<float *>(y.data() + y.descriptor().start),
-                incy);
-  } else {
-    err_quit("blas_copy(): unsupported element type.");
-  }
-}
-
-/// @brief Computes a vector-vector dot product
-template <typename T>
-inline T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
-  assert(x.size() == y.size());
-
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
-
-  T res = 0.0;
-  if (is_double<T>::value) {
-    res = cblas_ddot(n, (const double *)(x.data() + x.descriptor().start), incx,
-                     (const double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
-    res = cblas_sdot(n, (const float *)(x.data() + x.descriptor().start), incx,
-                     (const float *)(y.data() + y.descriptor().start), incy);
-  } else {
-    err_quit("blas_dot(): unsupported element type.");
-  }
-
-  return res;
-}
-
-/// @brief Computes a vector-vector dot product with double precision
-inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
-                         const Matrix<float, 1> &sy) {
-  assert(sx.size() == sy.size());
-
-  const int n = sx.size();
-  const int incx = sx.descriptor().strides[0];
-  const int incy = sy.descriptor().strides[0];
-
-  return cblas_sdsdot(n, sb, sx.data() + sx.descriptor().start, incx,
-                      sy.data() + sy.descriptor().start, incy);
-}
-
-/// @brief Computes a vector-vector dot product with double precision
-inline double blas_dsdot(const Matrix<float, 1> &sx,
-                         const Matrix<float, 1> &sy) {
-  assert(sx.size() == sy.size());
-
-  const int n = sx.size();
-  const int incx = sx.descriptor().strides[0];
-  const int incy = sy.descriptor().strides[0];
-
-  return cblas_dsdot(n, sx.data() + sx.descriptor().start, incx,
-                     sy.data() + sy.descriptor().start, incy);
-}
-
-/// @brief Computes the Euclidean norm of a vector
-template <typename T>
-inline double blas_nrm2(const Matrix<T, 1> &x) {
-  double res = 0.0;
-
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    res =
-        cblas_dnrm2(n, (const double *)(x.data() + x.descriptor().start), incx);
-  } else if (is_float<T>::value) {
-    res =
-        cblas_snrm2(n, (const float *)(x.data() + x.descriptor().start), incx);
-  } else if (is_complex_double<T>::value) {
-    res = cblas_dznrm2(
-        n, reinterpret_cast<const double*>(x.data() + x.descriptor().start),
-        incx);
-  } else if (is_complex_float<T>::value) {
-    res = cblas_scnrm2(
-        n, reinterpret_cast<const float*>(x.data() + x.descriptor().start),
-        incx);
-  } else {
-    err_quit("blas_nrm2(): unsupported element type.");
-  }
-
-  return res;
-}
 
 // Computes the parameters for a Givens rotation
 // template<typename T>
@@ -434,60 +283,6 @@ inline void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x,
 
 /// @addtogroup blas_level3 BLAS Level 3
 /// @{
-
-template <typename T, typename T1, typename T2>
-inline void blas_gemm(const CBLAS_TRANSPOSE transa,
-                      const CBLAS_TRANSPOSE transb, const T1 &alpha,
-                      const MatrixBase<T, 2> &a, const MatrixBase<T, 2> &b,
-                      const T2 &beta, MatrixBase<T, 2> &c) {
-  static_assert(Convertible<T1, T>(),
-                "blas_gemm(): incompatible element type for alpha");
-  static_assert(Convertible<T2, T>(),
-                "blas_gemm(): incompatible element type for beta");
-
-  const int m = c.n_rows();
-  const int n = c.n_cols();
-  int k = a.n_cols();
-
-  if (transa != CblasNoTrans) k = a.n_rows();
-
-  const int lda = a.n_cols();
-  const int ldb = b.n_cols();
-  const int ldc = c.n_cols();
-
-  if (is_double<T>::value) {
-    cblas_dgemm(CblasRowMajor, transa, transb, m, n, k, (const double)alpha,
-                (const double *)(a.data() + a.descriptor().start), lda,
-                (const double *)(b.data() + b.descriptor().start), ldb,
-                (const double)beta, (double *)(c.data() + c.descriptor().start),
-                ldc);
-  } else if (is_float<T>::value) {
-    cblas_sgemm(CblasRowMajor, transa, transb, m, n, k, (const float)alpha,
-                (const float *)(a.data() + a.descriptor().start), lda,
-                (const float *)(b.data() + b.descriptor().start), ldb,
-                (const float)beta, (float *)(c.data() + c.descriptor().start),
-                ldc);
-  } else if (is_complex_double<T>::value) {
-    cblas_zgemm(CblasRowMajor, transa, transb, m, n, k,
-                reinterpret_cast<const double *>(&alpha),
-                reinterpret_cast<const double *>(a.data() + a.descriptor().start),
-                lda,
-                reinterpret_cast<const double *>(b.data() + b.descriptor().start),
-                ldb, reinterpret_cast<const double *>(&beta),
-                reinterpret_cast<double *>(c.data() + c.descriptor().start), ldc);
-  } else if (is_complex_float<T>::value) {
-    cblas_cgemm(CblasRowMajor, transa, transb, m, n, k,
-                reinterpret_cast<const float *>(&alpha),
-                reinterpret_cast<const float *>(a.data() + a.descriptor().start),
-                lda,
-                reinterpret_cast<const float *>(b.data() + b.descriptor().start),
-                ldb, reinterpret_cast<const float *>(&beta),
-                reinterpret_cast<float *>(c.data() + c.descriptor().start), ldc);
-  } else {
-    err_quit("blas_gemm(): unsupported element type.");
-  }
-}
-
 /// @}
 /// @} BLAS INTERFACE
 
