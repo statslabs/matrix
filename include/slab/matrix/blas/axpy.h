@@ -14,15 +14,31 @@
 // limitations under the License.
 //
 
-/// @file axpy.h
-/// @brief Computes a vector-scalar product and adds the result to a vector.
-
 #ifndef SLAB_MATRIX_BLAS_AXPY_H_
 #define SLAB_MATRIX_BLAS_AXPY_H_
 
 namespace slab {
 
-/// @brief Computes a vector-scalar product and adds the result to a vector
+/// @addtogroup blas_interface BLAS INTERFACE
+/// @{
+
+/// @addtogroup blas_level1 BLAS Level 1
+/// @{
+  
+/// @brief Computes a vector-scalar product and adds the result to a vector.
+///
+/// The axpy routines perform a vector-vector operation defined as
+///
+/// y := a*x + y
+///
+/// where: a is a scalar, x and y are vectors each with a number of
+/// elements that equals n.
+///
+/// @param a Specifies the scalar a.
+/// @param x Vector.
+/// @param y Vector.
+/// @return Void.  
+///  
 template <typename T>
 inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
                       MatrixBase<T, 1> &y) {
@@ -51,6 +67,9 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
   }
 }
 
+/// @}
+/// @} BLAS INTERFACE
+ 
 }  // namespace slab
 
 #endif
