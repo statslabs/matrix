@@ -15,7 +15,8 @@
 //
 
 /// @file gesv.h
-/// @brief Computes the solution to the system of linear equations with a square coefficient matrix A and multiple right-hand sides.
+/// @brief Computes the solution to the system of linear equations with a square
+/// coefficient matrix A and multiple right-hand sides.
 
 #ifndef SLAB_MATRIX_LAPACK_GESV_H_
 #define SLAB_MATRIX_LAPACK_GESV_H_
@@ -54,5 +55,5 @@ inline int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
 }
 
 }  // namespace slab
- 
+
 #endif

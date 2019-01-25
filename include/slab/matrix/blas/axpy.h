@@ -24,7 +24,7 @@ namespace slab {
 
 /// @addtogroup blas_level1 BLAS Level 1
 /// @{
-  
+
 /// @brief Computes a vector-scalar product and adds the result to a vector.
 ///
 /// The axpy routines perform a vector-vector operation defined as
@@ -37,8 +37,8 @@ namespace slab {
 /// @param a Specifies the scalar a.
 /// @param x Vector.
 /// @param y Vector.
-/// @return Void.  
-///  
+/// @return Void.
+///
 template <typename T>
 inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
                       MatrixBase<T, 1> &y) {
@@ -56,12 +56,14 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
                 (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
     cblas_zaxpy(
-	n, reinterpret_cast<const double *>(&a), reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+        n, reinterpret_cast<const double *>(&a),
+        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
+        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
     cblas_caxpy(
-	n, reinterpret_cast<const float *>(&a), reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
+        n, reinterpret_cast<const float *>(&a),
+        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
+        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
   } else {
     err_quit("blas_axpy(): unsupported element type.");
   }
@@ -69,7 +71,7 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
 
 /// @}
 /// @} BLAS INTERFACE
- 
+
 }  // namespace slab
 
 #endif

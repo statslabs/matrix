@@ -29,7 +29,7 @@
 #include "mkl.h"
 #else
 extern "C" {
-  #include "cblas.h"
+#include "cblas.h"
 }
 #endif
 
@@ -43,8 +43,8 @@ extern "C" {
 #include "slab/matrix/blas/axpy.h"
 #include "slab/matrix/blas/copy.h"
 #include "slab/matrix/blas/dot.h"
-#include "slab/matrix/blas/sdot.h"
 #include "slab/matrix/blas/nrm2.h"
+#include "slab/matrix/blas/sdot.h"
 
 // BLAS Level 2 Routines and Functions
 #include "slab/matrix/blas/gemv.h"
@@ -119,7 +119,8 @@ inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
                 incx);
   } else if (is_float<T>::value) {
     cblas_cscal(n, reinterpret_cast<const float *>(&a),
-                reinterpret_cast<float *>(x.data() + x.descriptor().start), incx);
+                reinterpret_cast<float *>(x.data() + x.descriptor().start),
+                incx);
   } else {
     err_quit("blas_scal(): unsupported element type.");
   }
@@ -144,13 +145,13 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
     cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
                 (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zswap(n, reinterpret_cast<double *>(x.data() + x.descriptor().start),
-                incx, reinterpret_cast<double *>(y.data() + y.descriptor().start),
-                incy);
+    cblas_zswap(
+        n, reinterpret_cast<double *>(x.data() + x.descriptor().start), incx,
+        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
-    cblas_cswap(n, reinterpret_cast<float *>(x.data() + x.descriptor().start),
-                incx, reinterpret_cast<float *>(y.data() + y.descriptor().start),
-                incy);
+    cblas_cswap(
+        n, reinterpret_cast<float *>(x.data() + x.descriptor().start), incx,
+        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
   } else {
     err_quit("blas_swap(): unsupported element type.");
   }
@@ -171,7 +172,8 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
   } else if (is_complex_double<T>::value) {
     res = cblas_izamax(
         x.size(),
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx);
+        reinterpret_cast<const double *>(x.data() + x.descriptor().start),
+        incx);
   } else if (is_complex_float<T>::value) {
     res = cblas_icamax(
         x.size(),

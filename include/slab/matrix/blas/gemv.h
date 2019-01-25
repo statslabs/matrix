@@ -60,20 +60,20 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
         reinterpret_cast<const double *>(&beta),
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
-    cblas_cgemv(CblasRowMajor, trans, m, n, reinterpret_cast<const float *>(&alpha),
-                reinterpret_cast<const float *>(a.data() + a.descriptor().start),
-                lda,
-                reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-                incx, reinterpret_cast<const float *>(&beta),
-                reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
+    cblas_cgemv(
+        CblasRowMajor, trans, m, n, reinterpret_cast<const float *>(&alpha),
+        reinterpret_cast<const float *>(a.data() + a.descriptor().start), lda,
+        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
+        reinterpret_cast<const float *>(&beta),
+        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
   } else {
     err_quit("blas_gemv(): unsupported element type.");
   }
 }
- 
+
 /// @}
 /// @} BLAS INTERFACE
 
 }  // namespace slab
- 
+
 #endif

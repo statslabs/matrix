@@ -26,20 +26,20 @@ namespace slab {
 /// @{
 
 /// @brief Computes the sum of magnitudes of the vector elements.
-///  
+///
 /// The asum routine computes the sum of the magnitudes of elements of
 /// a real vector, or the sum of magnitudes of the real and imaginary
 /// parts of elements of a complex vector:
 ///
 /// res = |Re x1| + |Im x1| + |Re  x2| + |Im  x2|+ ... + |Re  xn| + |Im xn|,
-///  
+///
 /// where x is a vector with n elements.
-///  
+///
 /// @param x Vector.
-///  
+///
 /// @return Contains the sum of magnitudes of real and imaginary parts
 ///         of all elements of the vector.
-///  
+///
 template <typename T>
 inline T blas_asum(const Matrix<T, 1> &x) {
   const int n = x.size();

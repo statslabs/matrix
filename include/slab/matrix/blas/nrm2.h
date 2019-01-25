@@ -38,11 +38,11 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
         cblas_snrm2(n, (const float *)(x.data() + x.descriptor().start), incx);
   } else if (is_complex_double<T>::value) {
     res = cblas_dznrm2(
-        n, reinterpret_cast<const double*>(x.data() + x.descriptor().start),
+        n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
         incx);
   } else if (is_complex_float<T>::value) {
     res = cblas_scnrm2(
-        n, reinterpret_cast<const float*>(x.data() + x.descriptor().start),
+        n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
         incx);
   } else {
     err_quit("blas_nrm2(): unsupported element type.");

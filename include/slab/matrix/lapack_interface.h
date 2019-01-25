@@ -29,7 +29,7 @@
 #include "mkl.h"
 #else
 extern "C" {
-  #include "lapacke.h"
+#include "lapacke.h"
 }
 #endif
 

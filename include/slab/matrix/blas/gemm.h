@@ -61,29 +61,29 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
                 (const float)beta, (float *)(c.data() + c.descriptor().start),
                 ldc);
   } else if (is_complex_double<T>::value) {
-    cblas_zgemm(CblasRowMajor, transa, transb, m, n, k,
-                reinterpret_cast<const double *>(&alpha),
-                reinterpret_cast<const double *>(a.data() + a.descriptor().start),
-                lda,
-                reinterpret_cast<const double *>(b.data() + b.descriptor().start),
-                ldb, reinterpret_cast<const double *>(&beta),
-                reinterpret_cast<double *>(c.data() + c.descriptor().start), ldc);
+    cblas_zgemm(
+        CblasRowMajor, transa, transb, m, n, k,
+        reinterpret_cast<const double *>(&alpha),
+        reinterpret_cast<const double *>(a.data() + a.descriptor().start), lda,
+        reinterpret_cast<const double *>(b.data() + b.descriptor().start), ldb,
+        reinterpret_cast<const double *>(&beta),
+        reinterpret_cast<double *>(c.data() + c.descriptor().start), ldc);
   } else if (is_complex_float<T>::value) {
-    cblas_cgemm(CblasRowMajor, transa, transb, m, n, k,
-                reinterpret_cast<const float *>(&alpha),
-                reinterpret_cast<const float *>(a.data() + a.descriptor().start),
-                lda,
-                reinterpret_cast<const float *>(b.data() + b.descriptor().start),
-                ldb, reinterpret_cast<const float *>(&beta),
-                reinterpret_cast<float *>(c.data() + c.descriptor().start), ldc);
+    cblas_cgemm(
+        CblasRowMajor, transa, transb, m, n, k,
+        reinterpret_cast<const float *>(&alpha),
+        reinterpret_cast<const float *>(a.data() + a.descriptor().start), lda,
+        reinterpret_cast<const float *>(b.data() + b.descriptor().start), ldb,
+        reinterpret_cast<const float *>(&beta),
+        reinterpret_cast<float *>(c.data() + c.descriptor().start), ldc);
   } else {
     err_quit("blas_gemm(): unsupported element type.");
   }
 }
- 
+
 /// @}
 /// @} BLAS INTERFACE
 
 }  // namespace slab
- 
+
 #endif
