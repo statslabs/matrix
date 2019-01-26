@@ -38,8 +38,7 @@ namespace slab {
 /// \f]
 /// where \f$x\f$ is a vector with n elements.
 ///
-/// @param x Vector of type vec/fvec/cx_vec/cx_fvec.
-///
+/// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
 /// @return Contains the sum of magnitudes of real and imaginary parts
 ///         of all elements of the vector.
 ///
