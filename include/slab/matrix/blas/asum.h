@@ -14,12 +14,15 @@
 // limitations under the License.
 //
 
+/// @file asum.h
+/// @brief C++ template wrapper for C functions cblas_?asum
+
 #ifndef SLAB_MATRIX_BLAS_ASUM_H_
 #define SLAB_MATRIX_BLAS_ASUM_H_
 
 namespace slab {
 
-/// @addtogroup blas_interface BLAS INTERFACE
+/// @addtogroup blas_interface BLAS Interface
 /// @{
 
 /// @addtogroup blas_level1 BLAS Level 1
@@ -30,12 +33,12 @@ namespace slab {
 /// The asum routine computes the sum of the magnitudes of elements of
 /// a real vector, or the sum of magnitudes of the real and imaginary
 /// parts of elements of a complex vector:
+/// \f[
+/// res = |Re~x_1| + |Im~x_1| + |Re~x_2| + |Im~x_2|+ ... + |Re~x_n| + |Im~x_n|,
+/// \f]
+/// where \f$x\f$ is a vector with n elements.
 ///
-/// res = |Re x1| + |Im x1| + |Re  x2| + |Im  x2|+ ... + |Re  xn| + |Im xn|,
-///
-/// where x is a vector with n elements.
-///
-/// @param x Vector.
+/// @param x Vector of type vec/fvec/cx_vec/cx_fvec.
 ///
 /// @return Contains the sum of magnitudes of real and imaginary parts
 ///         of all elements of the vector.
@@ -61,8 +64,8 @@ inline T blas_asum(const Matrix<T, 1> &x) {
   return res;
 }
 
-/// @}
-/// @} BLAS INTERFACE
+/// @} BLAS Level 1
+/// @} BLAS Interface
 
 }  // namespace slab
 
