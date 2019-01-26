@@ -15,14 +15,31 @@
 //
 
 /// @file copy.h
-/// @brief Copies vector to another vector.
+/// @brief C++ template wrapper for C functions cblas_?copy
 
 #ifndef SLAB_MATRIX_BLAS_COPY_H_
 #define SLAB_MATRIX_BLAS_COPY_H_
 
 namespace slab {
 
-/// @brief Copies vector to another vector
+/// @addtogroup blas_interface BLAS Interface
+/// @{
+
+/// @addtogroup blas_level1 BLAS Level 1
+/// @{
+  
+/// @brief Copies vector to another vector.
+///
+/// The copy routines perform a vector-vector operation defined as  
+/// \f[
+/// x = y
+/// \f]
+/// where \f$x\f$ and \f$y\f$ are vectors.
+///
+/// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
+/// @param y Vector with type vec/fvec/cx_vec/cx_fvec.
+/// @return Void.
+///  
 template <typename T>
 inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   y.clear();
@@ -52,6 +69,9 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 }
 
+/// @} BLAS Level 1
+/// @} BLAS Interface
+ 
 }  // namespace slab
 
 #endif
