@@ -112,6 +112,6 @@ int main() {
        << "\ndval3 = " << dval3 << endl;
 
   cout << endl;
-  
+
   return 0;
 }

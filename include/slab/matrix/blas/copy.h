@@ -27,10 +27,10 @@ namespace slab {
 
 /// @addtogroup blas_level1 BLAS Level 1
 /// @{
-  
+
 /// @brief Copies vector to another vector.
 ///
-/// The copy routines perform a vector-vector operation defined as  
+/// The copy routines perform a vector-vector operation defined as
 /// \f[
 /// x = y
 /// \f]
@@ -39,7 +39,7 @@ namespace slab {
 /// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
 /// @param y Vector with type vec/fvec/cx_vec/cx_fvec.
 /// @return Void.
-///  
+///
 template <typename T>
 inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   y.clear();
@@ -71,7 +71,7 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
 
 /// @} BLAS Level 1
 /// @} BLAS Interface
- 
+
 }  // namespace slab
 
 #endif
