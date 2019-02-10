@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// -----------------------------------------------------------------------------
-// matrix.h
-// -----------------------------------------------------------------------------
-//
+
+/// @file matrix.h
+/// @brief A Matrix template
+
 #ifndef SLAB_MATRIX_MATRIX_H_
 #define SLAB_MATRIX_MATRIX_H_
 
@@ -34,6 +33,7 @@
 #include "slab/matrix/support.h"
 
 namespace slab {
+
 template <typename T>
 Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
 
@@ -57,8 +57,8 @@ class Matrix : public MatrixBase<T, N> {
   Matrix() = default;
   Matrix(Matrix &&) = default;  // move
   Matrix &operator=(Matrix &&) = default;
-  Matrix(Matrix const &) = default;  // copy
-  Matrix &operator=(Matrix const &) = default;
+  Matrix(const Matrix &) = default;  // copy
+  Matrix &operator=(const Matrix &) = default;
   ~Matrix() = default;
 
   //! construct from Matrix
