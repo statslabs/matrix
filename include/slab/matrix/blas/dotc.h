@@ -14,37 +14,44 @@
 // limitations under the License.
 //
 
-/// @file dot.h
-/// @brief Computes a vector-vector dot product.
+/// @file dotc.h
+/// @brief C++ template wrapper for C functions cblas_?dotc
 
-#ifndef SLAB_MATRIX_BLAS_DOT_H_
-#define SLAB_MATRIX_BLAS_DOT_H_
+#ifndef SLAB_MATRIX_BLAS_DOTC_H_
+#define SLAB_MATRIX_BLAS_DOTC_H_
 
 namespace slab {
 
-/// @brief Computes a vector-vector dot product
+/// @addtogroup blas_interface BLAS Interface
+/// @{
+
+/// @addtogroup blas_level1 BLAS Level 1
+/// @{
+  
+/// @brief Computes a dot product of a conjugated vector with another vector.
 template <typename T>
-inline T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
+inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y, Matrix<T, 1> &dotc) {
   assert(x.size() == y.size());
 
   const int n = x.size();
   const int incx = x.descriptor().strides[0];
   const int incy = y.descriptor().strides[0];
-
-  T res = 0.0;
-  if (is_double<T>::value) {
-    res = cblas_ddot(n, (const double *)(x.data() + x.descriptor().start), incx,
-                     (const double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
-    res = cblas_sdot(n, (const float *)(x.data() + x.descriptor().start), incx,
-                     (const float *)(y.data() + y.descriptor().start), incy);
-  } else {
-    err_quit("blas_dot(): unsupported element type.");
+  
+  dotc = Matrix<T, 1>(n);
+  if (is_complex_double<T>::value) {
+    cblas_zdotc_sub(n, reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
+		    reinterpret_cast<const double *>(y.data() + y.descriptor().start), incy,
+		    reinterpret_cast<double *>(dotc.data()));
+  } else if (is_complex_float<T>::value) {
+        cblas_zdotc_sub(n, reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
+		    reinterpret_cast<const float *>(y.data() + y.descriptor().start), incy,
+		    reinterpret_cast<float *>(dotc.data()));
   }
-
-  return res;
 }
 
+/// @} BLAS Level 1
+/// @} BLAS Interface
+ 
 }  // namespace slab
 
 #endif
