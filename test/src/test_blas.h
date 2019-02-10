@@ -24,7 +24,7 @@ TEST(BLASL1Test, AXPY) {
 
 TEST(BLASL1Test, COPY) {
   vec x = {1, 2, 3}, y;
- 
+
   blas_copy(x, y);
 
   EXPECT_EQ(1, y(0));
