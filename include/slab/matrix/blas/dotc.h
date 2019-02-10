@@ -41,6 +41,7 @@ namespace slab {
 /// @param dotc Contains the result of the dot product of the conjugated x and
 /// unconjugated y.
 /// @return Void.
+///
 template <typename T>
 inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
                           Matrix<T, 1> &dotc) {
@@ -57,7 +58,7 @@ inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
         incx, reinterpret_cast<const double *>(y.data() + y.descriptor().start),
         incy, reinterpret_cast<double *>(dotc.data()));
   } else if (is_complex_float<T>::value) {
-    cblas_zdotc_sub(
+    cblas_cdotc_sub(
         n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
         incx, reinterpret_cast<const float *>(y.data() + y.descriptor().start),
         incy, reinterpret_cast<float *>(dotc.data()));
