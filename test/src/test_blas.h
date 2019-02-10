@@ -5,51 +5,45 @@
 
 namespace slab {
 
-TEST(BLASlevel1Test, AXPY) {
-  double a1 = 9.0;
-  Matrix<double, 1> x1 = {1, 2, 3};
-  Matrix<double, 1> y1 = {1, 2, 3};
-
-  float a2 = 9.0;
-  Matrix<float, 1> x2 = {1, 2, 3};
-  Matrix<float, 1> y2 = {1, 2, 3};
-
-  blas_axpy(a1, x1, y1);
-  blas_axpy(a2, x2, y2);
-
-  EXPECT_EQ(10, y1(0));
-  EXPECT_EQ(20, y1(1));
-  EXPECT_EQ(30, y1(2));
-  EXPECT_EQ(10, y2(0));
-  EXPECT_EQ(20, y2(1));
-  EXPECT_EQ(30, y2(2));
+TEST(BLASL1Test, ASUM) {
+  vec v = {1, 2, 3};
+  EXPECT_EQ(6, blas_asum(v));
 }
 
-TEST(BLASlevel1Test, COPY) {
-  Matrix<double, 1> m1 = {1, 2, 3}, m1c;
-  Matrix<float, 1> m2 = {1, 2, 3}, m2c;
+TEST(BLASL1Test, AXPY) {
+  double a = 9.0;
+  vec x = {1, 2, 3};
+  vec y = {1, 2, 3};
 
-  blas_copy(m1, m1c);
-  blas_copy(m2, m2c);
+  blas_axpy(a, x, y);
 
-  EXPECT_EQ(1, m1c(0));
-  EXPECT_EQ(2, m1c(1));
-  EXPECT_EQ(3, m1c(2));
-
-  EXPECT_EQ(1, m2c(0));
-  EXPECT_EQ(2, m2c(1));
-  EXPECT_EQ(3, m2c(2));
+  EXPECT_EQ(10, y(0));
+  EXPECT_EQ(20, y(1));
+  EXPECT_EQ(30, y(2));
 }
 
-TEST(BLASlevel1Test, DOT) {
-  Matrix<double, 1> m1 = {1, 2, 3};
-  Matrix<float, 1> m2 = {1, 2, 3};
+TEST(BLASL1Test, COPY) {
+  vec x = {1, 2, 3}, y;
+ 
+  blas_copy(x, y);
 
-  EXPECT_EQ(14, blas_dot(m1, m1));
-  EXPECT_EQ(14, blas_dot(m2, m2));
+  EXPECT_EQ(1, y(0));
+  EXPECT_EQ(2, y(1));
+  EXPECT_EQ(3, y(2));
 }
 
-TEST(BLASlevel1Test, SWAP) {
+TEST(BLASL1Test, DOT) {
+  vec v = {1, 2, 3};
+  EXPECT_EQ(14, blas_dot(v, v));
+}
+
+TEST(BLASL1Test, SDOT) {
+  fvec v = {1, 2, 3};
+  EXPECT_EQ(15, blas_sdsdot(1.0f, v, v));
+  EXPECT_EQ(14, blas_dsdot(v, v));
+}
+
+TEST(BLASL1Test, SWAP) {
   Matrix<double, 1> m1 = {4, 5, 6};
   Matrix<double, 1> m1s = {1, 2, 3};
 
@@ -74,7 +68,7 @@ TEST(BLASlevel1Test, SWAP) {
   EXPECT_EQ(6, m2s(2));
 }
 
-TEST(BLASlevel1Test, SCAL) {
+TEST(BLASL1Test, SCAL) {
   double a1 = 0.1;
   Matrix<double, 1> m1 = {10, 20, 30};
 
@@ -93,7 +87,7 @@ TEST(BLASlevel1Test, SCAL) {
   EXPECT_EQ(3, m2(2));
 }
 
-TEST(BLASlevel1Test, IAMAX) {
+TEST(BLASL1Test, IAMAX) {
   Matrix<double, 1> m1 = {1, 3, 2};
   Matrix<float, 1> m2 = {1, 3, 2};
 
