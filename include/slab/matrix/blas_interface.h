@@ -44,6 +44,7 @@ extern "C" {
 #include "slab/matrix/blas/copy.h"
 #include "slab/matrix/blas/dot.h"
 #include "slab/matrix/blas/dotc.h"
+#include "slab/matrix/blas/dotu.h"
 #include "slab/matrix/blas/nrm2.h"
 #include "slab/matrix/blas/sdot.h"
 

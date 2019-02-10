@@ -15,14 +15,31 @@
 //
 
 /// @file nrm2.h
-/// @brief Computes the Euclidean norm of a vector.
+/// @brief C++ template wrapper for C functions cblas_?nrm2
 
 #ifndef SLAB_MATRIX_BLAS_NRM2_H_
 #define SLAB_MATRIX_BLAS_NRM2_H_
 
 namespace slab {
 
-/// @brief Computes the Euclidean norm of a vector
+/// @addtogroup blas_interface BLAS Interface
+/// @{
+
+/// @addtogroup blas_level1 BLAS Level 1
+/// @{
+
+/// @brief Computes the Euclidean norm of a vector.
+///
+/// The nrm2 routines perform a vector reduction operation defined as
+/// \f[
+/// res = ||x||
+/// \f]
+/// where: \f$x\f$ is a vector, \f$res\f$ is a value containing the
+/// Euclidean norm of the elements of \f$x\f$.
+///
+/// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
+/// @return The Euclidean norm of the vector x.
+///
 template <typename T>
 inline double blas_nrm2(const Matrix<T, 1> &x) {
   double res = 0.0;
@@ -50,6 +67,9 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
 
   return res;
 }
+
+/// @} BLAS Level 1
+/// @} BLAS Interface
 
 }  // namespace slab
 
