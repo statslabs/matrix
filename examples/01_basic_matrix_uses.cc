@@ -65,7 +65,7 @@ int main() {
   //  Matrix<char, 2> mc1(2, 3, 4);  // error: two many dimension sizes
 
   //  Matrix<char, 2> mc2{
-  //      {'1', '2', '3'}
+  //      {'1', '2', '3'}  // error(?): initializer missing for second dimension
   //  };
 
   //  Matrix<char, 2> mc3{
@@ -80,7 +80,7 @@ int main() {
   auto d2 = m2_new.order();  // 2
 
   auto e1 = m1_new.extent(0);  // 100
-  //  auto e1a = m1_new.extent(1);         // error: m1 is one-dimensional
+  //  auto e1a = m1_new.extent(1);         // error: m1_new is one-dimensional
 
   auto e2 = m2_new.extent(0);   // 50
   auto e2a = m2_new.extent(1);  // 6000
@@ -110,6 +110,8 @@ int main() {
 
   cout << "\ndval1 = " << dval1 << "\ndval2 = " << dval2
        << "\ndval3 = " << dval3 << endl;
+
+  cout << endl;
 
   return 0;
 }

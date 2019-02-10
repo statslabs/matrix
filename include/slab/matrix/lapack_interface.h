@@ -25,11 +25,20 @@
 
 #include <complex>
 
+#ifdef USE_MKL
 #include "mkl.h"
+#else
+extern "C" {
+#include "lapacke.h"
+}
+#endif
+
 #include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/traits.h"
+
+#include "slab/matrix/lapack/gesv.h"
 
 namespace slab {
 
@@ -82,37 +91,6 @@ inline int lapack_potrf(Matrix<T, 2> &a) {
     info =
         LAPACKE_cpotrf(LAPACK_ROW_MAJOR, uplo, n,
                        reinterpret_cast<lapack_complex_float *>(a.data()), lda);
-  }
-
-  return info;
-}
-
-template <typename T>
-inline int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
-  assert(a.n_rows() == b.n_rows());
-
-  int n = a.n_rows();
-  int nrhs = b.n_cols();
-  int lda = a.n_cols();
-  int ldb = b.n_cols();
-
-  int info = 0;
-  if (is_double<T>::value) {
-    info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, (double *)a.data(), lda,
-                         ipiv.data(), (double *)b.data(), ldb);
-  } else if (is_float<T>::value) {
-    info = LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, (float *)a.data(), lda,
-                         ipiv.data(), (float *)b.data(), ldb);
-  } else if (is_complex_double<T>::value) {
-    info = LAPACKE_zgesv(
-        LAPACK_ROW_MAJOR, n, nrhs,
-        reinterpret_cast<lapack_complex_double *>(a.data()), lda, ipiv.data(),
-        reinterpret_cast<lapack_complex_double *>(b.data()), ldb);
-  } else if (is_complex_float<T>::value) {
-    info = LAPACKE_cgesv(
-        LAPACK_ROW_MAJOR, n, nrhs,
-        reinterpret_cast<lapack_complex_float *>(a.data()), lda, ipiv.data(),
-        reinterpret_cast<lapack_complex_float *>(b.data()), ldb);
   }
 
   return info;

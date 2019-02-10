@@ -13,15 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.6.0)
+
+set(CMAKE_CXX_STANDARD 11)
 
 set(PROJECT_NAME "Statslabs.Matrix")
 set(PROJECT_FULL_NAME "Statslabs.Matrix C++ Linear Algebra Library")
-set(PROJECT_VERSION "0.4.0")
+
+set(MATRIX_VERSION_MAJOR 0)
+set(MATRIX_VERSION_MINOR 4)
+set(MATRIX_VERSION_PATCH 0)
+set(PROJECT_VERSION "${MATRIX_VERSION_MAJOR}.${MATRIX_VERSION_MINOR}.${MATRIX_VERSION_PATCH}")
 
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 11)
+message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE is unset, defaulting to Release")
@@ -29,6 +34,19 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 endif()
 
 include("cmake/MKL.cmake")
+
+if(NOT HAVE_MKL)
+  remove_definitions(-DUSE_MKL)
+
+  find_package(BLAS REQUIRED)
+  message(STATUS "Found BLAS library at: ${BLAS_LIBRARIES}")
+  include_directories(AFTER ${BLAS_INCLUDE_DIRS})
+  list(APPEND MKL_LINKER_LIBS ${BLAS_LIBRARIES})
+
+  find_package(LAPACK REQUIRED)
+  message(STATUS "Found LAPACK library at: ${LAPACK_LIBRARIES}")
+  list(APPEND MKL_LINKER_LIBS ${LAPACK_LIBRARIES})
+endif()
 
 # Doxygen Build
 option(BUILD_DOC "Build Documentation" ON)
@@ -62,6 +80,7 @@ add_executable(main
         src/main.cc)
 
 target_link_libraries(main PUBLIC ${MKL_LINKER_LIBS})
+target_compile_features(main PRIVATE cxx_alias_templates)
 
 # Set target properties
 target_include_directories(main
@@ -76,6 +95,7 @@ add_library(matrix
         src/library.cc)
 
 target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
+target_compile_features(matrix PRIVATE cxx_alias_templates)
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Statslabs::matrix ALIAS matrix)
