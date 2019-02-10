@@ -80,6 +80,7 @@ add_executable(main
         src/main.cc)
 
 target_link_libraries(main PUBLIC ${MKL_LINKER_LIBS})
+target_compile_features(main PRIVATE cxx_alias_templates)
 
 # Set target properties
 target_include_directories(main
@@ -94,6 +95,7 @@ add_library(matrix
         src/library.cc)
 
 target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
+target_compile_features(matrix PRIVATE cxx_alias_templates)
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Statslabs::matrix ALIAS matrix)
