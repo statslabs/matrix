@@ -24,7 +24,7 @@
 # Change this if your clang-format executable is somewhere else
 CLANG_FORMAT="/usr/local/bin/clang-format"
 
-for DIRECTORY in examples examples/lapack include/slab include/slab/matrix src test/src
+for DIRECTORY in examples examples/lapack include/slab include/slab/matrix include/slab/matrix/blas src test/src
 do
     echo "Formatting code under $DIRECTORY/"
     find "$DIRECTORY" \( -name '*.h' -or -name '*.cc' \) -print0 | xargs -0 "$CLANG_FORMAT" -i
