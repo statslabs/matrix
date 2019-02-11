@@ -84,12 +84,13 @@ class Matrix : public MatrixBase<T, N> {
   //! assign from list
   Matrix &operator=(MatrixInitializer<T, N>);
 
-  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>,
-            typename = Enable_if<Convertible<U, std::size_t>()>>
+  //! don't use {} except for elements
+  ///@{
+  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>>
   Matrix(std::initializer_list<U>) = delete;
-  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>,
-            typename = Enable_if<Convertible<U, std::size_t>()>>
+  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>>
   Matrix &operator=(std::initializer_list<U>) = delete;
+  ///@}
 
   //! total number of elements
   std::size_t size() const { return elems_.size(); }
@@ -481,18 +482,41 @@ template <typename T, std::size_t N>
 template <typename... Exts>
 Matrix<T, N>::Matrix(Exts... exts)
     : MatrixBase<T, N>{exts...},  // copy extents
-      elems_(this->desc_.size)    // allocate desc_.size elements and default
-// initialize them
+      elems_(this->desc_.size)    // allocate desc_.size elements and initialize
 {}
 
 template <typename T, std::size_t N>
 Matrix<T, N>::Matrix(MatrixInitializer<T, N> init) {
+  // intialize start
+  this->desc_.start = 0;
+  // deduce extents from initializer list
   this->desc_.extents = matrix_impl::derive_extents<N>(init);
+  // compute strides and size
   this->desc_.size =
       matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
+
   elems_.reserve(this->desc_.size);        // make room for slices
   matrix_impl::insert_flat(init, elems_);  // initialize from initializer list
   assert(elems_.size() == this->desc_.size);
+}
+
+template <typename T, std::size_t N>
+Matrix<T, N> &Matrix<T, N>::operator=(MatrixInitializer<T, N> init) {
+  elems_.clear();
+
+  // intialize start
+  this->desc_.start = 0;
+  // deduce extents from initializer list
+  this->desc_.extents = matrix_impl::derive_extents<N>(init);
+  // compute strides and size
+  this->desc_.size =
+      matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
+
+  elems_.reserve(this->desc_.size);        // make room for slices
+  matrix_impl::insert_flat(init, elems_);  // initialize from initializer list
+  assert(elems_.size() == this->desc_.size);
+
+  return *this;
 }
 
 template <typename T, std::size_t N>
