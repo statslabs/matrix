@@ -13,7 +13,7 @@ TEST(MatrixConstructionTest, ConstructFromExtent) {
   auto ms0 = m0.descriptor();  // MatrixSlice<0>
 
   EXPECT_EQ(0, m0());  // the only element
-  EXPECT_EQ(0, ms0.size);
+  EXPECT_EQ(1, ms0.size);
   EXPECT_EQ(0, ms0.start);
 
   std::array<int, 3> arr = {{3, 4, 5}};

@@ -50,6 +50,9 @@ Matrix<T, 2> transpose(const MatrixBase<T, 2> &a);
  */
 template <typename T, std::size_t N>
 class Matrix : public MatrixBase<T, N> {
+  // ----------------------------------------
+  // The core member functions in book 'TCPL'
+  // ----------------------------------------
  public:
   using iterator = typename std::vector<T>::iterator;
   using const_iterator = typename std::vector<T>::const_iterator;
@@ -101,6 +104,13 @@ class Matrix : public MatrixBase<T, N> {
   const T *data() const { return elems_.data(); }
   ///@}
 
+ private:
+  std::vector<T> elems_;  // the elements
+
+  // ---------------------------------------------
+  // Member functions for subscripting and slicing
+  // ---------------------------------------------
+ public:
   //! m(i,j,k) subscripting with integers
   ///@{
   template <typename... Args>
@@ -157,6 +167,10 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
   ///@}
 
+  // --------------------------------------------------
+  // Member functions for matrix arithmetic operations
+  // --------------------------------------------------
+ public:
   //! @cond Doxygen_Suppress
 
   template <typename F>
@@ -230,8 +244,9 @@ class Matrix : public MatrixBase<T, N> {
     }
   }
 
- private:
-  std::vector<T> elems_;  // the elements
+  // ----------------------------------------
+  // Some member function specializations
+  // ----------------------------------------
 
  public:
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
@@ -794,7 +809,7 @@ class Matrix<T, 0> : public MatrixBase<T, 0> {
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
-  return os << (const T &)m0;
+  return os << (const T &)m0();
 }
 
 template <typename M, typename... Args>
