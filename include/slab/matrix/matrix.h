@@ -675,7 +675,7 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
 template <typename T, std::size_t N>
 template <typename F>
 Matrix<T, N> &Matrix<T, N>::apply(F f) {
-  for (auto &x : elems_) f(x);
+  for (auto &x : elems_) f(x);  // this loop uses stride iterators
   return *this;
 }
 
@@ -737,7 +737,7 @@ template <typename T, std::size_t N>
 template <typename M>
 Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator-=(
     const M &m) {
-  // static_assert(m.order_ == N, "+=: mismatched Matrix dimensions");
+  // static_assert(m.order_ == N, "-=: mismatched Matrix dimensions");
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a -= b; });

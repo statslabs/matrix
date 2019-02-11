@@ -304,25 +304,9 @@ Matrix<T, N> operator/(const MatrixRef<T, N> &a, const Matrix<T, N> &b) {
   return res;
 }
 
-template <typename T>
-inline Matrix<T, 2> diag(const Matrix<T, 1> &x) {
-  Matrix<T, 2> res(x.size(), x.size());
-  res.diag() = x;
-
-  return res;
-}
-
-template <typename T>
-inline T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
-  assert(a.size() == b.size());
-
-  T res = T{0};
-  for (std::size_t idx = 0; idx != a.size(); ++idx) {
-    res += a(idx) * b(idx);
-  }
-
-  return res;
-}
+//
+// Matrix Multiplication
+//
 
 template <typename T>
 inline Matrix<T, 2> matmul(const MatrixBase<T, 1> &a,
@@ -470,6 +454,26 @@ template <typename T, typename... Args>
 inline auto matmul_n(const Matrix<T, 2> &x, Args... args)
     -> decltype(matmul(x, matmul_n(args...))) {
   return matmul(x, matmul_n(args...));
+}
+
+template <typename T>
+inline Matrix<T, 2> diag(const Matrix<T, 1> &x) {
+  Matrix<T, 2> res(x.size(), x.size());
+  res.diag() = x;
+
+  return res;
+}
+
+template <typename T>
+inline T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
+  assert(a.size() == b.size());
+
+  T res = T{0};
+  for (std::size_t idx = 0; idx != a.size(); ++idx) {
+    res += a(idx) * b(idx);
+  }
+
+  return res;
 }
 
 template <typename T, std::size_t N, typename... Args>
@@ -890,54 +894,6 @@ inline Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
 
   Matrix<T, N> res = x;
   res.apply([&](T &a) { a = std::pow(a, static_cast<T>(val)); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> sin(const Matrix<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::sin(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> sin(const MatrixRef<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::sin(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> cos(const Matrix<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::cos(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> cos(const MatrixRef<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::cos(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> tan(const Matrix<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::tan(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> tan(const MatrixRef<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::tan(a); });
 
   return res;
 }
