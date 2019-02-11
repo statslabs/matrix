@@ -54,6 +54,7 @@ class Matrix : public MatrixBase<T, N> {
   // The core member functions in book 'TCPL'
   // ----------------------------------------
  public:
+  //! @cond Doxygen_Suppress
   using iterator = typename std::vector<T>::iterator;
   using const_iterator = typename std::vector<T>::const_iterator;
 
@@ -63,6 +64,7 @@ class Matrix : public MatrixBase<T, N> {
   Matrix(const Matrix &) = default;  // copy
   Matrix &operator=(const Matrix &) = default;
   ~Matrix() = default;
+  //! @endcond
 
   //! construct from Matrix
   template <typename M, typename = Enable_if<Matrix_type<M>()>>
@@ -167,12 +169,19 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
   ///@}
 
+  //! element iterators
+  ///@{
+  iterator begin() { return elems_.begin(); }
+  const_iterator begin() const { return elems_.cbegin(); }
+  iterator end() { return elems_.end(); }
+  const_iterator end() const { return elems_.cend(); }
+  ///@}
+
   // --------------------------------------------------
   // Member functions for matrix arithmetic operations
   // --------------------------------------------------
  public:
   //! @cond Doxygen_Suppress
-
   template <typename F>
   Matrix &apply(F f);  // f(x) for every element x
 
@@ -180,9 +189,8 @@ class Matrix : public MatrixBase<T, N> {
   template <typename M, typename F>
   Enable_if<Matrix_type<M>(), Matrix &> apply(const M &m, F f);
 
-  Matrix operator-() const;
-
   Matrix &operator=(const T &value);   // assignment with scalar
+
   Matrix &operator+=(const T &value);  // scalar addition
   Matrix &operator-=(const T &value);  // scalar subtraction
   Matrix &operator*=(const T &value);  // scalar multiplication
@@ -205,48 +213,12 @@ class Matrix : public MatrixBase<T, N> {
   template <typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
 
+  Matrix operator-() const;
   //! @endcond
 
-  iterator begin() { return elems_.begin(); }
-  const_iterator begin() const { return elems_.cbegin(); }
-  iterator end() { return elems_.end(); }
-  const_iterator end() const { return elems_.cend(); }
-
-  bool empty() const { return begin() == end(); }
-  void clear();
-  //  void save(const std::string &filename) {
-  //    std::ostream os(filename);
-  //  }
-  void load(const std::string &filename) {
-    std::ifstream is(filename);
-    if (is.is_open()) {
-      // read the first line
-      std::string first_line;
-      getline(is, first_line);
-
-      // read the extents into ivec
-      std::istringstream iss(first_line);
-      int val;
-      std::vector<int> ivec;
-      while (iss >> val) ivec.push_back(val);
-
-      if (ivec.size() != this->order())
-        std::cout << "incorrect extents" << std::endl;
-      this->desc_.start = 0;
-      std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
-      this->desc_.size = matrix_impl::compute_strides(this->desc_.extents,
-                                                      this->desc_.strides);
-
-      std::istream_iterator<T> in(is), end;
-      elems_.assign(in, end);
-    } else {
-      std::cout << "Fail to open the file" << std::endl;
-    }
-  }
-
-  // ----------------------------------------
-  // Some member function specializations
-  // ----------------------------------------
+  // ---------------------------------------------
+  // Specializations for Matrix<T, 1>/Matrix<T, 2>
+  // ---------------------------------------------
 
  public:
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
@@ -454,6 +426,46 @@ class Matrix : public MatrixBase<T, N> {
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const {
     return transpose(*this);
+  }
+
+  // ----------------------------------------
+  // More member function for matrix template
+  // ----------------------------------------
+
+ public:
+  void clear();
+
+  bool empty() const { return begin() == end(); }
+  bool is_empty() const { return empty(); }
+
+  //  void save(const std::string &filename) {
+  //    std::ostream os(filename);
+  //  }
+  void load(const std::string &filename) {
+    std::ifstream is(filename);
+    if (is.is_open()) {
+      // read the first line
+      std::string first_line;
+      getline(is, first_line);
+
+      // read the extents into ivec
+      std::istringstream iss(first_line);
+      int val;
+      std::vector<int> ivec;
+      while (iss >> val) ivec.push_back(val);
+
+      if (ivec.size() != this->order())
+        std::cout << "incorrect extents" << std::endl;
+      this->desc_.start = 0;
+      std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
+      this->desc_.size = matrix_impl::compute_strides(this->desc_.extents,
+                                                      this->desc_.strides);
+
+      std::istream_iterator<T> in(is), end;
+      elems_.assign(in, end);
+    } else {
+      std::cout << "Fail to open the file" << std::endl;
+    }
   }
 };
 
@@ -682,12 +694,6 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::apply(const M &m,
 }
 
 template <typename T, std::size_t N>
-Matrix<T, N> Matrix<T, N>::operator-() const {
-  Matrix<T, N> res = *this;
-  return res.apply([&](T &a) { a = -a; });
-}
-
-template <typename T, std::size_t N>
 Matrix<T, N> &Matrix<T, N>::operator=(const T &val) {
   return apply([&](T &a) { a = val; });
 }
@@ -762,6 +768,12 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator%=(
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a %= b; });
+}
+
+template <typename T, std::size_t N>
+Matrix<T, N> Matrix<T, N>::operator-() const {
+  Matrix<T, N> res = *this;
+  return res.apply([&](T &a) { a = -a; });
 }
 
 template <typename T, std::size_t N>
