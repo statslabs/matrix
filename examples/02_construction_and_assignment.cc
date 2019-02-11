@@ -7,7 +7,7 @@ using namespace slab;
 enum class Piece { none, cross, naught };
 
 void ConstructFromExtents() {
-  cout << "ConstructFromExtents():" << endl;
+  cout << "\nConstructFromExtents():" << endl;
 
   Matrix<double, 0> m0;
   Matrix<double, 1> m1(3);
@@ -21,7 +21,7 @@ void ConstructFromExtents() {
 }
 
 void ConstructFromMatrixInitializer() {
-  cout << "ConstructFromMatrixInitializer():" << endl;
+  cout << "\nConstructFromMatrixInitializer():" << endl;
 
   Matrix<double, 0> m0{1};
   Matrix<double, 1> m1{1, 2};
@@ -39,12 +39,12 @@ void ConstructFromMatrixInitializer() {
 
   Matrix<Piece, 2> board2(3, 3);  // OK
 
-  //  Matrix<Piece, 2> board3{3,3};  // error: constructor from
-  //  initializer_list<int> deleted
+  // error: constructor from initializer_list<int> deleted
+  // Matrix<Piece, 2> board3{3,3};
 }
 
 void ConstructFromMatrixRef() {
-  cout << "ConstructFromMatrixRef():" << endl;
+  cout << "\nConstructFromMatrixRef():" << endl;
 
   Matrix<double, 1> m1{1, 2, 3};
   auto mr1 = m1(slice(1));
@@ -67,7 +67,7 @@ void ConstructFromMatrixRef() {
 }
 
 void AssignFromMatrixInitializer() {
-  cout << "AssignFromMatrixInitializer():" << endl;
+  cout << "\nAssignFromMatrixInitializer():" << endl;
 
   Matrix<double, 0> m0 = {1};
   Matrix<double, 1> m1 = {1, 2};
@@ -90,7 +90,7 @@ void AssignFromMatrixInitializer() {
 }
 
 void AssignFromMatrixRef() {
-  cout << "AssignFromMatrixRef():" << endl;
+  cout << "\nAssignFromMatrixRef():" << endl;
 
   Matrix<double, 1> m1{1, 2, 3};
   auto mr1 = m1(slice(1));
