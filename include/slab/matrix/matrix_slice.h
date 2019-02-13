@@ -97,7 +97,7 @@ MatrixSlice<N>::MatrixSlice(std::size_t s,
 
 template <std::size_t N>
 MatrixSlice<N>::MatrixSlice(const std::array<std::size_t, N> &exts)
-    : start{0}, extents{exts} {
+    : start{0}, extents(exts) {
   assert(exts.size() == N);
   size = matrix_impl::compute_strides(extents, strides);
 }
