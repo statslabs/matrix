@@ -786,14 +786,24 @@ void Matrix<T, N>::clear() {
   elems_.clear();
 }
 
+//! Matrix<T,0> is a zero-dimensional matrix of type T..
+/*!
+ * \tparam T value type.
+ *
+ * Matrix<T,0> is not really a matrix. It stores a single element of
+ * type T and can be converted to a reference to that type.
+ */
 template <typename T>
 class Matrix<T, 0> : public MatrixBase<T, 0> {
  public:
+  //! @cond Doxygen_Suppress
   using iterator = typename std::array<T, 1>::iterator;
   using const_iterator = typename std::array<T, 1>::const_iterator;
+  //! @endcond
 
+  //! construct from an element
   Matrix(const T &x = T{}) : elem_{x} {}
-
+  //! assign from an element
   Matrix &operator=(const T &value) {
     elem_[0] = value;
     return *this;
@@ -808,16 +818,25 @@ class Matrix<T, 0> : public MatrixBase<T, 0> {
   const T *data() const { return elem_.data(); }
   ///@}
 
+  //! m() subscripting
+  ///@{
   T &operator()() { return elem_[0]; }
   const T &operator()() const { return elem_[0]; }
+  ///@}
 
+  //! conversion from Matrix<T, 0> to type T
+  ///@{
   operator T &() { return elem_[0]; }
   operator const T &() { return elem_[0]; }
+  ///@}
 
+  //! element iterators
+  ///@{
   iterator begin() { return elem_.begin(); }
   const_iterator begin() const { return elem_.cbegin(); }
   iterator end() { return elem_.end(); }
   const_iterator end() const { return elem_.end(); }
+  ///@}
 
  private:
   std::array<T, 1> elem_;
