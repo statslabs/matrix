@@ -284,15 +284,15 @@ class Matrix : public MatrixBase<T, N> {
   //! Construct a matrix from a symmetric/triangular/hermitian matrix
   ///@{
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix(const SymmetricMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix(const TriangularMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix(const HermitianMatrix<U, TRI> &x);
   ///@}
 
@@ -839,8 +839,8 @@ void Matrix<T, N>::load(const std::string &filename) {
       std::cout << "incorrect extents" << std::endl;
     this->desc_.start = 0;
     std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
-    this->desc_.size = matrix_impl::compute_strides(this->desc_.extents,
-                                                    this->desc_.strides);
+    this->desc_.size =
+        matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
 
     std::istream_iterator<T> in(is), end;
     elems_.assign(in, end);
