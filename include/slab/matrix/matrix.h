@@ -91,9 +91,13 @@ class Matrix : public MatrixBase<T, N> {
 
   //! don't use {} except for elements
   ///@{
-  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>>
+  template <typename U, std::size_t NN = N,
+            typename = Enable_if<Convertible<U, std::size_t>()>,
+            typename = Enable_if<(NN > 1)>>
   Matrix(std::initializer_list<U>) = delete;
-  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>>
+  template <typename U, std::size_t NN = N,
+            typename = Enable_if<Convertible<U, std::size_t>()>,
+            typename = Enable_if<(NN > 1)>>
   Matrix &operator=(std::initializer_list<U>) = delete;
   ///@}
 
@@ -189,7 +193,7 @@ class Matrix : public MatrixBase<T, N> {
   template <typename M, typename F>
   Enable_if<Matrix_type<M>(), Matrix &> apply(const M &m, F f);
 
-  Matrix &operator=(const T &value);   // assignment with scalar
+  Matrix &operator=(const T &value);  // assignment with scalar
 
   Matrix &operator+=(const T &value);  // scalar addition
   Matrix &operator-=(const T &value);  // scalar subtraction

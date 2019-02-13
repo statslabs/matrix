@@ -22,4 +22,4 @@
 
 #include "slab/matrix/fns/trig.h"
 
-#endif // STATSLABS_MATRIX_MATRIX_FNS_H_
+#endif  // STATSLABS_MATRIX_MATRIX_FNS_H_

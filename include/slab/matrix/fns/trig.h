@@ -59,4 +59,4 @@ inline Matrix<T, N> tan(const MatrixRef<T, N> &x) {
 
 }  // namespace slab
 
-#endif // STATSLABS_MATRIX_TRIG_H_
+#endif  // STATSLABS_MATRIX_TRIG_H_
