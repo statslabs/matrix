@@ -826,58 +826,6 @@ inline bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
   return true;
 }
 
-template <typename T, std::size_t N>
-inline Matrix<T, N> exp(const Matrix<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::exp(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> exp(const MatrixRef<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::exp(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> log(const Matrix<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::log(a); });
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, N> log(const MatrixRef<T, N> &x) {
-  Matrix<T, N> res = x;
-  res.apply([](T &a) { a = std::log(a); });
-
-  return res;
-}
-
-template <typename T, typename T1, std::size_t N>
-inline Matrix<T, N> pow(const Matrix<T, N> &x, const T1 &val) {
-  static_assert(Convertible<T1, T>(), "pow(): incompatible element types");
-
-  Matrix<T, N> res = x;
-  res.apply([&](T &a) { a = std::pow(a, static_cast<T>(val)); });
-
-  return res;
-}
-
-template <typename T, typename T1, std::size_t N>
-inline Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
-  static_assert(Convertible<T1, T>(), "pow(): incompatible element types");
-
-  Matrix<T, N> res = x;
-  res.apply([&](T &a) { a = std::pow(a, static_cast<T>(val)); });
-
-  return res;
-}
-
 template <typename T>
 inline Matrix<T, 2> chol(const Matrix<T, 2> &x) {
   assert(x.n_rows() == x.n_cols());
