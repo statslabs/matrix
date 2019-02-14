@@ -837,16 +837,6 @@ inline T sum(const MatrixRef<T, N> &x) {
 }
 
 template <typename T, std::size_t N>
-inline T prod(const Matrix<T, N> &x) {
-  return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
-}
-
-template <typename T, std::size_t N>
-inline T prod(const MatrixRef<T, N> &x) {
-  return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
-}
-
-template <typename T, std::size_t N>
 inline Matrix<T, N> exp(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });

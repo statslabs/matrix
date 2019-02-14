@@ -91,14 +91,6 @@ TEST(MatrixOperationTest, Sum) {
   EXPECT_EQ(45, res);
 }
 
-TEST(MatrixOperationTest, Prod) {
-  mat m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-
-  double res = prod(m);
-
-  EXPECT_EQ(362880, res);
-}
-
 TEST(MatrixOperationTest, Exp) {
   mat m = zeros<mat>(3, 3);
   mat res = exp(m);
