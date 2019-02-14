@@ -21,6 +21,7 @@
 #define STATSLABS_MATRIX_MATRIX_FNS_H_
 
 #include "slab/matrix/fns/prod.h"
+#include "slab/matrix/fns/sum.h"
 #include "slab/matrix/fns/trig.h"
 
 #endif  // STATSLABS_MATRIX_MATRIX_FNS_H_

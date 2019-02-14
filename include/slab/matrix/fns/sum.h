@@ -14,43 +14,41 @@
 // limitations under the License.
 //
 
-/// @file prod.h
-/// @brief Product of array elements.
+/// @file sum.h
+/// @brief Sum of array elements.
 
-#ifndef STATSLABS_MATRIX_PROD_H_
-#define STATSLABS_MATRIX_PROD_H_
+#ifndef STATSLABS_MATRIX_SUM_H_
+#define STATSLABS_MATRIX_SUM_H_
 
 namespace slab {
 
-template <typename T>
-inline T prod(const Matrix<T, 1> &x) {
-  return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
+template <typename T, std::size_t N>
+inline T sum(const Matrix<T, N> &x) {
+  return std::accumulate(x.begin(), x.end(), T{0});
+}
+
+template <typename T, std::size_t N>
+inline T sum(const MatrixRef<T, N> &x) {
+  return std::accumulate(x.begin(), x.end(), T{0});
 }
 
 template <typename T>
-inline T prod(const MatrixRef<T, 1> &x) {
-  return std::accumulate(x.begin(), x.end(), T{1}, std::multiplies<T>());
-}
-
-template <typename T>
-inline Matrix<T, 1> prod(const Matrix<T, 2> &x) {
+inline Matrix<T, 1> sum(const Matrix<T, 2> &x) {
   Matrix<T, 1> res(x.n_cols());
   for (std::size_t i = 0; i != x.n_cols(); ++i) {
     Matrix<T, 1> xcol = x.col(i);
-    res(i) =
-        std::accumulate(xcol.begin(), xcol.end(), T{1}, std::multiplies<T>());
+    res(i) = std::accumulate(xcol.begin(), xcol.end(), T{0});
   }
 
   return res;
 }
 
 template <typename T>
-inline Matrix<T, 1> prod(const MatrixRef<T, 2> &x) {
+inline Matrix<T, 1> sum(const MatrixRef<T, 2> &x) {
   Matrix<T, 1> res(x.n_cols());
   for (std::size_t i = 0; i != x.n_cols(); ++i) {
     Matrix<T, 1> xcol = x.col(i);
-    res(i) =
-        std::accumulate(xcol.begin(), xcol.end(), T{1}, std::multiplies<T>());
+    res(i) = std::accumulate(xcol.begin(), xcol.end(), T{0});
   }
 
   return res;
@@ -58,4 +56,4 @@ inline Matrix<T, 1> prod(const MatrixRef<T, 2> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_PROD_H_
+#endif  // STATSLABS_MATRIX_SUM_H_

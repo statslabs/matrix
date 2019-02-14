@@ -827,16 +827,6 @@ inline bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
 }
 
 template <typename T, std::size_t N>
-inline T sum(const Matrix<T, N> &x) {
-  return std::accumulate(x.begin(), x.end(), T{0});
-}
-
-template <typename T, std::size_t N>
-inline T sum(const MatrixRef<T, N> &x) {
-  return std::accumulate(x.begin(), x.end(), T{0});
-}
-
-template <typename T, std::size_t N>
 inline Matrix<T, N> exp(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });

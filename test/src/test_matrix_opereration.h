@@ -83,14 +83,6 @@ TEST(MatrixOperationTest, Matmul_N) {
   EXPECT_EQ(2412, res(2, 2));
 }
 
-TEST(MatrixOperationTest, Sum) {
-  mat m = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-
-  double res = sum(m);
-
-  EXPECT_EQ(45, res);
-}
-
 TEST(MatrixOperationTest, Exp) {
   mat m = zeros<mat>(3, 3);
   mat res = exp(m);
