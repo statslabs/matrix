@@ -27,7 +27,9 @@
 #include "slab/matrix/fns/join.h"
 #include "slab/matrix/fns/kron.h"
 #include "slab/matrix/fns/prod.h"
+#include "slab/matrix/fns/reshape.h"
 #include "slab/matrix/fns/sum.h"
+#include "slab/matrix/fns/vectorise.h"
 
 #include "slab/matrix/fns/misc.h"
 #include "slab/matrix/fns/trig.h"

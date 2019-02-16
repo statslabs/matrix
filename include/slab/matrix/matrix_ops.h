@@ -473,20 +473,6 @@ inline T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
   return res;
 }
 
-template <typename T, std::size_t N, typename... Args>
-inline auto reshape(const Matrix<T, N> &x, Args... args)
-    -> decltype(Matrix<T, sizeof...(args)>()) {
-  Matrix<T, sizeof...(args)> res(args...);
-  std::copy(x.begin(), x.end(), res.begin());
-
-  return res;
-}
-
-template <typename T, std::size_t N>
-inline Matrix<T, 1> vectorise(const Matrix<T, N> &x) {
-  return reshape(x, x.size());
-}
-
 }  // namespace slab
 
 #endif  // SLAB_MATRIX_OPERATIONS_H_
