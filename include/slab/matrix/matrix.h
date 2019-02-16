@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cstddef>
 
+#include <algorithm>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -348,17 +349,17 @@ class Matrix : public MatrixBase<T, N> {
     }
   }
 
-  template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
-  Matrix<T, 2> t() const {
-    return transpose(*this);
-  }
-
   // ---------------------------------------------
   // More member functions for the matrix template
   // ---------------------------------------------
 
  public:
   void clear();
+
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const {
+    return transpose(*this);
+  }
 
   bool empty() const { return begin() == end(); }
   bool is_empty() const { return empty(); }

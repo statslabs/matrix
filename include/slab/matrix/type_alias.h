@@ -27,6 +27,9 @@
 
 namespace slab {
 
+using uword = unsigned int;
+using sword = signed int;
+
 // General Matrix -- Vector / Matrix / Cube
 
 using vec = Matrix<double, 1>;
