@@ -20,11 +20,21 @@
 #ifndef STATSLABS_MATRIX_MATRIX_FNS_H_
 #define STATSLABS_MATRIX_MATRIX_FNS_H_
 
+#include "slab/matrix/fns/eye.h"
+#include "slab/matrix/fns/ones.h"
+#include "slab/matrix/fns/zeros.h"
+
+#include "slab/matrix/fns/join.h"
 #include "slab/matrix/fns/kron.h"
 #include "slab/matrix/fns/prod.h"
 #include "slab/matrix/fns/sum.h"
 
 #include "slab/matrix/fns/misc.h"
 #include "slab/matrix/fns/trig.h"
+
+#include "slab/matrix/fns/chol.h"
+#include "slab/matrix/fns/inv.h"
+#include "slab/matrix/fns/pinv.h"
+#include "slab/matrix/fns/solve.h"
 
 #endif  // STATSLABS_MATRIX_MATRIX_FNS_H_

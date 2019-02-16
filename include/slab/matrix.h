@@ -27,10 +27,10 @@
 #include "slab/matrix/matrix_ops.h"
 #include "slab/matrix/packed_matrix.h"
 
-#include "slab/matrix/blas_interface.h"
-#include "slab/matrix/lapack_interface.h"
-
 #include "slab/matrix/matrix_fns.h"
 #include "slab/matrix/type_alias.h"
+
+#include "slab/matrix/blas_interface.h"
+#include "slab/matrix/lapack_interface.h"
 
 #endif  // SLAB_MATRIX_H_
