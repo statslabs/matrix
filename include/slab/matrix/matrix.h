@@ -372,6 +372,11 @@ class Matrix : public MatrixBase<T, N> {
     return transpose(*this);
   }
 
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix<T, 2> i() const {
+    return inverse(*this);
+  }
+
   bool empty() const { return begin() == end(); }
   bool is_empty() const { return empty(); }
 
