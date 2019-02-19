@@ -20,6 +20,16 @@
 #ifndef STATSLABS_MATRIX_MATRIX_FNS_H_
 #define STATSLABS_MATRIX_MATRIX_FNS_H_
 
+#include <complex>
+
+#ifdef USE_MKL
+#include "mkl.h"
+#else
+extern "C" {
+#include "lapacke.h"
+}
+#endif
+
 #include "slab/matrix/fns/eye.h"
 #include "slab/matrix/fns/ones.h"
 #include "slab/matrix/fns/zeros.h"

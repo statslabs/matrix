@@ -24,7 +24,7 @@ namespace slab {
 
 template <typename T, std::size_t N, typename... Args>
 inline auto reshape(const Matrix<T, N> &x, Args... args)
--> decltype(Matrix<T, sizeof...(args)>()) {
+    -> decltype(Matrix<T, sizeof...(args)>()) {
   Matrix<T, sizeof...(args)> res(args...);
   std::copy(x.begin(), x.end(), res.begin());
 
