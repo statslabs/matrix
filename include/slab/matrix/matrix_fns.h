@@ -20,6 +20,7 @@
 #ifndef STATSLABS_MATRIX_MATRIX_FNS_H_
 #define STATSLABS_MATRIX_MATRIX_FNS_H_
 
+#include <algorithm>
 #include <complex>
 
 #ifdef USE_MKL
@@ -40,6 +41,7 @@ extern "C" {
 #include "slab/matrix/fns/prod.h"
 #include "slab/matrix/fns/reshape.h"
 #include "slab/matrix/fns/sum.h"
+#include "slab/matrix/fns/trans.h"
 #include "slab/matrix/fns/vectorise.h"
 
 #include "slab/matrix/fns/misc.h"

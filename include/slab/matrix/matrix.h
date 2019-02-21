@@ -36,10 +36,10 @@
 namespace slab {
 
 template <typename T>
-Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
+Matrix<T, 2> transpose(const Matrix<T, 1> &a);
 
 template <typename T>
-Matrix<T, 2> transpose(const MatrixBase<T, 2> &a);
+Matrix<T, 2> transpose(const Matrix<T, 2> &a);
 
 template <typename T>
 Matrix<T, 2> inverse(const Matrix<T, 2> &a);
@@ -917,28 +917,6 @@ class Matrix<T, 0> : public MatrixBase<T, 0> {
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
   return os << (const T &)m0();
-}
-
-template <typename T>
-inline Matrix<T, 2> transpose(const MatrixBase<T, 1> &a) {
-  Matrix<T, 2> res(1, a.n_rows());
-  for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    res(0, i) = a(i);
-  }
-
-  return res;
-}
-
-template <typename T>
-inline Matrix<T, 2> transpose(const MatrixBase<T, 2> &a) {
-  Matrix<T, 2> res(a.n_cols(), a.n_rows());
-  for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    for (std::size_t j = 0; j < a.n_cols(); ++j) {
-      res(j, i) = a(i, j);
-    }
-  }
-
-  return res;
 }
 
 }  // namespace slab
