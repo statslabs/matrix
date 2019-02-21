@@ -27,14 +27,6 @@
 #include <string>
 #include <vector>
 
-#ifdef USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-#include "lapacke.h"
-}
-#endif
-
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix_slice.h"
@@ -944,43 +936,6 @@ inline Matrix<T, 2> transpose(const MatrixBase<T, 2> &a) {
     for (std::size_t j = 0; j < a.n_cols(); ++j) {
       res(j, i) = a(i, j);
     }
-  }
-
-  return res;
-}
-
-template <typename T>
-inline Matrix<T, 2> inverse(const Matrix<T, 2> &a) {
-  assert(a.n_rows() == a.n_cols());
-
-  int info;
-  const int m = a.n_rows();
-  const int n = a.n_cols();
-  const int lda = a.n_cols();
-  Matrix<int, 1> ipiv(n);
-
-  Matrix<T, 2> res = a;
-  if (is_double<T>::value) {
-    info = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, (double *)res.data(), lda,
-                          ipiv.data());
-    LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, (double *)res.data(), lda, ipiv.data());
-  } else if (is_float<T>::value) {
-    info = LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, (float *)res.data(), lda,
-                          ipiv.data());
-    LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, (float *)res.data(), lda, ipiv.data());
-  } else if (is_complex_double<T>::value) {
-    info =
-        LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
-                       (lapack_complex_double *)res.data(), lda, ipiv.data());
-    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)res.data(),
-                   lda, ipiv.data());
-  } else if (is_complex_float<T>::value) {
-    info = LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n,
-                          (lapack_complex_float *)res.data(), lda, ipiv.data());
-    LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_float *)res.data(), lda,
-                   ipiv.data());
-  } else {
-    err_msg("inverse(): unspported element type.");
   }
 
   return res;
