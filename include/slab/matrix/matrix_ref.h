@@ -12,11 +12,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// -----------------------------------------------------------------------------
-// matrix_ref.h
-// -----------------------------------------------------------------------------
-//
+
+/// @file matrix_ref.h
+/// @brief A MatrixRef template
+
 #ifndef SLAB_MATRIX_MATRIX_REF_H_
 #define SLAB_MATRIX_MATRIX_REF_H_
 
@@ -40,6 +39,9 @@ class MatrixRefIterator;
 
 template <typename T, std::size_t N>
 class MatrixRef : public MatrixBase<T, N> {
+  // ----------------------------------------
+  // The core member functions in book 'TCPL'
+  // ----------------------------------------
  public:
   //! @cond Doxygen_Suppress
   using iterator = MatrixRefIterator<T, N>;
@@ -81,6 +83,13 @@ class MatrixRef : public MatrixBase<T, N> {
   const T *data() const { return ptr_; }
   ///@}
 
+ private:
+  T *ptr_;
+
+  // ---------------------------------------------
+  // Member functions for subscripting and slicing
+  // ---------------------------------------------
+ public:
   //! m(i,j,k) subscripting with integers
   ///@{
   template <typename... Args>
@@ -137,16 +146,25 @@ class MatrixRef : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
   ///@}
 
-  //! @cond Doxygen_Suppress
+  //! element iterators
+  ///@{
+  iterator begin() { return {this->desc_, ptr_}; }
+  const_iterator begin() const { return {this->desc_, ptr_}; }
+  iterator end() { return {this->desc_, ptr_, true}; }
+  const_iterator end() const { return {this->desc_, ptr_, true}; }
+  ///@}
 
+  // --------------------------------------------------
+  // Member functions for matrix arithmetic operations
+  // --------------------------------------------------
+ public:
+  //! @cond Doxygen_Suppress
   template <typename F>
   MatrixRef &apply(F f);  // f(x) for every element x
 
   // f(x, mx) for corresponding elements of *this and m
   template <typename M, typename F>
   Enable_if<Matrix_type<M>(), MatrixRef &> apply(const M &m, F f);
-
-  Matrix<T, N> operator-() const;
 
   MatrixRef &operator=(const T &value);   // assignment with scalar
   MatrixRef &operator+=(const T &value);  // scalar addition
@@ -171,15 +189,8 @@ class MatrixRef : public MatrixBase<T, N> {
   template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator%=(const M &x);
 
+  Matrix<T, N> operator-() const;
   //! @endcond
-
-  iterator begin() { return {this->desc_, ptr_}; }
-  const_iterator begin() const { return {this->desc_, ptr_}; }
-  iterator end() { return {this->desc_, ptr_, true}; }
-  const_iterator end() const { return {this->desc_, ptr_, true}; }
-
- private:
-  T *ptr_;
 
  public:
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
