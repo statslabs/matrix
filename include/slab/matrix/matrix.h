@@ -300,6 +300,21 @@ class Matrix : public MatrixBase<T, N> {
   Matrix(const HermitianMatrix<U, TRI> &x);
   ///@}
 
+  //! Assign a matrix from a symmetric/triangular/hermitian matrix
+  ///@{
+  template <typename U, typename TRI, std::size_t NN = N,
+      typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const SymmetricMatrix<U, TRI> &x);
+
+  template <typename U, typename TRI, std::size_t NN = N,
+      typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const TriangularMatrix<U, TRI> &x);
+
+  template <typename U, typename TRI, std::size_t NN = N,
+      typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const HermitianMatrix<U, TRI> &x);
+  ///@}
+
   //! sub-matrix access for Matrix<T, 2>
   ///@{
   template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
@@ -822,6 +837,87 @@ Matrix<T, N>::Matrix(const HermitianMatrix<U, TRI> &x)
       elems_.push_back(x(i, j));
     }
   }
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
+{
+  static_assert(Convertible<U, T>(),
+                "Matrix =: incompatible element types");
+
+  std::size_t n = x.n_rows();
+
+  this->desc_.size = n * n;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = n;
+  this->desc_.extents[1] = n;
+  this->desc_.strides[0] = n;
+  this->desc_.strides[1] = 1;
+
+  elems_.reserve(n*n);
+
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      *(data() + this->desc_(i, j)) = x(i, j);
+    }
+  }
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
+{
+  static_assert(Convertible<U, T>(),
+                "Matrix =: incompatible element types");
+
+  std::size_t n = x.n_rows();
+
+  this->desc_.size = n * n;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = n;
+  this->desc_.extents[1] = n;
+  this->desc_.strides[0] = n;
+  this->desc_.strides[1] = 1;
+
+  elems_.reserve(n*n);
+
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      *(data() + this->desc_(i, j)) = x(i, j);
+    }
+  }
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x)
+{
+  static_assert(Convertible<U, T>(),
+                "Matrix =: incompatible element types");
+
+  std::size_t n = x.n_rows();
+
+  this->desc_.size = n * n;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = n;
+  this->desc_.extents[1] = n;
+  this->desc_.strides[0] = n;
+  this->desc_.strides[1] = 1;
+
+  elems_.reserve(n*n);
+
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      *(data() + this->desc_(i, j)) = x(i, j);
+    }
+  }
+
+  return *this;
 }
 
 template <typename T, std::size_t N>
