@@ -17,8 +17,8 @@
 /// @file inv.h
 /// @brief inverse of general square matrix.
 
-#ifndef STATSLABS_MATRIX_INV_H_
-#define STATSLABS_MATRIX_INV_H_
+#ifndef SLAB_MATRIX_FNS_INV_H_
+#define SLAB_MATRIX_FNS_INV_H_
 
 namespace slab {
 
@@ -85,4 +85,4 @@ inline bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_INV_H_
+#endif  // SLAB_MATRIX_FNS_INV_H_

@@ -17,8 +17,8 @@
 /// @file ones.h
 /// @brief generate object filled with ones.
 
-#ifndef STATSLABS_MATRIX_ONES_H_
-#define STATSLABS_MATRIX_ONES_H_
+#ifndef SLAB_MATRIX_FNS_ONES_H_
+#define SLAB_MATRIX_FNS_ONES_H_
 
 namespace slab {
 
@@ -33,4 +33,4 @@ Enable_if<Matrix_type<M>(), M> ones(Args... args) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_ONES_H_
+#endif  // SLAB_MATRIX_FNS_ONES_H_

@@ -17,8 +17,8 @@
 /// @file zeros.h
 /// @brief generate object filled with zeros.
 
-#ifndef STATSLABS_MATRIX_ZEROS_H_
-#define STATSLABS_MATRIX_ZEROS_H_
+#ifndef SLAB_MATRIX_FNS_ZEROS_H_
+#define SLAB_MATRIX_FNS_ZEROS_H_
 
 namespace slab {
 
@@ -33,4 +33,4 @@ Enable_if<Matrix_type<M>(), M> zeros(Args... args) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_ZEROS_H_
+#endif  // SLAB_MATRIX_FNS_ZEROS_H_

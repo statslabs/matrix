@@ -17,8 +17,8 @@
 /// @file diag.h
 /// @brief Create diagonal matrix or get diagonal elements of matrix.
 
-#ifndef STATSLABS_MATRIX_DIAG_H_
-#define STATSLABS_MATRIX_DIAG_H_
+#ifndef SLAB_MATRIX_FNS_DIAG_H_
+#define SLAB_MATRIX_FNS_DIAG_H_
 
 namespace slab {
 
@@ -32,4 +32,4 @@ inline Matrix<T, 2> diagmat(const Matrix<T, 1> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_DIAG_H_
+#endif  // SLAB_MATRIX_FNS_DIAG_H_

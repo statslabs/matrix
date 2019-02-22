@@ -17,8 +17,8 @@
 /// @file prod.h
 /// @brief Product of array elements.
 
-#ifndef STATSLABS_MATRIX_PROD_H_
-#define STATSLABS_MATRIX_PROD_H_
+#ifndef SLAB_MATRIX_FNS_PROD_H_
+#define SLAB_MATRIX_FNS_PROD_H_
 
 namespace slab {
 
@@ -58,4 +58,4 @@ inline Matrix<T, 1> prod(const MatrixRef<T, 2> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_PROD_H_
+#endif  // SLAB_MATRIX_FNS_PROD_H_

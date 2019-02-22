@@ -17,8 +17,8 @@
 /// @file misc.h
 /// @brief Miscellaneous element-wise functions.
 
-#ifndef STATSLABS_MATRIX_MISC_H_
-#define STATSLABS_MATRIX_MISC_H_
+#ifndef SLAB_MATRIX_FNS_MISC_H_
+#define SLAB_MATRIX_FNS_MISC_H_
 
 namespace slab {
 
@@ -76,4 +76,4 @@ inline Matrix<T, N> pow(const MatrixRef<T, N> &x, const T1 &val) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_MISC_H_
+#endif  // SLAB_MATRIX_FNS_MISC_H_

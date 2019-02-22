@@ -17,8 +17,8 @@
 /// @file trig.h
 /// @brief Trigonometric element-wise functions
 
-#ifndef STATSLABS_MATRIX_TRIG_H_
-#define STATSLABS_MATRIX_TRIG_H_
+#ifndef SLAB_MATRIX_FNS_TRIG_H_
+#define SLAB_MATRIX_FNS_TRIG_H_
 
 namespace slab {
 template <typename T, std::size_t N>
@@ -59,4 +59,4 @@ inline Matrix<T, N> tan(const MatrixRef<T, N> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_TRIG_H_
+#endif  // SLAB_MATRIX_FNS_TRIG_H_

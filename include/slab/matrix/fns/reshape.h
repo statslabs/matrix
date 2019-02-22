@@ -17,8 +17,8 @@
 /// @file reshape.h
 /// @brief change size while keeping elements.
 
-#ifndef STATSLABS_MATRIX_RESHAPE_H_
-#define STATSLABS_MATRIX_RESHAPE_H_
+#ifndef SLAB_MATRIX_FNS_RESHAPE_H_
+#define SLAB_MATRIX_FNS_RESHAPE_H_
 
 namespace slab {
 
@@ -33,4 +33,4 @@ inline auto reshape(const Matrix<T, N> &x, Args... args)
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_RESHAPE_H_
+#endif  // SLAB_MATRIX_FNS_RESHAPE_H_

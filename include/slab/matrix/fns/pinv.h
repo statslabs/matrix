@@ -17,8 +17,8 @@
 /// @file pinv.h
 /// @brief pseudo-inverse.
 
-#ifndef STATSLABS_MATRIX_PINV_H_
-#define STATSLABS_MATRIX_PINV_H_
+#ifndef SLAB_MATRIX_FNS_PINV_H_
+#define SLAB_MATRIX_FNS_PINV_H_
 
 namespace slab {
 
@@ -56,4 +56,4 @@ inline bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_PINV_H_
+#endif  // SLAB_MATRIX_FNS_PINV_H_

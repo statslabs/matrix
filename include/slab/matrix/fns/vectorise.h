@@ -17,8 +17,8 @@
 /// @file vectorise.h
 /// @brief convert matrix to vector.
 
-#ifndef STATSLABS_MATRIX_VECTORISE_H_
-#define STATSLABS_MATRIX_VECTORISE_H_
+#ifndef SLAB_MATRIX_FNS_VECTORISE_H_
+#define SLAB_MATRIX_FNS_VECTORISE_H_
 
 namespace slab {
 
@@ -29,4 +29,4 @@ inline Matrix<T, 1> vectorise(const Matrix<T, N> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_VECTORISE_H_
+#endif  // SLAB_MATRIX_FNS_VECTORISE_H_

@@ -17,8 +17,8 @@
 /// @file solve.h
 /// @brief solve systems of linear equations.
 
-#ifndef STATSLABS_MATRIX_SOLVE_H_
-#define STATSLABS_MATRIX_SOLVE_H_
+#ifndef SLAB_MATRIX_FNS_SOLVE_H_
+#define SLAB_MATRIX_FNS_SOLVE_H_
 
 namespace slab {
 
@@ -129,4 +129,4 @@ inline Matrix<T, 2> solve(const Matrix<T, 2> &a) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_SOLVE_H_
+#endif  // SLAB_MATRIX_FNS_SOLVE_H_

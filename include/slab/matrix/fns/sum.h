@@ -17,8 +17,8 @@
 /// @file sum.h
 /// @brief Sum of array elements.
 
-#ifndef STATSLABS_MATRIX_SUM_H_
-#define STATSLABS_MATRIX_SUM_H_
+#ifndef SLAB_MATRIX_FNS_SUM_H_
+#define SLAB_MATRIX_FNS_SUM_H_
 
 namespace slab {
 
@@ -56,4 +56,4 @@ inline Matrix<T, 1> sum(const MatrixRef<T, 2> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_SUM_H_
+#endif  // SLAB_MATRIX_FNS_SUM_H_

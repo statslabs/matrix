@@ -17,8 +17,8 @@
 /// @file eye.h
 /// @brief generate identity matrix.
 
-#ifndef STATSLABS_MATRIX_EYE_H_
-#define STATSLABS_MATRIX_EYE_H_
+#ifndef SLAB_MATRIX_FNS_EYE_H_
+#define SLAB_MATRIX_FNS_EYE_H_
 
 namespace slab {
 
@@ -33,4 +33,4 @@ Enable_if<Matrix_type<M>(), M> eye(std::size_t i, std::size_t j) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_EYE_H_
+#endif  // SLAB_MATRIX_FNS_EYE_H_

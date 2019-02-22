@@ -17,8 +17,8 @@
 /// @file chol.h
 /// @brief Cholesky decomposition.
 
-#ifndef STATSLABS_MATRIX_CHOL_H_
-#define STATSLABS_MATRIX_CHOL_H_
+#ifndef SLAB_MATRIX_FNS_CHOL_H_
+#define SLAB_MATRIX_FNS_CHOL_H_
 
 namespace slab {
 
@@ -42,4 +42,4 @@ inline Matrix<T, 2> chol(const Matrix<T, 2> &x) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_CHOL_H_
+#endif  // SLAB_MATRIX_FNS_CHOL_H_

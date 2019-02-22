@@ -17,8 +17,8 @@
 /// @file trans.h
 /// @brief transpose of matrix.
 
-#ifndef STATSLABS_MATRIX_TRANS_H_
-#define STATSLABS_MATRIX_TRANS_H_
+#ifndef SLAB_MATRIX_FNS_TRANS_H_
+#define SLAB_MATRIX_FNS_TRANS_H_
 
 namespace slab {
 
@@ -60,4 +60,4 @@ inline Matrix<T, 2> transpose(const MatrixRef<T, 2> &a) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_TRANS_H_
+#endif  // SLAB_MATRIX_FNS_TRANS_H_

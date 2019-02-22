@@ -17,8 +17,8 @@
 /// @file kron.h
 /// @brief Kronecker tensor product.
 
-#ifndef STATSLABS_MATRIX_KRON_H_
-#define STATSLABS_MATRIX_KRON_H_
+#ifndef SLAB_MATRIX_FNS_KRON_H_
+#define SLAB_MATRIX_FNS_KRON_H_
 
 namespace slab {
 
@@ -41,4 +41,4 @@ inline Matrix<T, 2> kron(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_KRON_H_
+#endif  // SLAB_MATRIX_FNS_KRON_H_

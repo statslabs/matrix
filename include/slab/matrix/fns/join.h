@@ -17,8 +17,8 @@
 /// @file join.h
 /// @brief concatenation of matrices.
 
-#ifndef STATSLABS_MATRIX_JOIN_H_
-#define STATSLABS_MATRIX_JOIN_H_
+#ifndef SLAB_MATRIX_FNS_JOIN_H_
+#define SLAB_MATRIX_FNS_JOIN_H_
 
 namespace slab {
 
@@ -182,4 +182,4 @@ inline Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_JOIN_H_
+#endif  // SLAB_MATRIX_FNS_JOIN_H_
