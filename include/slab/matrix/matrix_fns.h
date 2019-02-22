@@ -35,6 +35,7 @@ extern "C" {
 #include "slab/matrix/fns/ones.h"
 #include "slab/matrix/fns/zeros.h"
 
+#include "slab/matrix/fns/as_scalar.h"
 #include "slab/matrix/fns/diag.h"
 #include "slab/matrix/fns/join.h"
 #include "slab/matrix/fns/kron.h"
