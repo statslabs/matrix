@@ -22,16 +22,16 @@
 
 namespace slab {
 
-template <typename T, std::size_t N>
-inline Matrix<T, N> exp(const Matrix<T, N> &x) {
+template <typename U, std::size_t N, typename T = typename std::remove_const<U>::type>
+inline Matrix<T, N> exp(const Matrix<U, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });
 
   return res;
 }
 
-template <typename T, std::size_t N>
-inline Matrix<T, N> exp(const MatrixRef<T, N> &x) {
+template <typename U, std::size_t N, typename T = typename std::remove_const<U>::type>
+inline Matrix<T, N> exp(const MatrixRef<U, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });
 

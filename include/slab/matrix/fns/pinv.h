@@ -54,6 +54,14 @@ inline bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
   return true;
 }
 
+template <typename T>
+inline Matrix<T, 2> pinv(const Matrix<T, 2> &a) {
+  Matrix<T, 2> a_inv;
+  pinv(a_inv, a);
+
+  return a_inv;
+}
+
 }  // namespace slab
 
 #endif  // SLAB_MATRIX_FNS_PINV_H_

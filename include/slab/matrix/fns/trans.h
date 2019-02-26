@@ -25,7 +25,7 @@ namespace slab {
 template <typename T>
 inline Matrix<T, 2> transpose(const Matrix<T, 1> &a) {
   Matrix<T, 2> res(1, a.n_rows());
-  std::copy(a.cbegin(), a.cend(), res.begin());
+  std::copy(a.begin(), a.end(), res.begin());
 
   return res;
 }
@@ -33,7 +33,7 @@ inline Matrix<T, 2> transpose(const Matrix<T, 1> &a) {
 template <typename T>
 inline Matrix<T, 2> transpose(const MatrixRef<T, 1> &a) {
   Matrix<T, 2> res(1, a.n_rows());
-  std::copy(a.cbegin(), a.cend(), res.begin());
+  std::copy(a.begin(), a.end(), res.begin());
 
   return res;
 }

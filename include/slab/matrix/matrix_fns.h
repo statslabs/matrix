@@ -22,6 +22,7 @@
 
 #include <algorithm>
 #include <complex>
+#include <type_traits>
 
 #ifdef USE_MKL
 #include "mkl.h"
