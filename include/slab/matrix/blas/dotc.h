@@ -56,12 +56,12 @@ inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
     cblas_zdotc_sub(
         n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
         incx, reinterpret_cast<const double *>(y.data() + y.descriptor().start),
-        incy, reinterpret_cast<double *>(dotc.data()));
+        incy, reinterpret_cast<__complex__ double *>(dotc.data()));
   } else if (is_complex_float<T>::value) {
     cblas_cdotc_sub(
         n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
         incx, reinterpret_cast<const float *>(y.data() + y.descriptor().start),
-        incy, reinterpret_cast<float *>(dotc.data()));
+        incy, reinterpret_cast<__complex__ float *>(dotc.data()));
   }
 }
 

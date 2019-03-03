@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "test_blas.h"
 #include "test_construction_and_assignment.h"
+#include "test_matrix_fns.h"
 #include "test_matrix_opereration.h"
 #include "test_matrix_subscript.h"
 

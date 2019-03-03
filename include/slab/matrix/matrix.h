@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cstddef>
 
+#include <algorithm>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -35,10 +36,13 @@
 namespace slab {
 
 template <typename T>
-Matrix<T, 2> transpose(const MatrixBase<T, 1> &a);
+Matrix<T, 2> transpose(const Matrix<T, 1> &a);
 
 template <typename T>
-Matrix<T, 2> transpose(const MatrixBase<T, 2> &a);
+Matrix<T, 2> transpose(const Matrix<T, 2> &a);
+
+template <typename T>
+Matrix<T, 2> inverse(const Matrix<T, 2> &a);
 
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
@@ -50,7 +54,11 @@ Matrix<T, 2> transpose(const MatrixBase<T, 2> &a);
  */
 template <typename T, std::size_t N>
 class Matrix : public MatrixBase<T, N> {
+  // ----------------------------------------
+  // The core member functions in book 'TCPL'
+  // ----------------------------------------
  public:
+  //! @cond Doxygen_Suppress
   using iterator = typename std::vector<T>::iterator;
   using const_iterator = typename std::vector<T>::const_iterator;
 
@@ -60,6 +68,7 @@ class Matrix : public MatrixBase<T, N> {
   Matrix(const Matrix &) = default;  // copy
   Matrix &operator=(const Matrix &) = default;
   ~Matrix() = default;
+  //! @endcond
 
   //! construct from Matrix
   template <typename M, typename = Enable_if<Matrix_type<M>()>>
@@ -84,12 +93,17 @@ class Matrix : public MatrixBase<T, N> {
   //! assign from list
   Matrix &operator=(MatrixInitializer<T, N>);
 
-  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>,
-            typename = Enable_if<Convertible<U, std::size_t>()>>
+  //! don't use {} except for elements
+  ///@{
+  template <typename U, std::size_t NN = N,
+            typename = Enable_if<Convertible<U, std::size_t>()>,
+            typename = Enable_if<(NN > 1)>>
   Matrix(std::initializer_list<U>) = delete;
-  template <typename U, std::size_t NN = N, typename = Enable_if<(NN > 1)>,
-            typename = Enable_if<Convertible<U, std::size_t>()>>
+  template <typename U, std::size_t NN = N,
+            typename = Enable_if<Convertible<U, std::size_t>()>,
+            typename = Enable_if<(NN > 1)>>
   Matrix &operator=(std::initializer_list<U>) = delete;
+  ///@}
 
   //! total number of elements
   std::size_t size() const { return elems_.size(); }
@@ -100,6 +114,13 @@ class Matrix : public MatrixBase<T, N> {
   const T *data() const { return elems_.data(); }
   ///@}
 
+ private:
+  std::vector<T> elems_;  // the elements
+
+  // ---------------------------------------------
+  // Member functions for subscripting and slicing
+  // ---------------------------------------------
+ public:
   //! m(i,j,k) subscripting with integers
   ///@{
   template <typename... Args>
@@ -156,8 +177,19 @@ class Matrix : public MatrixBase<T, N> {
   MatrixRef<const T, N> cols(std::size_t i, std::size_t j) const;
   ///@}
 
-  //! @cond Doxygen_Suppress
+  //! element iterators
+  ///@{
+  iterator begin() { return elems_.begin(); }
+  const_iterator begin() const { return elems_.cbegin(); }
+  iterator end() { return elems_.end(); }
+  const_iterator end() const { return elems_.cend(); }
+  ///@}
 
+  // --------------------------------------------------
+  // Member functions for matrix arithmetic operations
+  // --------------------------------------------------
+ public:
+  //! @cond Doxygen_Suppress
   template <typename F>
   Matrix &apply(F f);  // f(x) for every element x
 
@@ -165,9 +197,8 @@ class Matrix : public MatrixBase<T, N> {
   template <typename M, typename F>
   Enable_if<Matrix_type<M>(), Matrix &> apply(const M &m, F f);
 
-  Matrix operator-() const;
+  Matrix &operator=(const T &value);  // assignment with scalar
 
-  Matrix &operator=(const T &value);   // assignment with scalar
   Matrix &operator+=(const T &value);  // scalar addition
   Matrix &operator-=(const T &value);  // scalar subtraction
   Matrix &operator*=(const T &value);  // scalar multiplication
@@ -190,94 +221,30 @@ class Matrix : public MatrixBase<T, N> {
   template <typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
 
+  template <typename U = typename std::remove_const<T>::type>
+  Matrix<U, N> operator-() const;
   //! @endcond
 
-  iterator begin() { return elems_.begin(); }
-  const_iterator begin() const { return elems_.cbegin(); }
-  iterator end() { return elems_.end(); }
-  const_iterator end() const { return elems_.cend(); }
-
-  bool empty() const { return begin() == end(); }
-  void clear();
-  //  void save(const std::string &filename) {
-  //    std::ostream os(filename);
-  //  }
-  void load(const std::string &filename) {
-    std::ifstream is(filename);
-    if (is.is_open()) {
-      // read the first line
-      std::string first_line;
-      getline(is, first_line);
-
-      // read the extents into ivec
-      std::istringstream iss(first_line);
-      int val;
-      std::vector<int> ivec;
-      while (iss >> val) ivec.push_back(val);
-
-      if (ivec.size() != this->order())
-        std::cout << "incorrect extents" << std::endl;
-      this->desc_.start = 0;
-      std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
-      this->desc_.size = matrix_impl::compute_strides(this->desc_.extents,
-                                                      this->desc_.strides);
-
-      std::istream_iterator<T> in(is), end;
-      elems_.assign(in, end);
-    } else {
-      std::cout << "Fail to open the file" << std::endl;
-    }
-  }
-
- private:
-  std::vector<T> elems_;  // the elements
+  // -----------------------------------
+  // Member functions for a Matrix<T, 1>
+  // -----------------------------------
 
  public:
+  //! Construct a vector from a matrix
+  ///@{
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  Matrix(const Matrix<U, 2> &x)
-      : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-    assert(x.n_cols() == 1);
-  }
-
+  Matrix(const Matrix<U, 2> &x);
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  Matrix(const MatrixRef<U, 2> &x)
-      : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-    assert(x.n_cols() == 1);
-  }
+  Matrix(const MatrixRef<U, 2> &x);
+  ///@}
 
+  //！Assign a vector from a matrix
+  ///@{
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  Matrix &operator=(const Matrix<U, 2> &x) {
-    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
-    assert(x.n_cols() == 1);
-
-    this->desc_.size = x.descriptor().size;
-    this->desc_.start = 0;
-    this->desc_.extents[0] = x.n_rows();
-    this->desc_.strides[0] = 1;
-
-    elems_.assign(x.begin(), x.end());
-
-    return *this;
-  }
-
+  Matrix &operator=(const Matrix<U, 2> &x);
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  Matrix &operator=(const MatrixRef<U, 2> &x) {
-    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
-    assert(x.n_cols() == 1);
-
-    this->desc_.size = x.descriptor().size;
-    this->desc_.start = 0;
-    this->desc_.extents[0] = x.n_rows();
-    this->desc_.strides[0] = 1;
-
-    elems_.assign(x.begin(), x.end());
-
-    return *this;
-  }
+  Matrix &operator=(const MatrixRef<U, 2> &x);
+  ///@}
 
   //! sub-vector access for Matrix<T, 1>
   ///@{
@@ -292,96 +259,62 @@ class Matrix : public MatrixBase<T, N> {
   }
   ///@}
 
+  //! Construct a std::vector from a slab::vec
   template <std::size_t NN = N, typename = Enable_if<(NN == 1)>>
   std::vector<T> std_vec() const {
     return std::vector<T>(begin(), end());
   }
 
+  // -----------------------------------
+  // Member functions for a Matrix<T, 2>
+  // -----------------------------------
+
  public:
+  //! Construct a matrix from a vector
+  ///@{
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  Matrix(const Matrix<U, 1> &x)
-      : MatrixBase<T, N>{x.n_rows(), 1}, elems_{x.begin(), x.end()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-  }
-
+  Matrix(const Matrix<U, 1> &x);
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  Matrix(const MatrixRef<U, 1> &x)
-      : MatrixBase<T, N>{x.n_rows(), 1}, elems_{x.begin(), x.end()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-  }
+  Matrix(const MatrixRef<U, 1> &x);
+  ///@}
 
+  //! Assign a matrix from a vector
+  ///@{
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  Matrix &operator=(const Matrix<U, 1> &x) {
-    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
-
-    this->desc_.size = x.descriptor().size;
-    this->desc_.start = 0;
-    this->desc_.extents[0] = x.n_rows();
-    this->desc_.extents[1] = 1;
-    this->desc_.strides[0] = x.n_rows();
-    this->desc_.strides[1] = 1;
-
-    elems_.assign(x.begin(), x.end());
-
-    return *this;
-  }
-
+  Matrix &operator=(const Matrix<U, 1> &x);
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  Matrix &operator=(const MatrixRef<U, 1> &x) {
-    static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+  Matrix &operator=(const MatrixRef<U, 1> &x);
+  ///@}
 
-    this->desc_.size = x.descriptor().size;
-    this->desc_.start = 0;
-    this->desc_.extents[0] = x.n_rows();
-    this->desc_.extents[1] = 1;
-    this->desc_.strides[0] = x.n_rows();
-    this->desc_.strides[1] = 1;
-
-    elems_.assign(x.begin(), x.end());
-
-    return *this;
-  }
+  //! Construct a matrix from a symmetric/triangular/hermitian matrix
+  ///@{
+  template <typename U, typename TRI, std::size_t NN = N,
+            typename = Enable_if<(NN == 2)>>
+  Matrix(const SymmetricMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
             typename = Enable_if<(NN == 2)>>
-  Matrix(const SymmetricMatrix<U, TRI> &x)
-      : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-    for (std::size_t i = 0; i != x.n_rows(); ++i) {
-      for (std::size_t j = 0; j != x.n_cols(); ++j) {
-        elems_.push_back(x(i, j));
-      }
-    }
-  }
+  Matrix(const TriangularMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
             typename = Enable_if<(NN == 2)>>
-  Matrix(const TriangularMatrix<U, TRI> &x)
-      : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-    for (std::size_t i = 0; i != x.n_rows(); ++i) {
-      for (std::size_t j = 0; j != x.n_cols(); ++j) {
-        elems_.push_back(x(i, j));
-      }
-    }
-  }
+  Matrix(const HermitianMatrix<U, TRI> &x);
+  ///@}
+
+  //! Assign a matrix from a symmetric/triangular/hermitian matrix
+  ///@{
+  template <typename U, typename TRI, std::size_t NN = N,
+      typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const SymmetricMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-            typename = Enable_if<(NN == 2)>>
-  Matrix(const HermitianMatrix<U, TRI> &x)
-      : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
-    static_assert(Convertible<U, T>(),
-                  "Matrix constructor: incompatible element types");
-    for (std::size_t i = 0; i != x.n_rows(); ++i) {
-      for (std::size_t j = 0; j != x.n_cols(); ++j) {
-        elems_.push_back(x(i, j));
-      }
-    }
-  }
+      typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const TriangularMatrix<U, TRI> &x);
+
+  template <typename U, typename TRI, std::size_t NN = N,
+      typename = Enable_if<(NN == 2)>>
+  Matrix &operator=(const HermitianMatrix<U, TRI> &x);
+  ///@}
 
   //! sub-matrix access for Matrix<T, 2>
   ///@{
@@ -435,10 +368,30 @@ class Matrix : public MatrixBase<T, N> {
     }
   }
 
+  // ---------------------------------------------
+  // More member functions for the matrix template
+  // ---------------------------------------------
+
+ public:
+  void clear();
+
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const {
     return transpose(*this);
   }
+
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix<T, 2> i() const {
+    return inverse(*this);
+  }
+
+  bool empty() const { return begin() == end(); }
+  bool is_empty() const { return empty(); }
+
+  //  void save(const std::string &filename) {
+  //    std::ostream os(filename);
+  //  }
+  void load(const std::string &filename);
 };
 
 template <typename T, std::size_t N>
@@ -481,18 +434,41 @@ template <typename T, std::size_t N>
 template <typename... Exts>
 Matrix<T, N>::Matrix(Exts... exts)
     : MatrixBase<T, N>{exts...},  // copy extents
-      elems_(this->desc_.size)    // allocate desc_.size elements and default
-// initialize them
+      elems_(this->desc_.size)    // allocate desc_.size elements and initialize
 {}
 
 template <typename T, std::size_t N>
 Matrix<T, N>::Matrix(MatrixInitializer<T, N> init) {
+  // intialize start
+  this->desc_.start = 0;
+  // deduce extents from initializer list
   this->desc_.extents = matrix_impl::derive_extents<N>(init);
+  // compute strides and size
   this->desc_.size =
       matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
+
   elems_.reserve(this->desc_.size);        // make room for slices
   matrix_impl::insert_flat(init, elems_);  // initialize from initializer list
   assert(elems_.size() == this->desc_.size);
+}
+
+template <typename T, std::size_t N>
+Matrix<T, N> &Matrix<T, N>::operator=(MatrixInitializer<T, N> init) {
+  elems_.clear();
+
+  // intialize start
+  this->desc_.start = 0;
+  // deduce extents from initializer list
+  this->desc_.extents = matrix_impl::derive_extents<N>(init);
+  // compute strides and size
+  this->desc_.size =
+      matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
+
+  elems_.reserve(this->desc_.size);        // make room for slices
+  matrix_impl::insert_flat(init, elems_);  // initialize from initializer list
+  assert(elems_.size() == this->desc_.size);
+
+  return *this;
 }
 
 template <typename T, std::size_t N>
@@ -624,7 +600,7 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
 template <typename T, std::size_t N>
 template <typename F>
 Matrix<T, N> &Matrix<T, N>::apply(F f) {
-  for (auto &x : elems_) f(x);
+  for (auto &x : elems_) f(x);  // this loop uses stride iterators
   return *this;
 }
 
@@ -640,12 +616,6 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::apply(const M &m,
   }
 
   return *this;
-}
-
-template <typename T, std::size_t N>
-Matrix<T, N> Matrix<T, N>::operator-() const {
-  Matrix<T, N> res = *this;
-  return res.apply([&](T &a) { a = -a; });
 }
 
 template <typename T, std::size_t N>
@@ -692,7 +662,7 @@ template <typename T, std::size_t N>
 template <typename M>
 Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator-=(
     const M &m) {
-  // static_assert(m.order_ == N, "+=: mismatched Matrix dimensions");
+  // static_assert(m.order_ == N, "-=: mismatched Matrix dimensions");
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a -= b; });
@@ -726,19 +696,284 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator%=(
 }
 
 template <typename T, std::size_t N>
+template <typename U>
+Matrix<U, N> Matrix<T, N>::operator-() const {
+  Matrix<U, N> res(*this);
+  return res.apply([&](T &a) { a = -a; });
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const Matrix<U, 2> &x)
+    : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+  assert(x.n_cols() == 1);
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const MatrixRef<U, 2> &x)
+    : MatrixBase<T, N>{x.n_rows()}, elems_{x.begin(), x.end()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+  assert(x.n_cols() == 1);
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const Matrix<U, 2> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+  assert(x.n_cols() == 1);
+
+  this->desc_.size = x.descriptor().size;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = x.n_rows();
+  this->desc_.strides[0] = 1;
+
+  elems_.assign(x.begin(), x.end());
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const MatrixRef<U, 2> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+  assert(x.n_cols() == 1);
+
+  this->desc_.size = x.descriptor().size;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = x.n_rows();
+  this->desc_.strides[0] = 1;
+
+  elems_.assign(x.begin(), x.end());
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const Matrix<U, 1> &x)
+    : MatrixBase<T, N>{x.n_rows(), 1}, elems_{x.begin(), x.end()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const MatrixRef<U, 1> &x)
+    : MatrixBase<T, N>{x.n_rows(), 1}, elems_{x.begin(), x.end()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const Matrix<U, 1> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+
+  this->desc_.size = x.descriptor().size;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = x.n_rows();
+  this->desc_.extents[1] = 1;
+  this->desc_.strides[0] = x.n_rows();
+  this->desc_.strides[1] = 1;
+
+  elems_.assign(x.begin(), x.end());
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const MatrixRef<U, 1> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
+
+  this->desc_.size = x.descriptor().size;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = x.n_rows();
+  this->desc_.extents[1] = 1;
+  this->desc_.strides[0] = x.n_rows();
+  this->desc_.strides[1] = 1;
+
+  elems_.assign(x.begin(), x.end());
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const SymmetricMatrix<U, TRI> &x)
+    : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      elems_.push_back(x(i, j));
+    }
+  }
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const TriangularMatrix<U, TRI> &x)
+    : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      elems_.push_back(x(i, j));
+    }
+  }
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N>::Matrix(const HermitianMatrix<U, TRI> &x)
+    : MatrixBase<T, N>{x.n_rows(), x.n_cols()} {
+  static_assert(Convertible<U, T>(),
+                "Matrix constructor: incompatible element types");
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      elems_.push_back(x(i, j));
+    }
+  }
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
+{
+  static_assert(Convertible<U, T>(),
+                "Matrix =: incompatible element types");
+
+  std::size_t n = x.n_rows();
+
+  this->desc_.size = n * n;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = n;
+  this->desc_.extents[1] = n;
+  this->desc_.strides[0] = n;
+  this->desc_.strides[1] = 1;
+
+  elems_.reserve(n*n);
+
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      *(data() + this->desc_(i, j)) = x(i, j);
+    }
+  }
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
+{
+  static_assert(Convertible<U, T>(),
+                "Matrix =: incompatible element types");
+
+  std::size_t n = x.n_rows();
+
+  this->desc_.size = n * n;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = n;
+  this->desc_.extents[1] = n;
+  this->desc_.strides[0] = n;
+  this->desc_.strides[1] = 1;
+
+  elems_.reserve(n*n);
+
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      *(data() + this->desc_(i, j)) = x(i, j);
+    }
+  }
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
+template <typename U, typename TRI, std::size_t NN, typename X>
+Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x)
+{
+  static_assert(Convertible<U, T>(),
+                "Matrix =: incompatible element types");
+
+  std::size_t n = x.n_rows();
+
+  this->desc_.size = n * n;
+  this->desc_.start = 0;
+  this->desc_.extents[0] = n;
+  this->desc_.extents[1] = n;
+  this->desc_.strides[0] = n;
+  this->desc_.strides[1] = 1;
+
+  elems_.reserve(n*n);
+
+  for (std::size_t i = 0; i != x.n_rows(); ++i) {
+    for (std::size_t j = 0; j != x.n_cols(); ++j) {
+      *(data() + this->desc_(i, j)) = x(i, j);
+    }
+  }
+
+  return *this;
+}
+
+template <typename T, std::size_t N>
 void Matrix<T, N>::clear() {
   this->desc_.clear();
   elems_.clear();
 }
 
+template <typename T, std::size_t N>
+void Matrix<T, N>::load(const std::string &filename) {
+  std::ifstream is(filename);
+  if (is.is_open()) {
+    // read the first line
+    std::string first_line;
+    getline(is, first_line);
+
+    // read the extents into ivec
+    std::istringstream iss(first_line);
+    int val;
+    std::vector<int> ivec;
+    while (iss >> val) ivec.push_back(val);
+
+    if (ivec.size() != this->order())
+      std::cout << "incorrect extents" << std::endl;
+    this->desc_.start = 0;
+    std::copy(ivec.begin(), ivec.end(), this->desc_.extents.begin());
+    this->desc_.size =
+        matrix_impl::compute_strides(this->desc_.extents, this->desc_.strides);
+
+    std::istream_iterator<T> in(is), end;
+    elems_.assign(in, end);
+  } else {
+    std::cout << "Fail to open the file" << std::endl;
+  }
+}
+
+//! Matrix<T,0> is a zero-dimensional matrix of type T..
+/*!
+ * \tparam T value type.
+ *
+ * Matrix<T,0> is not really a matrix. It stores a single element of
+ * type T and can be converted to a reference to that type.
+ */
 template <typename T>
 class Matrix<T, 0> : public MatrixBase<T, 0> {
  public:
+  //! @cond Doxygen_Suppress
   using iterator = typename std::array<T, 1>::iterator;
   using const_iterator = typename std::array<T, 1>::const_iterator;
+  //! @endcond
 
+  //! construct from an element
   Matrix(const T &x = T{}) : elem_{x} {}
-
+  //! assign from an element
   Matrix &operator=(const T &value) {
     elem_[0] = value;
     return *this;
@@ -753,16 +988,25 @@ class Matrix<T, 0> : public MatrixBase<T, 0> {
   const T *data() const { return elem_.data(); }
   ///@}
 
+  //! m() subscripting
+  ///@{
   T &operator()() { return elem_[0]; }
   const T &operator()() const { return elem_[0]; }
+  ///@}
 
+  //! conversion from Matrix<T, 0> to type T
+  ///@{
   operator T &() { return elem_[0]; }
   operator const T &() { return elem_[0]; }
+  ///@}
 
+  //! element iterators
+  ///@{
   iterator begin() { return elem_.begin(); }
   const_iterator begin() const { return elem_.cbegin(); }
   iterator end() { return elem_.end(); }
   const_iterator end() const { return elem_.end(); }
+  ///@}
 
  private:
   std::array<T, 1> elem_;
@@ -770,56 +1014,7 @@ class Matrix<T, 0> : public MatrixBase<T, 0> {
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
-  return os << (const T &)m0;
-}
-
-template <typename M, typename... Args>
-Enable_if<Matrix_type<M>(), M> zeros(Args... args) {
-  assert(M::order() == sizeof...(args));
-  M res(args...);
-  res = 0;
-
-  return res;
-}
-
-template <typename M, typename... Args>
-Enable_if<Matrix_type<M>(), M> ones(Args... args) {
-  assert(M::order() == sizeof...(args));
-  M res(args...);
-  res = 1;
-
-  return res;
-}
-
-template <typename M, typename... Args>
-Enable_if<Matrix_type<M>(), M> eye(std::size_t i, std::size_t j) {
-  assert(M::order() == 2);
-  M res(i, j);
-  res.diag() = 1;
-
-  return res;
-}
-
-template <typename T>
-Matrix<T, 2> transpose(const MatrixBase<T, 1> &a) {
-  Matrix<T, 2> res(1, a.n_rows());
-  for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    res(0, i) = a(i);
-  }
-
-  return res;
-}
-
-template <typename T>
-Matrix<T, 2> transpose(const MatrixBase<T, 2> &a) {
-  Matrix<T, 2> res(a.n_cols(), a.n_rows());
-  for (std::size_t i = 0; i < a.n_rows(); ++i) {
-    for (std::size_t j = 0; j < a.n_cols(); ++j) {
-      res(j, i) = a(i, j);
-    }
-  }
-
-  return res;
+  return os << (const T &)m0();
 }
 
 }  // namespace slab
