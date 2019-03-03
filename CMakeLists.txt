@@ -37,6 +37,7 @@ include("cmake/MKL.cmake")
 
 if(NOT HAVE_MKL)
   remove_definitions(-DUSE_MKL)
+  remove_definitions(-DUSE_CBLAS)
 
   find_package(BLAS REQUIRED)
   message(STATUS "Found BLAS library at: ${BLAS_LIBRARIES}")
@@ -94,8 +95,11 @@ target_include_directories(main
 add_library(matrix
         src/library.cc)
 
-target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
+if (HAVE_MKL)
+    target_compile_definitions(matrix PUBLIC "USE_MKL")
+endif()
 target_compile_features(matrix PRIVATE cxx_alias_templates)
+target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing
 add_library(Statslabs::matrix ALIAS matrix)

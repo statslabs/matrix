@@ -25,6 +25,7 @@
 #include <array>
 #include <iterator>
 #include <string>
+#include <type_traits>
 
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
@@ -189,7 +190,8 @@ class MatrixRef : public MatrixBase<T, N> {
   template <typename M>
   Enable_if<Matrix_type<M>(), MatrixRef &> operator%=(const M &x);
 
-  Matrix<T, N> operator-() const;
+  template <typename U = typename std::remove_const<T>::type>
+  Matrix<U, N> operator-() const;
   //! @endcond
 
  public:
@@ -522,12 +524,6 @@ Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::apply(
 }
 
 template <typename T, std::size_t N>
-Matrix<T, N> MatrixRef<T, N>::operator-() const {
-  Matrix<T, N> res(*this);
-  return res.apply([&](T &a) { a = -a; });
-}
-
-template <typename T, std::size_t N>
 MatrixRef<T, N> &MatrixRef<T, N>::operator=(const T &val) {
   return apply([&](T &a) { a = val; });
 }
@@ -602,6 +598,13 @@ Enable_if<Matrix_type<M>(), MatrixRef<T, N> &> MatrixRef<T, N>::operator%=(
   assert(same_extents(this->desc_, m.descriptor()));  // make sure sizes match
 
   return apply(m, [&](T &a, const Value_type<M> &b) { a %= b; });
+}
+
+template <typename T, std::size_t N>
+template <typename U>
+Matrix<U, N> MatrixRef<T, N>::operator-() const {
+  Matrix<U, N> res(*this);
+  return res.apply([&](U &a) { a = -a; });
 }
 
 template <typename T>

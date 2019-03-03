@@ -221,7 +221,8 @@ class Matrix : public MatrixBase<T, N> {
   template <typename M>
   Enable_if<Matrix_type<M>(), Matrix &> operator%=(const M &x);
 
-  Matrix operator-() const;
+  template <typename U = typename std::remove_const<T>::type>
+  Matrix<U, N> operator-() const;
   //! @endcond
 
   // -----------------------------------
@@ -695,8 +696,9 @@ Enable_if<Matrix_type<M>(), Matrix<T, N> &> Matrix<T, N>::operator%=(
 }
 
 template <typename T, std::size_t N>
-Matrix<T, N> Matrix<T, N>::operator-() const {
-  Matrix<T, N> res = *this;
+template <typename U>
+Matrix<U, N> Matrix<T, N>::operator-() const {
+  Matrix<U, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
 }
 
