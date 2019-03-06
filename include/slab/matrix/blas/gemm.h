@@ -22,7 +22,7 @@
 
 namespace slab {
 
-/// @addtogroup blas_interface BLAS INTERFACE
+/// @addtogroup blas_interface BLAS Interface
 /// @{
 
 /// @addtogroup blas_level3 BLAS Level 3

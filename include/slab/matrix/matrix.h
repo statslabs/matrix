@@ -161,8 +161,8 @@ class Matrix : public MatrixBase<T, N> {
 
   //! column access
   ///@{
-  MatrixRef<T, N - 1> col(size_t n);
-  MatrixRef<const T, N - 1> col(size_t n) const;
+  MatrixRef<T, N - 1> col(std::size_t n);
+  MatrixRef<const T, N - 1> col(std::size_t n) const;
   ///@}
 
   //! multiple rows access
