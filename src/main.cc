@@ -5,6 +5,7 @@
 #include <complex>
 #include <iostream>
 #include "slab/matrix.h"
+#include "slab/matrix/error.h"
 
 using namespace std;
 
@@ -24,7 +25,9 @@ int main() {
   slab::ivec ipiv(5);
 
   int info = slab::lapack_gesv(a, ipiv, b);
-
+  info = -1;
+  if (info < 0) slab::err_msg("parameter %i had an illegal value.", -info);
+  
   cout << "a = " << a << endl;
   cout << "b = " << b << endl;
 

@@ -44,7 +44,8 @@ inline Matrix<double, 2> solve(const Matrix<double, 2> &a,
 
   int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, (double *)a_copy.data(),
                            lda, ipiv.data(), (double *)b_copy.data(), ldb);
-
+  if (info < 0) err_msg("parameter i had an illegal value.");
+  
   return b_copy;
 }
 
@@ -65,7 +66,8 @@ inline Matrix<float, 2> solve(const Matrix<float, 2> &a,
 
   int info = LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, (float *)a_copy.data(),
                            lda, ipiv.data(), (float *)b_copy.data(), ldb);
-
+  if (info < 0) err_msg("parameter i had an illegal value.");
+  
   return b_copy;
 }
 
@@ -90,6 +92,7 @@ inline Matrix<std::complex<double>, 2> solve(
       reinterpret_cast<lapack_complex_double *>(a_copy.data()), lda,
       ipiv.data(), reinterpret_cast<lapack_complex_double *>(b_copy.data()),
       ldb);
+  if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -114,7 +117,8 @@ inline Matrix<std::complex<float>, 2> solve(
       LAPACK_ROW_MAJOR, n, nrhs,
       reinterpret_cast<lapack_complex_float *>(a_copy.data()), lda, ipiv.data(),
       reinterpret_cast<lapack_complex_float *>(b_copy.data()), ldb);
-
+  if (info < 0) err_msg("parameter i had an illegal value.");
+  
   return b_copy;
 }
 
