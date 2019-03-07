@@ -189,7 +189,8 @@ class Matrix : public MatrixBase<T, N> {
   // Member functions for matrix arithmetic operations
   // --------------------------------------------------
  public:
-  //! @cond Doxygen_Suppress
+  //! matrix arithmetic operations
+  ///@{
   template <typename F>
   Matrix &apply(F f);  // f(x) for every element x
 
@@ -223,7 +224,7 @@ class Matrix : public MatrixBase<T, N> {
 
   template <typename U = typename std::remove_const<T>::type>
   Matrix<U, N> operator-() const;
-  //! @endcond
+  ///@}
 
   // -----------------------------------
   // Member functions for a Matrix<T, 1>
@@ -597,6 +598,7 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
   return {d, data()};
 }
 
+//! @cond Doxygen_Suppress
 template <typename T, std::size_t N>
 template <typename F>
 Matrix<T, N> &Matrix<T, N>::apply(F f) {
@@ -701,6 +703,7 @@ Matrix<U, N> Matrix<T, N>::operator-() const {
   Matrix<U, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
 }
+//! @endcond
 
 template <typename T, std::size_t N>
 template <typename U, std::size_t NN, typename X>
