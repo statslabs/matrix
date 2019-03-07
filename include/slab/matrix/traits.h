@@ -117,6 +117,9 @@ struct is_complex_float : public std::false_type {};
 template <>
 struct is_complex_float<std::complex<float>> : public std::true_type {};
 
+template <typename T>
+void ignore(T &&) {}
+
 }  // namespace slab
 
 #endif  // SLAB_MATRIX_TRAITS_H_
