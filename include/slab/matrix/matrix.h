@@ -305,15 +305,15 @@ class Matrix : public MatrixBase<T, N> {
   //! Assign a matrix from a symmetric/triangular/hermitian matrix
   ///@{
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix &operator=(const SymmetricMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix &operator=(const TriangularMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix &operator=(const HermitianMatrix<U, TRI> &x);
   ///@}
 
@@ -846,10 +846,8 @@ Matrix<T, N>::Matrix(const HermitianMatrix<U, TRI> &x)
 
 template <typename T, std::size_t N>
 template <typename U, typename TRI, std::size_t NN, typename X>
-Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
-{
-  static_assert(Convertible<U, T>(),
-                "Matrix =: incompatible element types");
+Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   std::size_t n = x.n_rows();
 
@@ -860,7 +858,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
   this->desc_.strides[0] = n;
   this->desc_.strides[1] = 1;
 
-  elems_.reserve(n*n);
+  elems_.reserve(n * n);
 
   for (std::size_t i = 0; i != x.n_rows(); ++i) {
     for (std::size_t j = 0; j != x.n_cols(); ++j) {
@@ -873,10 +871,8 @@ Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
 
 template <typename T, std::size_t N>
 template <typename U, typename TRI, std::size_t NN, typename X>
-Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
-{
-  static_assert(Convertible<U, T>(),
-                "Matrix =: incompatible element types");
+Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   std::size_t n = x.n_rows();
 
@@ -887,7 +883,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
   this->desc_.strides[0] = n;
   this->desc_.strides[1] = 1;
 
-  elems_.reserve(n*n);
+  elems_.reserve(n * n);
 
   for (std::size_t i = 0; i != x.n_rows(); ++i) {
     for (std::size_t j = 0; j != x.n_cols(); ++j) {
@@ -900,10 +896,8 @@ Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
 
 template <typename T, std::size_t N>
 template <typename U, typename TRI, std::size_t NN, typename X>
-Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x)
-{
-  static_assert(Convertible<U, T>(),
-                "Matrix =: incompatible element types");
+Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   std::size_t n = x.n_rows();
 
@@ -914,7 +908,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x)
   this->desc_.strides[0] = n;
   this->desc_.strides[1] = 1;
 
-  elems_.reserve(n*n);
+  elems_.reserve(n * n);
 
   for (std::size_t i = 0; i != x.n_rows(); ++i) {
     for (std::size_t j = 0; j != x.n_cols(); ++j) {

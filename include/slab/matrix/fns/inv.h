@@ -76,8 +76,9 @@ inline bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
   Matrix<double, 2> a_copy = a;
   Matrix<int, 1> ipiv(n);
 
-  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs, (double *)a_copy.data(),
-                           (int)lda, ipiv.data(), (double *)b.data(), (int)ldb);
+  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+                           (double *)a_copy.data(), (int)lda, ipiv.data(),
+                           (double *)b.data(), (int)ldb);
   if (info) return false;
 
   return true;

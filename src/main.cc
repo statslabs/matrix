@@ -27,7 +27,7 @@ int main() {
   int info = slab::lapack_gesv(a, ipiv, b);
   info = -1;
   if (info < 0) slab::err_msg("parameter %i had an illegal value.", -info);
-  
+
   cout << "a = " << a << endl;
   cout << "b = " << b << endl;
 

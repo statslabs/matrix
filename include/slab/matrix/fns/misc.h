@@ -22,7 +22,8 @@
 
 namespace slab {
 
-template <typename U, std::size_t N, typename T = typename std::remove_const<U>::type>
+template <typename U, std::size_t N,
+          typename T = typename std::remove_const<U>::type>
 inline Matrix<T, N> exp(const Matrix<U, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });
@@ -30,7 +31,8 @@ inline Matrix<T, N> exp(const Matrix<U, N> &x) {
   return res;
 }
 
-template <typename U, std::size_t N, typename T = typename std::remove_const<U>::type>
+template <typename U, std::size_t N,
+          typename T = typename std::remove_const<U>::type>
 inline Matrix<T, N> exp(const MatrixRef<U, N> &x) {
   Matrix<T, N> res = x;
   res.apply([](T &a) { a = std::exp(a); });

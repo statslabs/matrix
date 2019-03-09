@@ -58,10 +58,10 @@ class MatrixRef : public MatrixBase<T, N> {
 
   //! construct from MatrixRef
   template <typename U>
-  MatrixRef(const MatrixRef<U, N>& x);
+  MatrixRef(const MatrixRef<U, N> &x);
   //! assign from MatrixRef
   template <typename U>
-  MatrixRef& operator=(const MatrixRef<U, N>& x);
+  MatrixRef &operator=(const MatrixRef<U, N> &x);
 
   //! construct from Matrix
   template <typename U>
@@ -334,13 +334,12 @@ MatrixRef<T, N> &MatrixRef<T, N>::operator=(const MatrixRef &x) {
 
 template <typename T, std::size_t N>
 template <typename U>
-MatrixRef<T, N>::MatrixRef(const MatrixRef<U, N>& x)
+MatrixRef<T, N>::MatrixRef(const MatrixRef<U, N> &x)
     : MatrixBase<T, N>{x.descriptor()}, ptr_(x.data()) {}
 
 template <typename T, std::size_t N>
 template <typename U>
-MatrixRef<T, N>& MatrixRef<T, N>::operator=(const MatrixRef<U, N>& x)
-{
+MatrixRef<T, N> &MatrixRef<T, N>::operator=(const MatrixRef<U, N> &x) {
   static_assert(Convertible<U, T>(), "MatrixRef =: incompatible element types");
   assert(this->desc_.extents == x.descriptor().extents);
 

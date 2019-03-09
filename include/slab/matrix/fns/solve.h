@@ -42,8 +42,9 @@ inline Matrix<double, 2> solve(const Matrix<double, 2> &a,
   Matrix<int, 1> ipiv(n);
   Matrix<double, 2> b_copy(b);
 
-  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs, (double *)a_copy.data(),
-                           (int)lda, ipiv.data(), (double *)b_copy.data(), (int)ldb);
+  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+                           (double *)a_copy.data(), (int)lda, ipiv.data(),
+                           (double *)b_copy.data(), (int)ldb);
   if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
@@ -64,8 +65,9 @@ inline Matrix<float, 2> solve(const Matrix<float, 2> &a,
   Matrix<int, 1> ipiv(n);
   Matrix<float, 2> b_copy(b);
 
-  int info = LAPACKE_sgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs, (float *)a_copy.data(),
-                           (int)lda, ipiv.data(), (float *)b_copy.data(), (int)ldb);
+  int info =
+      LAPACKE_sgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs, (float *)a_copy.data(),
+                    (int)lda, ipiv.data(), (float *)b_copy.data(), (int)ldb);
   if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
@@ -88,10 +90,10 @@ inline Matrix<std::complex<double>, 2> solve(
   Matrix<std::complex<double>, 2> b_copy(b);
 
   int info = LAPACKE_zgesv(
-			   LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
-			   reinterpret_cast<lapack_complex_double *>(a_copy.data()), (int)lda,
-			   ipiv.data(), reinterpret_cast<lapack_complex_double *>(b_copy.data()),
-			   (int)ldb);
+      LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+      reinterpret_cast<lapack_complex_double *>(a_copy.data()), (int)lda,
+      ipiv.data(), reinterpret_cast<lapack_complex_double *>(b_copy.data()),
+      (int)ldb);
   if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
@@ -114,9 +116,10 @@ inline Matrix<std::complex<float>, 2> solve(
   Matrix<std::complex<float>, 2> b_copy(b);
 
   int info = LAPACKE_cgesv(
-			   LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
-			   reinterpret_cast<lapack_complex_float *>(a_copy.data()), (int)lda, ipiv.data(),
-			   reinterpret_cast<lapack_complex_float *>(b_copy.data()), (int)ldb);
+      LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+      reinterpret_cast<lapack_complex_float *>(a_copy.data()), (int)lda,
+      ipiv.data(), reinterpret_cast<lapack_complex_float *>(b_copy.data()),
+      (int)ldb);
   if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
