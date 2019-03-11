@@ -97,7 +97,7 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
 }
 
 /// @}
-/// @} BLAS INTERFACE
+/// @} BLAS Interface
 
 }  // namespace slab
 

@@ -15,7 +15,7 @@
 //
 
 /// @file gemv.h
-/// @brief
+/// @brief C++ template wrapper for C functions cblas_?gemv
 
 #ifndef SLAB_MATRIX_BLAS_GEMV_H_
 #define SLAB_MATRIX_BLAS_GEMV_H_
@@ -82,7 +82,7 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
 }
 
 /// @}
-/// @} BLAS INTERFACE
+/// @} BLAS Interface
 
 }  // namespace slab
 
