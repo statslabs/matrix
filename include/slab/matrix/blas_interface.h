@@ -48,6 +48,7 @@ extern "C" {
 #include "slab/matrix/blas/nrm2.h"
 #include "slab/matrix/blas/scal.h"
 #include "slab/matrix/blas/sdot.h"
+#include "slab/matrix/blas/swap.h"
 
 // BLAS Level 2 Routines and Functions
 #include "slab/matrix/blas/gemv.h"
@@ -87,37 +88,6 @@ namespace slab {
 //                (float *) c.data(), (std::complex<float> *) s.data());
 //  }
 //}
-
-/// @brief Swaps a vector with another vector.
-///
-/// @param x a vector.
-/// @param y another vector.
-template <typename T>
-inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
-  assert(x.size() == y.size());
-
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    cblas_dswap(n, (double *)(x.data() + x.descriptor().start), incx,
-                (double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
-    cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
-                (float *)(y.data() + y.descriptor().start), incy);
-  } else if (is_complex_double<T>::value) {
-    cblas_zswap(
-        n, reinterpret_cast<double *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
-  } else if (is_complex_float<T>::value) {
-    cblas_cswap(
-        n, reinterpret_cast<float *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
-  } else {
-    err_quit("blas_swap(): unsupported element type.");
-  }
-}
 
 /// @brief Finds the index of the element with maximum absolute value
 template <typename T>
