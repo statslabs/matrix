@@ -36,7 +36,8 @@ namespace slab {
 /// \f[y := alpha*A'*x + beta*y\f],
 /// or
 /// \f[y := alpha*conjg(A')*x + beta*y],
-/// where \f$alpha\f$ and \f$beta\f$ are scalars, \f$x\f$ and \f$y\f$ are vectors, \f$A\f$ is an m-by-n matrix.
+/// where \f$alpha\f$ and \f$beta\f$ are scalars, \f$x\f$ and \f$y\f$ are
+/// vectors, \f$A\f$ is an m-by-n matrix.
 ///
 template <typename T>
 inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
@@ -51,31 +52,39 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
   const std::size_t incy = y.descriptor().strides[0];
 
   if (is_double<T>::value) {
-    cblas_dgemv(CblasRowMajor, trans, (const int)m, (const int)n, (const double)alpha,
-                (const double *)(a.data() + a.descriptor().start), (const int)lda,
-                (const double *)(x.data() + x.descriptor().start), (const int)incx,
-                (const double)beta, (double *)(y.data() + y.descriptor().start),
-                (const int)incy);
+    cblas_dgemv(
+        CblasRowMajor, trans, (const int)m, (const int)n, (const double)alpha,
+        (const double *)(a.data() + a.descriptor().start), (const int)lda,
+        (const double *)(x.data() + x.descriptor().start), (const int)incx,
+        (const double)beta, (double *)(y.data() + y.descriptor().start),
+        (const int)incy);
   } else if (is_float<T>::value) {
-    cblas_sgemv(CblasRowMajor, trans, (const int)m, (const int)n, (const float)alpha,
-                (const float *)(a.data() + a.descriptor().start), (const int)lda,
-                (const float *)(x.data() + x.descriptor().start), (const int)incx,
-                (const float)beta, (float *)(y.data() + y.descriptor().start),
-                (const int)incy);
+    cblas_sgemv(
+        CblasRowMajor, trans, (const int)m, (const int)n, (const float)alpha,
+        (const float *)(a.data() + a.descriptor().start), (const int)lda,
+        (const float *)(x.data() + x.descriptor().start), (const int)incx,
+        (const float)beta, (float *)(y.data() + y.descriptor().start),
+        (const int)incy);
   } else if (is_complex_double<T>::value) {
     cblas_zgemv(
-        CblasRowMajor, trans, (const int)m, (const int)n, reinterpret_cast<const double *>(&alpha),
-        reinterpret_cast<const double *>(a.data() + a.descriptor().start), (const int)lda,
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start), (const int)incx,
-        reinterpret_cast<const double *>(&beta),
-        reinterpret_cast<double *>(y.data() + y.descriptor().start), (const int)incy);
+        CblasRowMajor, trans, (const int)m, (const int)n,
+        reinterpret_cast<const double *>(&alpha),
+        reinterpret_cast<const double *>(a.data() + a.descriptor().start),
+        (const int)lda,
+        reinterpret_cast<const double *>(x.data() + x.descriptor().start),
+        (const int)incx, reinterpret_cast<const double *>(&beta),
+        reinterpret_cast<double *>(y.data() + y.descriptor().start),
+        (const int)incy);
   } else if (is_complex_float<T>::value) {
     cblas_cgemv(
-        CblasRowMajor, trans, (const int)m, (const int)n, reinterpret_cast<const float *>(&alpha),
-        reinterpret_cast<const float *>(a.data() + a.descriptor().start), (const int)lda,
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start), (const int)incx,
-        reinterpret_cast<const float *>(&beta),
-        reinterpret_cast<float *>(y.data() + y.descriptor().start), (const int)incy);
+        CblasRowMajor, trans, (const int)m, (const int)n,
+        reinterpret_cast<const float *>(&alpha),
+        reinterpret_cast<const float *>(a.data() + a.descriptor().start),
+        (const int)lda,
+        reinterpret_cast<const float *>(x.data() + x.descriptor().start),
+        (const int)incx, reinterpret_cast<const float *>(&beta),
+        reinterpret_cast<float *>(y.data() + y.descriptor().start),
+        (const int)incy);
   } else {
     err_quit("blas_gemv(): unsupported element type.");
   }

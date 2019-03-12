@@ -43,13 +43,14 @@ inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
                          const Matrix<float, 1> &sy) {
   assert(sx.size() == sy.size());
 
-  const int n = sx.size();
-  const int incx = sx.descriptor().strides[0];
-  const int incy = sy.descriptor().strides[0];
+  const std::size_t n = sx.size();
+  const std::size_t incx = sx.descriptor().strides[0];
+  const std::size_t incy = sy.descriptor().strides[0];
 
   float res = cblas_sdsdot(
-      n, (const float)sb, (const float *)(sx.data() + sx.descriptor().start),
-      incx, (const float *)(sy.data() + sy.descriptor().start), incy);
+      (const int)n, (const float)sb,
+      (const float *)(sx.data() + sx.descriptor().start), (const int)incx,
+      (const float *)(sy.data() + sy.descriptor().start), (const int)incy);
 
   return res;
 }
@@ -68,13 +69,14 @@ inline double blas_dsdot(const Matrix<float, 1> &sx,
                          const Matrix<float, 1> &sy) {
   assert(sx.size() == sy.size());
 
-  const int n = sx.size();
-  const int incx = sx.descriptor().strides[0];
-  const int incy = sy.descriptor().strides[0];
+  const std::size_t n = sx.size();
+  const std::size_t incx = sx.descriptor().strides[0];
+  const std::size_t incy = sy.descriptor().strides[0];
 
-  double res =
-      cblas_dsdot(n, (const float *)(sx.data() + sx.descriptor().start), incx,
-                  (const float *)(sy.data() + sy.descriptor().start), incy);
+  double res = cblas_dsdot(
+      (const int)n, (const float *)(sx.data() + sx.descriptor().start),
+      (const int)incx, (const float *)(sy.data() + sy.descriptor().start),
+      (const int)incy);
 
   return res;
 }

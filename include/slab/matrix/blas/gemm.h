@@ -36,12 +36,10 @@ namespace slab {
 /// \f[
 /// C := alpha*op(A)*op(B) + beta
 /// \f]
-/// where \f$op(X)\f$ is one of \f$op(X) = X\f$, or \f$op(X) = X^T\f$, or \f$op(X) = X^H\f$,
-/// \f$alpha\f$ and \f$beta\f$ are scalars,
-/// \f$A\f$, \f$B\f$ and \f$C\f$ are matrices:
-/// \f$op(A)\f$ is an m-by-k matrix,
-/// \f$op(B)\f$ is a k-by-n matrix,
-/// \f$C\f$ is an m-by-n matrix.
+/// where \f$op(X)\f$ is one of \f$op(X) = X\f$, or \f$op(X) = X^T\f$, or
+/// \f$op(X) = X^H\f$, \f$alpha\f$ and \f$beta\f$ are scalars, \f$A\f$, \f$B\f$
+/// and \f$C\f$ are matrices: \f$op(A)\f$ is an m-by-k matrix, \f$op(B)\f$ is a
+/// k-by-n matrix, \f$C\f$ is an m-by-n matrix.
 ///
 template <typename T, typename T1, typename T2>
 inline void blas_gemm(const CBLAS_TRANSPOSE transa,
@@ -64,33 +62,39 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
   const std::size_t ldc = c.n_cols();
 
   if (is_double<T>::value) {
-    cblas_dgemm(CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k, (const double)alpha,
-                (const double *)(a.data() + a.descriptor().start), (const int)lda,
-                (const double *)(b.data() + b.descriptor().start), (const int)ldb,
-                (const double)beta, (double *)(c.data() + c.descriptor().start),
-                (const int)ldc);
+    cblas_dgemm(
+        CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
+        (const double)alpha, (const double *)(a.data() + a.descriptor().start),
+        (const int)lda, (const double *)(b.data() + b.descriptor().start),
+        (const int)ldb, (const double)beta,
+        (double *)(c.data() + c.descriptor().start), (const int)ldc);
   } else if (is_float<T>::value) {
-    cblas_sgemm(CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k, (const float)alpha,
-                (const float *)(a.data() + a.descriptor().start), (const int)lda,
-                (const float *)(b.data() + b.descriptor().start), (const int)ldb,
-                (const float)beta, (float *)(c.data() + c.descriptor().start),
-                (const int)ldc);
+    cblas_sgemm(
+        CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
+        (const float)alpha, (const float *)(a.data() + a.descriptor().start),
+        (const int)lda, (const float *)(b.data() + b.descriptor().start),
+        (const int)ldb, (const float)beta,
+        (float *)(c.data() + c.descriptor().start), (const int)ldc);
   } else if (is_complex_double<T>::value) {
     cblas_zgemm(
         CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
         reinterpret_cast<const double *>(&alpha),
-        reinterpret_cast<const double *>(a.data() + a.descriptor().start), (const int)lda,
-        reinterpret_cast<const double *>(b.data() + b.descriptor().start), (const int)ldb,
-        reinterpret_cast<const double *>(&beta),
-        reinterpret_cast<double *>(c.data() + c.descriptor().start), (const int)ldc);
+        reinterpret_cast<const double *>(a.data() + a.descriptor().start),
+        (const int)lda,
+        reinterpret_cast<const double *>(b.data() + b.descriptor().start),
+        (const int)ldb, reinterpret_cast<const double *>(&beta),
+        reinterpret_cast<double *>(c.data() + c.descriptor().start),
+        (const int)ldc);
   } else if (is_complex_float<T>::value) {
     cblas_cgemm(
         CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
         reinterpret_cast<const float *>(&alpha),
-        reinterpret_cast<const float *>(a.data() + a.descriptor().start), (const int)lda,
-        reinterpret_cast<const float *>(b.data() + b.descriptor().start), (const int)ldb,
-        reinterpret_cast<const float *>(&beta),
-        reinterpret_cast<float *>(c.data() + c.descriptor().start), (const int)ldc);
+        reinterpret_cast<const float *>(a.data() + a.descriptor().start),
+        (const int)lda,
+        reinterpret_cast<const float *>(b.data() + b.descriptor().start),
+        (const int)ldb, reinterpret_cast<const float *>(&beta),
+        reinterpret_cast<float *>(c.data() + c.descriptor().start),
+        (const int)ldc);
   } else {
     err_quit("blas_gemm(): unsupported element type.");
   }
