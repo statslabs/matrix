@@ -50,6 +50,8 @@ extern "C" {
 
 // BLAS Level 2 Routines and Functions
 #include "slab/matrix/blas/gemv.h"
+#include "slab/matrix/blas/spr.h"
+#include "slab/matrix/blas/spr2.h"
 
 // BLAS Level 3 Routines and Functions
 #include "slab/matrix/blas/gemm.h"
@@ -186,67 +188,6 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
 
   return res;
 }
-/// @}
-
-/// @addtogroup blas_level2 BLAS Level 2
-/// @{
-
-template <typename T, typename TRI>
-inline void blas_spr(const T &alpha, const MatrixBase<T, 1> &x,
-                     SymmetricMatrix<T, TRI> &ap) {
-  assert(x.size() == ap.n_rows());
-
-  CBLAS_UPLO uplo;
-  if (is_upper<TRI>::value)
-    uplo = CblasUpper;
-  else if (is_lower<TRI>::value)
-    uplo = CblasLower;
-
-  const int incx = x.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    cblas_dspr(CblasRowMajor, uplo, x.size(), (const double)alpha,
-               (const double *)x.data(), incx, (double *)ap.data());
-  } else if (is_float<T>::value) {
-    cblas_sspr(CblasRowMajor, uplo, x.size(), (const float)alpha,
-               (const float *)x.data(), incx, (float *)ap.data());
-  } else {
-    err_quit("blas_spr(): unsupported element type.");
-  }
-}
-
-template <typename T, typename TRI>
-inline void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x,
-                      const MatrixBase<T, 1> &y, SymmetricMatrix<T, TRI> &ap) {
-  assert(x.size() == y.size());
-  assert(x.size() == ap.n_rows());
-
-  CBLAS_UPLO uplo;
-  if (is_upper<TRI>::value)
-    uplo = CblasUpper;
-  else if (is_lower<TRI>::value)
-    uplo = CblasLower;
-
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    cblas_dspr2(CblasRowMajor, uplo, x.size(), (const double)alpha,
-                (const double *)x.data(), incx, (const double *)y.data(), incy,
-                (double *)ap.data());
-  } else if (is_float<T>::value) {
-    cblas_sspr2(CblasRowMajor, uplo, x.size(), (const float)alpha,
-                (const float *)x.data(), incx, (const float *)y.data(), incy,
-                (float *)ap.data());
-  } else {
-    err_quit("blas_spr2(): unsupported element type.");
-  }
-}
-
-/// @}
-
-/// @addtogroup blas_level3 BLAS Level 3
-/// @{
 /// @}
 /// @} BLAS INTERFACE
 
