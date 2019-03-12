@@ -46,6 +46,7 @@ extern "C" {
 #include "slab/matrix/blas/dotc.h"
 #include "slab/matrix/blas/dotu.h"
 #include "slab/matrix/blas/nrm2.h"
+#include "slab/matrix/blas/scal.h"
 #include "slab/matrix/blas/sdot.h"
 
 // BLAS Level 2 Routines and Functions
@@ -86,49 +87,6 @@ namespace slab {
 //                (float *) c.data(), (std::complex<float> *) s.data());
 //  }
 //}
-
-/// @brief Computes the product of a vector by a scalar
-template <typename T>
-inline void blas_scal(const T a, Matrix<T, 1> &x) {
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    cblas_dscal(n, (const double)a, (double *)(x.data() + x.descriptor().start),
-                incx);
-  } else if (is_float<T>::value) {
-    cblas_sscal(n, (const float)a, (float *)(x.data() + x.descriptor().start),
-                incx);
-  } else if (is_complex_double<T>::value) {
-    cblas_zdscal(n, (const double)a,
-                 reinterpret_cast<double *>(x.data() + x.descriptor().start),
-                 incx);
-  } else if (is_complex_float<T>::value) {
-    cblas_csscal(n, (const float)a,
-                 reinterpret_cast<float *>(x.data() + x.descriptor().start),
-                 incx);
-  } else {
-    err_quit("blas_scal(): unsupported element type.");
-  }
-}
-
-template <typename T>
-inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    cblas_zscal(n, reinterpret_cast<const double *>(&a),
-                reinterpret_cast<double *>(x.data() + x.descriptor().start),
-                incx);
-  } else if (is_float<T>::value) {
-    cblas_cscal(n, reinterpret_cast<const float *>(&a),
-                reinterpret_cast<float *>(x.data() + x.descriptor().start),
-                incx);
-  } else {
-    err_quit("blas_scal(): unsupported element type.");
-  }
-}
 
 /// @brief Swaps a vector with another vector.
 ///
