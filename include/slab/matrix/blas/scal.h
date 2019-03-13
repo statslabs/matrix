@@ -29,7 +29,7 @@ namespace slab {
 /// @{
 
 /// @brief Computes the product of a vector by a scalar.
-///  
+///
 template <typename T>
 inline void blas_scal(const T a, Matrix<T, 1> &x) {
   const int n = x.size();

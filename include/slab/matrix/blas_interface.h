@@ -45,6 +45,7 @@ extern "C" {
 #include "slab/matrix/blas/dot.h"
 #include "slab/matrix/blas/dotc.h"
 #include "slab/matrix/blas/dotu.h"
+#include "slab/matrix/blas/iamax.h"
 #include "slab/matrix/blas/nrm2.h"
 #include "slab/matrix/blas/scal.h"
 #include "slab/matrix/blas/sdot.h"
@@ -59,12 +60,6 @@ extern "C" {
 #include "slab/matrix/blas/gemm.h"
 
 namespace slab {
-
-/// @addtogroup blas_interface BLAS INTERFACE
-/// @{
-
-/// @addtogroup blas_level1 BLAS Level 1
-/// @{
 
 // Computes the parameters for a Givens rotation
 // template<typename T>
@@ -88,36 +83,6 @@ namespace slab {
 //                (float *) c.data(), (std::complex<float> *) s.data());
 //  }
 //}
-
-/// @brief Finds the index of the element with maximum absolute value
-template <typename T>
-inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
-  std::size_t res = 0;
-  std::size_t incx = x.descriptor().strides[0];
-
-  if (is_double<T>::value) {
-    res = cblas_idamax(x.size(),
-                       (const double *)(x.data() + x.descriptor().start), incx);
-  } else if (is_float<T>::value) {
-    res = cblas_isamax(x.size(),
-                       (const float *)(x.data() + x.descriptor().start), incx);
-  } else if (is_complex_double<T>::value) {
-    res = cblas_izamax(
-        x.size(),
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        incx);
-  } else if (is_complex_float<T>::value) {
-    res = cblas_icamax(
-        x.size(),
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx);
-  } else {
-    err_quit("blas_iamax(): unsupported element type.");
-  }
-
-  return res;
-}
-/// @}
-/// @} BLAS INTERFACE
 
 }  // namespace slab
 
