@@ -33,6 +33,7 @@ extern "C" {
 }
 #endif
 
+#include "slab/matrix/config.h"
 #include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"

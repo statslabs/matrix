@@ -42,11 +42,10 @@ inline bool inverse(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
                           ipiv.data());
     LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, (float *)b.data(), lda, ipiv.data());
   } else if (is_complex_double<T>::value) {
-    info =
-        LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
-                       (lapack_complex_double *)b.data(), lda, ipiv.data());
-    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)b.data(),
-                   lda, ipiv.data());
+    info = LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
+                          (lapack_complex_double *)b.data(), lda, ipiv.data());
+    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)b.data(), lda,
+                   ipiv.data());
   } else if (is_complex_float<T>::value) {
     info = LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n,
                           (lapack_complex_float *)b.data(), lda, ipiv.data());
@@ -81,11 +80,10 @@ inline bool inverse(Matrix<T, 2> &b, const MatrixRef<T, 2> &a) {
                           ipiv.data());
     LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, (float *)b.data(), lda, ipiv.data());
   } else if (is_complex_double<T>::value) {
-    info =
-        LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
-                       (lapack_complex_double *)b.data(), lda, ipiv.data());
-    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)b.data(),
-                   lda, ipiv.data());
+    info = LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
+                          (lapack_complex_double *)b.data(), lda, ipiv.data());
+    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)b.data(), lda,
+                   ipiv.data());
   } else if (is_complex_float<T>::value) {
     info = LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n,
                           (lapack_complex_float *)b.data(), lda, ipiv.data());
@@ -110,15 +108,15 @@ inline Matrix<T, 2> inverse(const Matrix<T, 2> &a) {
   return res;
 }
 
- template <typename T>
-   inline Matrix<T, 2> inverse(const MatrixRef<T, 2> &a) {
-   assert(a.n_rows() == a.n_cols());
+template <typename T>
+inline Matrix<T, 2> inverse(const MatrixRef<T, 2> &a) {
+  assert(a.n_rows() == a.n_cols());
 
-   Matrix<T, 2> res;
-   inverse(res, a);
+  Matrix<T, 2> res;
+  inverse(res, a);
 
-   return res;
- }
+  return res;
+}
 
 template <typename T>
 inline bool inv(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
