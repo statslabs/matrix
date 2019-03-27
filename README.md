@@ -13,7 +13,7 @@ Statslabs.Matrix is the fundamental package of Statslabs for statistical computi
 ## Prerequisites
 
     CMake >= 3.6.0
-    Intel Math Kernel Library (Intel MKL) or OpenBLAS
+    Intel Math Kernel Library (Intel MKL)
    
 ## Installation on Ubuntu / macOS
 1. Clone the repository.
