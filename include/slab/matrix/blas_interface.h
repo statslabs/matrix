@@ -25,14 +25,6 @@
 
 #include <complex>
 
-#ifdef USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-#include "cblas.h"
-}
-#endif
-
 #include "slab/matrix/config.h"
 #include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"

@@ -56,11 +56,17 @@ inline void blas_dotu_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
         n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
         incx, reinterpret_cast<const double *>(y.data() + y.descriptor().start),
         incy, reinterpret_cast<__complex__ double *>(dotu.data()));
-  } else if (is_complex_float<T>::value) {
+  }
+#ifndef USE_R_BLAS
+  else if (is_complex_float<T>::value) {
     cblas_cdotu_sub(
         n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
         incx, reinterpret_cast<const float *>(y.data() + y.descriptor().start),
         incy, reinterpret_cast<__complex__ float *>(dotu.data()));
+  }
+#endif
+  else {
+    err_quit("blas_dotu_sub(): unsupported element type.");
   }
 }
 

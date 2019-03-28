@@ -22,6 +22,8 @@
 
 namespace slab {
 
+#ifndef USE_R_BLAS
+
 /// @addtogroup blas_interface BLAS Interface
 /// @{
 
@@ -83,6 +85,8 @@ inline double blas_dsdot(const Matrix<float, 1> &sx,
 
 /// @} BLAS Level 1
 /// @} BLAS Interface
+
+#endif
 
 }  // namespace slab
 

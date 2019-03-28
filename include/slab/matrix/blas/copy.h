@@ -48,23 +48,27 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   const int incx = x.descriptor().strides[0];
   const int incy = y.descriptor().strides[0];
 
-  if (is_double<T>::value)
+  if (is_double<T>::value) {
     cblas_dcopy(x.size(), (const double *)(x.data() + x.descriptor().start),
                 incx, (double *)(y.data() + y.descriptor().start), incy);
-  else if (is_float<T>::value) {
-    cblas_scopy(x.size(), (const float *)(x.data() + x.descriptor().start),
-                incx, (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
     cblas_zcopy(
         x.size(),
         reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
+    cblas_scopy(x.size(), (const float *)(x.data() + x.descriptor().start),
+                incx, (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
     cblas_ccopy(
         x.size(),
         reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_copy(): unsupported element type.");
   }
 }

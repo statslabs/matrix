@@ -49,11 +49,15 @@ inline void blas_spr2(const T &alpha, const MatrixBase<T, 1> &x,
     cblas_dspr2(CblasRowMajor, uplo, x.size(), (const double)alpha,
                 (const double *)x.data(), incx, (const double *)y.data(), incy,
                 (double *)ap.data());
-  } else if (is_float<T>::value) {
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
     cblas_sspr2(CblasRowMajor, uplo, x.size(), (const float)alpha,
                 (const float *)x.data(), incx, (const float *)y.data(), incy,
                 (float *)ap.data());
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_spr2(): unsupported element type.");
   }
 }

@@ -38,19 +38,23 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
   if (is_double<T>::value) {
     res = cblas_idamax(x.size(),
                        (const double *)(x.data() + x.descriptor().start), incx);
-  } else if (is_float<T>::value) {
-    res = cblas_isamax(x.size(),
-                       (const float *)(x.data() + x.descriptor().start), incx);
   } else if (is_complex_double<T>::value) {
     res = cblas_izamax(
         x.size(),
         reinterpret_cast<const double *>(x.data() + x.descriptor().start),
         incx);
+  }
+#ifndef R_USE_BLAS
+  else if (is_float<T>::value) {
+    res = cblas_isamax(x.size(),
+                       (const float *)(x.data() + x.descriptor().start), incx);
   } else if (is_complex_float<T>::value) {
     res = cblas_icamax(
         x.size(),
         reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_iamax(): unsupported element type.");
   }
 

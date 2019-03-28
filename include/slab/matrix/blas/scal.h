@@ -38,18 +38,23 @@ inline void blas_scal(const T a, Matrix<T, 1> &x) {
   if (is_double<T>::value) {
     cblas_dscal(n, (const double)a, (double *)(x.data() + x.descriptor().start),
                 incx);
-  } else if (is_float<T>::value) {
-    cblas_sscal(n, (const float)a, (float *)(x.data() + x.descriptor().start),
-                incx);
   } else if (is_complex_double<T>::value) {
     cblas_zdscal(n, (const double)a,
                  reinterpret_cast<double *>(x.data() + x.descriptor().start),
                  incx);
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
+    cblas_sscal(n, (const float)a, (float *)(x.data() + x.descriptor().start),
+                incx);
+
   } else if (is_complex_float<T>::value) {
     cblas_csscal(n, (const float)a,
                  reinterpret_cast<float *>(x.data() + x.descriptor().start),
                  incx);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_scal(): unsupported element type.");
   }
 }
@@ -63,11 +68,15 @@ inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
     cblas_zscal(n, reinterpret_cast<const double *>(&a),
                 reinterpret_cast<double *>(x.data() + x.descriptor().start),
                 incx);
-  } else if (is_float<T>::value) {
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
     cblas_cscal(n, reinterpret_cast<const float *>(&a),
                 reinterpret_cast<float *>(x.data() + x.descriptor().start),
                 incx);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_scal(): unsupported element type.");
   }
 }

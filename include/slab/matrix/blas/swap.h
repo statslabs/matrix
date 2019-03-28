@@ -44,18 +44,22 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   if (is_double<T>::value) {
     cblas_dswap(n, (double *)(x.data() + x.descriptor().start), incx,
                 (double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
-    cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
-                (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
     cblas_zswap(
         n, reinterpret_cast<double *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
+    cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
+                (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
     cblas_cswap(
         n, reinterpret_cast<float *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_swap(): unsupported element type.");
   }
 }

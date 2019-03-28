@@ -26,14 +26,7 @@
 #include <algorithm>
 #include <complex>
 
-#ifdef USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-#include "cblas.h"
-}
-#endif
-
+#include "slab/matrix/config.h"
 #include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
@@ -351,6 +344,7 @@ inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
   return y;
 }
 
+#ifndef USE_R_BLAS
 template <>
 inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 1> &x) {
@@ -370,6 +364,7 @@ inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
 
   return y;
 }
+#endif
 
 template <typename T>
 inline Matrix<T, 2> matmul(const MatrixBase<T, 2> &a,
@@ -416,6 +411,7 @@ inline Matrix<double, 2> matmul(const MatrixBase<double, 2> &a,
   return c;
 }
 
+#ifndef USE_R_BLAS
 template <>
 inline Matrix<float, 2> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 2> &b) {
@@ -438,6 +434,7 @@ inline Matrix<float, 2> matmul(const MatrixBase<float, 2> &a,
 
   return c;
 }
+#endif
 
 template <typename T>
 inline const Matrix<T, 1> &matmul_n(const Matrix<T, 1> &x) {

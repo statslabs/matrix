@@ -20,6 +20,14 @@
 #ifndef STATSLABS_MATRIX_CONFIG_H_
 #define STATSLABS_MATRIX_CONFIG_H_
 
+#ifdef USE_MKL
+#include "mkl.h"
+#else
+extern "C" {
+#include "cblas.h"
+}
+#endif
+
 // #define USE_R_BLAS
 //// Uncomment the above line if using R package cblasr
 
