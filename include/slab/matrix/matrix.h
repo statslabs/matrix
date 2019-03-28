@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 
+#include "slab/matrix/config.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix_slice.h"
@@ -393,6 +394,20 @@ class Matrix : public MatrixBase<T, N> {
   //    std::ostream os(filename);
   //  }
   void load(const std::string &filename);
+
+#ifdef USE_RCPP_AS_WRAP
+  // -----------------------------
+  // Conversion between R and C++
+  // -----------------------------
+ public:
+  // this operator enables implicit Rcpp::wrap
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  operator SEXP() {
+  Rcpp::RObject x = Rcpp::wrap(this->data(), this->data() + this->size());
+  x.attr("dim") = Rcpp::Dimension(this->n_rows(), this->n_cols());
+  return x;
+  }
+#endif
 };
 
 template <typename T, std::size_t N>

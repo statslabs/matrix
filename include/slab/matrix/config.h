@@ -28,6 +28,10 @@ extern "C" {
 }
 #endif
 
+// #define USE_RCPP_AS_WRAP
+//// Uncomment the above line if using Rcpp::as (for conversion of objects from
+//// R to C++) and Rcpp::wrap (for conversion from C++ to R)
+
 // #define USE_R_BLAS
 //// Uncomment the above line if using R package cblasr
 
