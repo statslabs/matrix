@@ -36,7 +36,7 @@
 #include "slab/matrix/matrix_fns.h"
 #include "slab/matrix/type_alias.h"
 
-#include "slab/matrix/lapack_interface.h" // TODO: remove this header, provide BLAS interface only
+#include "slab/matrix/lapack_interface.h"  // TODO: remove this header, provide BLAS interface only
 
 #ifdef USE_RCPP_AS_WRAP
 #include <Rcpp.h>

@@ -401,12 +401,9 @@ class Matrix : public MatrixBase<T, N> {
   // -----------------------------
  public:
   // this operator enables implicit Rcpp::wrap
-  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  operator SEXP() {
-  Rcpp::RObject x = Rcpp::wrap(this->data(), this->data() + this->size());
-  x.attr("dim") = Rcpp::Dimension(this->n_rows(), this->n_cols());
-  return x;
-  }
+  operator SEXP();
+  operator SEXP() const;
+
 #endif
 };
 
@@ -967,6 +964,40 @@ void Matrix<T, N>::load(const std::string &filename) {
     std::cout << "Fail to open the file" << std::endl;
   }
 }
+
+#ifdef USE_RCPP_AS_WRAP
+
+template <typename T, std::size_t N>
+Matrix<T, N>::operator SEXP() {
+  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + this->size()));
+
+  int num_dims = this->order();
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
+  int *idim = INTEGER(dim);
+  for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  Rf_setAttrib(res, R_DimSymbol, dim);
+
+  UNPROTECT(2);
+
+  return res;
+}
+
+template <typename T, std::size_t N>
+Matrix<T, N>::operator SEXP() const {
+  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + this->size()));
+
+  int num_dims = this->order();
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
+  int *idim = INTEGER(dim);
+  for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  Rf_setAttrib(res, R_DimSymbol, dim);
+
+  UNPROTECT(2);
+
+  return res;
+}
+
+#endif
 
 //! Matrix<T,0> is a zero-dimensional matrix of type T..
 /*!
