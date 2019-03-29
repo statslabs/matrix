@@ -969,32 +969,56 @@ void Matrix<T, N>::load(const std::string &filename) {
 
 template <typename T, std::size_t N>
 Matrix<T, N>::operator SEXP() {
-  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + this->size()));
+  int num_elems = this->size();
+  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + num_elems));
+  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype, (R_xlen_t) num_elems));
 
   int num_dims = this->order();
   SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
   int *idim = INTEGER(dim);
-  for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  if (num_dims <= 2) {
+    for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  } else {
+    idim[0] = this->desc_.extents[num_dims - 2];
+    idim[1] = this->desc_.extents[num_dims - 1];
+    for (int i = 2; i != num_dims; ++i) idim[i] = this->desc_.extents[num_dims - i - 1];
+  }
   Rf_setAttrib(res, R_DimSymbol, dim);
+  Rf_setAttrib(res2, R_DimSymbol, dim);
 
-  UNPROTECT(2);
+  if (num_dims <= 2) Rf_copyMatrix(res2, res, TRUE);
+  // TODO: else CopyMatrixByRow(res2, res); // for num_dims > 2
 
-  return res;
+  UNPROTECT(3);
+
+  return res2;
 }
 
 template <typename T, std::size_t N>
 Matrix<T, N>::operator SEXP() const {
-  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + this->size()));
+  int num_elems = this->size();
+  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + num_elems));
+  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype, (R_xlen_t) num_elems));
 
   int num_dims = this->order();
   SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
   int *idim = INTEGER(dim);
-  for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  if (num_dims <= 2) {
+    for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  } else {
+    idim[0] = this->desc_.extents[num_dims - 2];
+    idim[1] = this->desc_.extents[num_dims - 1];
+    for (int i = 2; i != num_dims; ++i) idim[i] = this->desc_.extents[num_dims - i - 1];
+  }
   Rf_setAttrib(res, R_DimSymbol, dim);
+  Rf_setAttrib(res2, R_DimSymbol, dim);
 
-  UNPROTECT(2);
+  if (num_dims <= 2) Rf_copyMatrix(res2, res, TRUE);
+  // TODO: else CopyMatrixByRow(res2, res); // for num_dims > 2
 
-  return res;
+  UNPROTECT(3);
+
+  return res2;
 }
 
 #endif
