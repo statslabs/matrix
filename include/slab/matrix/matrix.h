@@ -400,6 +400,9 @@ class Matrix : public MatrixBase<T, N> {
   // Conversion between R and C++
   // -----------------------------
  public:
+  // this ctor enables implicit Rcpp::as
+  Matrix(SEXP s);
+
   // this operator enables implicit Rcpp::wrap
   operator SEXP();
   operator SEXP() const;
@@ -968,10 +971,41 @@ void Matrix<T, N>::load(const std::string &filename) {
 #ifdef USE_RCPP_AS_WRAP
 
 template <typename T, std::size_t N>
+Matrix<T, N>::Matrix(SEXP s) {
+  SEXP dims = Rf_getAttrib(s, R_DimSymbol);
+  assert(Rf_length(dims) == order());
+
+  int num_dims = Rf_length(dims);
+  int num_elems = Rf_length(s);
+  SEXP s2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
+                                   (R_xlen_t)num_elems));
+  Rf_setAttrib(s2, R_DimSymbol, dims);
+  if (num_dims <= 2) Rf_copyMatrix(s2, s, TRUE);
+
+  elems_.reserve(num_elems);
+  for (int i = 0; i != num_elems; ++i) {
+    elems_.push_back(REAL(s2)[i]);
+  }
+
+  std::array<std::size_t, N> exts;
+  if (Rf_isNull(dims))
+    exts[0] = num_elems;
+  else {
+    exts[N - 2] = INTEGER(dims)[0];
+    exts[N - 1] = INTEGER(dims)[1];
+    for (int i = 2; i != N; ++i) exts[i] = INTEGER(dims)[i];
+  }
+  this->desc_ = MatrixSlice<N>(exts);
+
+  UNPROTECT(1);
+}
+
+template <typename T, std::size_t N>
 Matrix<T, N>::operator SEXP() {
   int num_elems = this->size();
   SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + num_elems));
-  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype, (R_xlen_t) num_elems));
+  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
+                                     (R_xlen_t)num_elems));
 
   int num_dims = this->order();
   SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
@@ -981,7 +1015,8 @@ Matrix<T, N>::operator SEXP() {
   } else {
     idim[0] = this->desc_.extents[num_dims - 2];
     idim[1] = this->desc_.extents[num_dims - 1];
-    for (int i = 2; i != num_dims; ++i) idim[i] = this->desc_.extents[num_dims - i - 1];
+    for (int i = 2; i != num_dims; ++i)
+      idim[i] = this->desc_.extents[num_dims - i - 1];
   }
   Rf_setAttrib(res, R_DimSymbol, dim);
   Rf_setAttrib(res2, R_DimSymbol, dim);
@@ -998,7 +1033,8 @@ template <typename T, std::size_t N>
 Matrix<T, N>::operator SEXP() const {
   int num_elems = this->size();
   SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + num_elems));
-  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype, (R_xlen_t) num_elems));
+  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
+                                     (R_xlen_t)num_elems));
 
   int num_dims = this->order();
   SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
@@ -1008,7 +1044,8 @@ Matrix<T, N>::operator SEXP() const {
   } else {
     idim[0] = this->desc_.extents[num_dims - 2];
     idim[1] = this->desc_.extents[num_dims - 1];
-    for (int i = 2; i != num_dims; ++i) idim[i] = this->desc_.extents[num_dims - i - 1];
+    for (int i = 2; i != num_dims; ++i)
+      idim[i] = this->desc_.extents[num_dims - i - 1];
   }
   Rf_setAttrib(res, R_DimSymbol, dim);
   Rf_setAttrib(res2, R_DimSymbol, dim);
