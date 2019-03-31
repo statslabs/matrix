@@ -50,13 +50,17 @@ inline T blas_asum(const Matrix<T, 1> &x) {
   T res;
   if (is_double<T>::value) {
     res = cblas_dasum(n, (const double *)x.data(), incx);
-  } else if (is_float<T>::value) {
-    res = cblas_sasum(n, (const float *)x.data(), incx);
   } else if (is_complex_double<T>::value) {
     res = cblas_dzasum(n, reinterpret_cast<const double *>(x.data()), incx);
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
+    res = cblas_sasum(n, (const float *)x.data(), incx);
   } else if (is_complex_float<T>::value) {
     res = cblas_scasum(n, reinterpret_cast<const float *>(x.data()), incx);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_asum(): unsupported element type.");
   }
 

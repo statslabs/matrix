@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 
+#include "slab/matrix/config.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix_slice.h"
@@ -189,7 +190,8 @@ class Matrix : public MatrixBase<T, N> {
   // Member functions for matrix arithmetic operations
   // --------------------------------------------------
  public:
-  //! @cond Doxygen_Suppress
+  //! matrix arithmetic operations
+  ///@{
   template <typename F>
   Matrix &apply(F f);  // f(x) for every element x
 
@@ -223,7 +225,7 @@ class Matrix : public MatrixBase<T, N> {
 
   template <typename U = typename std::remove_const<T>::type>
   Matrix<U, N> operator-() const;
-  //! @endcond
+  ///@}
 
   // -----------------------------------
   // Member functions for a Matrix<T, 1>
@@ -304,15 +306,15 @@ class Matrix : public MatrixBase<T, N> {
   //! Assign a matrix from a symmetric/triangular/hermitian matrix
   ///@{
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix &operator=(const SymmetricMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix &operator=(const TriangularMatrix<U, TRI> &x);
 
   template <typename U, typename TRI, std::size_t NN = N,
-      typename = Enable_if<(NN == 2)>>
+            typename = Enable_if<(NN == 2)>>
   Matrix &operator=(const HermitianMatrix<U, TRI> &x);
   ///@}
 
@@ -392,6 +394,20 @@ class Matrix : public MatrixBase<T, N> {
   //    std::ostream os(filename);
   //  }
   void load(const std::string &filename);
+
+#ifdef USE_RCPP_AS_WRAP
+  // -----------------------------
+  // Conversion between R and C++
+  // -----------------------------
+ public:
+  // this ctor enables implicit Rcpp::as
+  Matrix(SEXP s);
+
+  // this operator enables implicit Rcpp::wrap
+  operator SEXP();
+  operator SEXP() const;
+
+#endif
 };
 
 template <typename T, std::size_t N>
@@ -597,6 +613,7 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
   return {d, data()};
 }
 
+//! @cond Doxygen_Suppress
 template <typename T, std::size_t N>
 template <typename F>
 Matrix<T, N> &Matrix<T, N>::apply(F f) {
@@ -701,6 +718,7 @@ Matrix<U, N> Matrix<T, N>::operator-() const {
   Matrix<U, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
 }
+//! @endcond
 
 template <typename T, std::size_t N>
 template <typename U, std::size_t NN, typename X>
@@ -843,10 +861,8 @@ Matrix<T, N>::Matrix(const HermitianMatrix<U, TRI> &x)
 
 template <typename T, std::size_t N>
 template <typename U, typename TRI, std::size_t NN, typename X>
-Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
-{
-  static_assert(Convertible<U, T>(),
-                "Matrix =: incompatible element types");
+Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   std::size_t n = x.n_rows();
 
@@ -857,7 +873,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
   this->desc_.strides[0] = n;
   this->desc_.strides[1] = 1;
 
-  elems_.reserve(n*n);
+  elems_.reserve(n * n);
 
   for (std::size_t i = 0; i != x.n_rows(); ++i) {
     for (std::size_t j = 0; j != x.n_cols(); ++j) {
@@ -870,10 +886,8 @@ Matrix<T, N> &Matrix<T, N>::operator=(const SymmetricMatrix<U, TRI> &x)
 
 template <typename T, std::size_t N>
 template <typename U, typename TRI, std::size_t NN, typename X>
-Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
-{
-  static_assert(Convertible<U, T>(),
-                "Matrix =: incompatible element types");
+Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   std::size_t n = x.n_rows();
 
@@ -884,7 +898,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
   this->desc_.strides[0] = n;
   this->desc_.strides[1] = 1;
 
-  elems_.reserve(n*n);
+  elems_.reserve(n * n);
 
   for (std::size_t i = 0; i != x.n_rows(); ++i) {
     for (std::size_t j = 0; j != x.n_cols(); ++j) {
@@ -897,10 +911,8 @@ Matrix<T, N> &Matrix<T, N>::operator=(const TriangularMatrix<U, TRI> &x)
 
 template <typename T, std::size_t N>
 template <typename U, typename TRI, std::size_t NN, typename X>
-Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x)
-{
-  static_assert(Convertible<U, T>(),
-                "Matrix =: incompatible element types");
+Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x) {
+  static_assert(Convertible<U, T>(), "Matrix =: incompatible element types");
 
   std::size_t n = x.n_rows();
 
@@ -911,7 +923,7 @@ Matrix<T, N> &Matrix<T, N>::operator=(const HermitianMatrix<U, TRI> &x)
   this->desc_.strides[0] = n;
   this->desc_.strides[1] = 1;
 
-  elems_.reserve(n*n);
+  elems_.reserve(n * n);
 
   for (std::size_t i = 0; i != x.n_rows(); ++i) {
     for (std::size_t j = 0; j != x.n_cols(); ++j) {
@@ -955,6 +967,98 @@ void Matrix<T, N>::load(const std::string &filename) {
     std::cout << "Fail to open the file" << std::endl;
   }
 }
+
+#ifdef USE_RCPP_AS_WRAP
+
+template <typename T, std::size_t N>
+Matrix<T, N>::Matrix(SEXP s) {
+  SEXP dims = Rf_getAttrib(s, R_DimSymbol);
+  assert(Rf_length(dims) == order());
+
+  int num_dims = Rf_length(dims);
+  int num_elems = Rf_length(s);
+  SEXP s2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
+                                   (R_xlen_t)num_elems));
+  Rf_setAttrib(s2, R_DimSymbol, dims);
+  if (num_dims <= 2) Rf_copyMatrix(s2, s, TRUE);
+
+  elems_.reserve(num_elems);
+  for (int i = 0; i != num_elems; ++i) {
+    elems_.push_back(REAL(s2)[i]);
+  }
+
+  std::array<std::size_t, N> exts;
+  if (Rf_isNull(dims))
+    exts[0] = num_elems;
+  else {
+    exts[N - 2] = INTEGER(dims)[0];
+    exts[N - 1] = INTEGER(dims)[1];
+    for (int i = 2; i != N; ++i) exts[i] = INTEGER(dims)[i];
+  }
+  this->desc_ = MatrixSlice<N>(exts);
+
+  UNPROTECT(1);
+}
+
+template <typename T, std::size_t N>
+Matrix<T, N>::operator SEXP() {
+  int num_elems = this->size();
+  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + num_elems));
+  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
+                                     (R_xlen_t)num_elems));
+
+  int num_dims = this->order();
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
+  int *idim = INTEGER(dim);
+  if (num_dims <= 2) {
+    for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  } else {
+    idim[0] = this->desc_.extents[num_dims - 2];
+    idim[1] = this->desc_.extents[num_dims - 1];
+    for (int i = 2; i != num_dims; ++i)
+      idim[i] = this->desc_.extents[num_dims - i - 1];
+  }
+  Rf_setAttrib(res, R_DimSymbol, dim);
+  Rf_setAttrib(res2, R_DimSymbol, dim);
+
+  if (num_dims <= 2) Rf_copyMatrix(res2, res, TRUE);
+  // TODO: else CopyMatrixByRow(res2, res); // for num_dims > 2
+
+  UNPROTECT(3);
+
+  return res2;
+}
+
+template <typename T, std::size_t N>
+Matrix<T, N>::operator SEXP() const {
+  int num_elems = this->size();
+  SEXP res = PROTECT(Rcpp::wrap(this->data(), this->data() + num_elems));
+  SEXP res2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
+                                     (R_xlen_t)num_elems));
+
+  int num_dims = this->order();
+  SEXP dim = PROTECT(Rf_allocVector(INTSXP, num_dims));
+  int *idim = INTEGER(dim);
+  if (num_dims <= 2) {
+    for (int i = 0; i != num_dims; ++i) idim[i] = this->desc_.extents[i];
+  } else {
+    idim[0] = this->desc_.extents[num_dims - 2];
+    idim[1] = this->desc_.extents[num_dims - 1];
+    for (int i = 2; i != num_dims; ++i)
+      idim[i] = this->desc_.extents[num_dims - i - 1];
+  }
+  Rf_setAttrib(res, R_DimSymbol, dim);
+  Rf_setAttrib(res2, R_DimSymbol, dim);
+
+  if (num_dims <= 2) Rf_copyMatrix(res2, res, TRUE);
+  // TODO: else CopyMatrixByRow(res2, res); // for num_dims > 2
+
+  UNPROTECT(3);
+
+  return res2;
+}
+
+#endif
 
 //! Matrix<T,0> is a zero-dimensional matrix of type T..
 /*!

@@ -23,7 +23,7 @@
 namespace slab {
 
 template <typename T>
-inline Matrix<T, 2> inverse(const Matrix<T, 2> &a) {
+inline bool inverse(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
   assert(a.n_rows() == a.n_cols());
 
   int info;
@@ -32,55 +32,110 @@ inline Matrix<T, 2> inverse(const Matrix<T, 2> &a) {
   const int lda = a.n_cols();
   Matrix<int, 1> ipiv(n);
 
-  Matrix<T, 2> res = a;
+  b = a;
   if (is_double<T>::value) {
-    info = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, (double *)res.data(), lda,
+    info = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, (double *)b.data(), lda,
                           ipiv.data());
-    LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, (double *)res.data(), lda, ipiv.data());
+    LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, (double *)b.data(), lda, ipiv.data());
   } else if (is_float<T>::value) {
-    info = LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, (float *)res.data(), lda,
+    info = LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, (float *)b.data(), lda,
                           ipiv.data());
-    LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, (float *)res.data(), lda, ipiv.data());
+    LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, (float *)b.data(), lda, ipiv.data());
   } else if (is_complex_double<T>::value) {
-    info =
-        LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
-                       (lapack_complex_double *)res.data(), lda, ipiv.data());
-    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)res.data(),
-                   lda, ipiv.data());
+    info = LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
+                          (lapack_complex_double *)b.data(), lda, ipiv.data());
+    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)b.data(), lda,
+                   ipiv.data());
   } else if (is_complex_float<T>::value) {
     info = LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n,
-                          (lapack_complex_float *)res.data(), lda, ipiv.data());
-    LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_float *)res.data(), lda,
+                          (lapack_complex_float *)b.data(), lda, ipiv.data());
+    LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_float *)b.data(), lda,
                    ipiv.data());
   } else {
     err_msg("inverse(): unspported element type.");
   }
+
+  if (info) return false;
+
+  return true;
+}
+
+template <typename T>
+inline bool inverse(Matrix<T, 2> &b, const MatrixRef<T, 2> &a) {
+  assert(a.n_rows() == a.n_cols());
+
+  int info;
+  const int m = a.n_rows();
+  const int n = a.n_cols();
+  const int lda = a.n_cols();
+  Matrix<int, 1> ipiv(n);
+
+  b = a;
+  if (is_double<T>::value) {
+    info = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, (double *)b.data(), lda,
+                          ipiv.data());
+    LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, (double *)b.data(), lda, ipiv.data());
+  } else if (is_float<T>::value) {
+    info = LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, (float *)b.data(), lda,
+                          ipiv.data());
+    LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, (float *)b.data(), lda, ipiv.data());
+  } else if (is_complex_double<T>::value) {
+    info = LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n,
+                          (lapack_complex_double *)b.data(), lda, ipiv.data());
+    LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_double *)b.data(), lda,
+                   ipiv.data());
+  } else if (is_complex_float<T>::value) {
+    info = LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n,
+                          (lapack_complex_float *)b.data(), lda, ipiv.data());
+    LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_float *)b.data(), lda,
+                   ipiv.data());
+  } else {
+    err_msg("inverse(): unspported element type.");
+  }
+
+  if (info) return false;
+
+  return true;
+}
+
+template <typename T>
+inline Matrix<T, 2> inverse(const Matrix<T, 2> &a) {
+  assert(a.n_rows() == a.n_cols());
+
+  Matrix<T, 2> res;
+  inverse(res, a);
+
+  return res;
+}
+
+template <typename T>
+inline Matrix<T, 2> inverse(const MatrixRef<T, 2> &a) {
+  assert(a.n_rows() == a.n_cols());
+
+  Matrix<T, 2> res;
+  inverse(res, a);
 
   return res;
 }
 
 template <typename T>
 inline bool inv(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
-  return true;
+  return inverse(b, a);
 }
 
-template <>
-inline bool inv(Matrix<double, 2> &b, const Matrix<double, 2> &a) {
-  b = eye<Matrix<double, 2>>(a.n_rows(), a.n_cols());
+template <typename T>
+inline bool inv(Matrix<T, 2> &b, const MatrixRef<T, 2> &a) {
+  return inverse(b, a);
+}
 
-  int n = a.n_rows();
-  int nrhs = b.n_cols();
-  int lda = a.n_cols();
-  int ldb = b.n_cols();
+template <typename T>
+inline Matrix<T, 2> inv(const Matrix<T, 2> &a) {
+  return inverse(a);
+}
 
-  Matrix<double, 2> a_copy = a;
-  Matrix<int, 1> ipiv(n);
-
-  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, (double *)a_copy.data(),
-                           lda, ipiv.data(), (double *)b.data(), ldb);
-  if (info) return false;
-
-  return true;
+template <typename T>
+inline Matrix<T, 2> inv(const MatrixRef<T, 2> &a) {
+  return inverse(a);
 }
 
 }  // namespace slab

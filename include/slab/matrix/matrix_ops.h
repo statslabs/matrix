@@ -26,14 +26,7 @@
 #include <algorithm>
 #include <complex>
 
-#ifdef USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-#include "cblas.h"
-}
-#endif
-
+#include "slab/matrix/config.h"
 #include "slab/matrix/error.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
@@ -335,39 +328,43 @@ template <>
 inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 1> &x) {
   assert(a.extent(1) == x.extent(0));
-  const int m = a.n_rows();
-  const int n = a.n_cols();
-  const int lda = n;
-  const int incx = x.descriptor().strides[0];
-  const int incy = 1;
+  const std::size_t m = a.n_rows();
+  const std::size_t n = a.n_cols();
+  const std::size_t lda = n;
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = 1;
 
   Matrix<double, 1> y(m);
-  cblas_dgemv(CblasRowMajor, CblasNoTrans, m, n, (const double)1.0,
-              (const double *)(a.data() + a.descriptor().start), lda,
-              (const double *)(x.data() + x.descriptor().start), incx,
-              (const double)0.0, (double *)y.data(), incy);
+  cblas_dgemv(
+      CblasRowMajor, CblasNoTrans, (const int)m, (const int)n,
+      (const double)1.0, (const double *)(a.data() + a.descriptor().start),
+      (const int)lda, (const double *)(x.data() + x.descriptor().start),
+      (const int)incx, (const double)0.0, (double *)y.data(), (const int)incy);
 
   return y;
 }
 
+#ifndef USE_R_BLAS
 template <>
 inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 1> &x) {
   assert(a.extent(1) == x.extent(0));
-  const int m = a.n_rows();
-  const int n = a.n_cols();
-  const int lda = n;
-  const int incx = x.descriptor().strides[0];
-  const int incy = 1;
+  const std::size_t m = a.n_rows();
+  const std::size_t n = a.n_cols();
+  const std::size_t lda = n;
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = 1;
 
   Matrix<float, 1> y(m);
-  cblas_sgemv(CblasRowMajor, CblasNoTrans, m, n, (const float)1.0,
-              (const float *)(a.data() + a.descriptor().start), lda,
-              (const float *)(x.data() + x.descriptor().start), incx,
-              (const float)0.0, (float *)y.data(), incy);
+  cblas_sgemv(CblasRowMajor, CblasNoTrans, (const int)m, (const int)n,
+              (const float)1.0,
+              (const float *)(a.data() + a.descriptor().start), (const int)lda,
+              (const float *)(x.data() + x.descriptor().start), (const int)incx,
+              (const float)0.0, (float *)y.data(), (const int)incy);
 
   return y;
 }
+#endif
 
 template <typename T>
 inline Matrix<T, 2> matmul(const MatrixBase<T, 2> &a,
@@ -396,46 +393,48 @@ inline Matrix<double, 2> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
-  const int m = a.n_rows();
-  const int n = b.n_cols();
-  const int k = a.n_cols();
+  const std::size_t m = a.n_rows();
+  const std::size_t n = b.n_cols();
+  const std::size_t k = a.n_cols();
 
-  const int lda = a.n_cols();
-  const int ldb = b.n_cols();
-  const int ldc = b.n_cols();
+  const std::size_t lda = a.n_cols();
+  const std::size_t ldb = b.n_cols();
+  const std::size_t ldc = b.n_cols();
 
   Matrix<double, 2> c(m, n);
-  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k,
-              (const double)1.0,
-              (const double *)(a.data() + a.descriptor().start), lda,
-              (const double *)(b.data() + b.descriptor().start), ldb,
-              (const double)0.0, (double *)c.data(), ldc);
+  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, (const int)m,
+              (const int)n, (const int)k, (const double)1.0,
+              (const double *)(a.data() + a.descriptor().start), (const int)lda,
+              (const double *)(b.data() + b.descriptor().start), (const int)ldb,
+              (const double)0.0, (double *)c.data(), (const int)ldc);
 
   return c;
 }
 
+#ifndef USE_R_BLAS
 template <>
 inline Matrix<float, 2> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 2> &b) {
   assert(a.extent(1) == b.extent(0));
 
-  const int m = a.n_rows();
-  const int n = b.n_cols();
-  const int k = a.n_cols();
+  const std::size_t m = a.n_rows();
+  const std::size_t n = b.n_cols();
+  const std::size_t k = a.n_cols();
 
-  const int lda = a.n_cols();
-  const int ldb = b.n_cols();
-  const int ldc = b.n_cols();
+  const std::size_t lda = a.n_cols();
+  const std::size_t ldb = b.n_cols();
+  const std::size_t ldc = b.n_cols();
 
   Matrix<float, 2> c(m, n);
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k,
-              (const float)1.0,
-              (const float *)(a.data() + a.descriptor().start), lda,
-              (const float *)(b.data() + b.descriptor().start), ldb,
-              (const float)0.0, (float *)c.data(), ldc);
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, (const int)m,
+              (const int)n, (const int)k, (const float)1.0,
+              (const float *)(a.data() + a.descriptor().start), (const int)lda,
+              (const float *)(b.data() + b.descriptor().start), (const int)ldb,
+              (const float)0.0, (float *)c.data(), (const int)ldc);
 
   return c;
 }
+#endif
 
 template <typename T>
 inline const Matrix<T, 1> &matmul_n(const Matrix<T, 1> &x) {

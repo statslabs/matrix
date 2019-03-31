@@ -210,6 +210,8 @@ std::size_t do_slice_dim2(const MatrixSlice<N> &os, MatrixSlice<N> &ns, slice s,
 
 template <std::size_t N>
 std::size_t do_slice(const MatrixSlice<N> &os, MatrixSlice<N> &ns) {
+  ignore(os);
+  ignore(ns);
   return 0;
 }
 

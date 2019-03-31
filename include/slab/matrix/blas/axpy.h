@@ -54,20 +54,24 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
   if (is_double<T>::value) {
     cblas_daxpy(n, a, (const double *)(x.data() + x.descriptor().start), incx,
                 (double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
-    cblas_saxpy(n, a, (const float *)(x.data() + x.descriptor().start), incx,
-                (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
     cblas_zaxpy(
         n, reinterpret_cast<const double *>(&a),
         reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
+    cblas_saxpy(n, a, (const float *)(x.data() + x.descriptor().start), incx,
+                (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
     cblas_caxpy(
         n, reinterpret_cast<const float *>(&a),
         reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_axpy(): unsupported element type.");
   }
 }

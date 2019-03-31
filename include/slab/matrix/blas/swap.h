@@ -14,11 +14,11 @@
 // limitations under the License.
 //
 
-/// @file copy.h
-/// @brief C++ template wrapper for C functions cblas_?copy
+/// @file swap.h
+/// @brief C++ template wrapper for C functions cblas_?swap
 
-#ifndef SLAB_MATRIX_BLAS_COPY_H_
-#define SLAB_MATRIX_BLAS_COPY_H_
+#ifndef SLAB_MATRIX_BLAS_SWAP_H_
+#define SLAB_MATRIX_BLAS_SWAP_H_
 
 namespace slab {
 
@@ -28,48 +28,39 @@ namespace slab {
 /// @addtogroup blas_level1 BLAS Level 1
 /// @{
 
-/// @brief Copies vector to another vector.
+/// @brief Swaps a vector with another vector.
 ///
-/// The copy routines perform a vector-vector operation defined as
-/// \f[
-/// x = y
-/// \f]
-/// where \f$x\f$ and \f$y\f$ are vectors.
-///
-/// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
-/// @param y Vector with type vec/fvec/cx_vec/cx_fvec.
-/// @return Void.
+/// @param x a vector.
+/// @param y another vector.
 ///
 template <typename T>
-inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
-  y.clear();
-  y = Matrix<T, 1>(x.size());
+inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
+  assert(x.size() == y.size());
 
+  const int n = x.size();
   const int incx = x.descriptor().strides[0];
   const int incy = y.descriptor().strides[0];
 
   if (is_double<T>::value) {
-    cblas_dcopy(x.size(), (const double *)(x.data() + x.descriptor().start),
-                incx, (double *)(y.data() + y.descriptor().start), incy);
+    cblas_dswap(n, (double *)(x.data() + x.descriptor().start), incx,
+                (double *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zcopy(
-        x.size(),
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
+    cblas_zswap(
+        n, reinterpret_cast<double *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   }
 #ifndef USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_scopy(x.size(), (const float *)(x.data() + x.descriptor().start),
-                incx, (float *)(y.data() + y.descriptor().start), incy);
+    cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
+                (float *)(y.data() + y.descriptor().start), incy);
   } else if (is_complex_float<T>::value) {
-    cblas_ccopy(
-        x.size(),
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
+    cblas_cswap(
+        n, reinterpret_cast<float *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
   }
 #endif
   else {
-    err_quit("blas_copy(): unsupported element type.");
+    err_quit("blas_swap(): unsupported element type.");
   }
 }
 

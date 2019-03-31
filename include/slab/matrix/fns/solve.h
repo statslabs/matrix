@@ -33,17 +33,19 @@ inline Matrix<double, 2> solve(const Matrix<double, 2> &a,
   assert(a.n_rows() == b.n_rows());
   assert(a.n_rows() == a.n_cols());
 
-  int n = a.n_rows();
-  int nrhs = b.n_cols();
-  int lda = a.n_cols();
-  int ldb = b.n_cols();
+  std::size_t n = a.n_rows();
+  std::size_t nrhs = b.n_cols();
+  std::size_t lda = a.n_cols();
+  std::size_t ldb = b.n_cols();
 
   Matrix<double, 2> a_copy(a);
   Matrix<int, 1> ipiv(n);
   Matrix<double, 2> b_copy(b);
 
-  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, (double *)a_copy.data(),
-                           lda, ipiv.data(), (double *)b_copy.data(), ldb);
+  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+                           (double *)a_copy.data(), (int)lda, ipiv.data(),
+                           (double *)b_copy.data(), (int)ldb);
+  if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -54,17 +56,19 @@ inline Matrix<float, 2> solve(const Matrix<float, 2> &a,
   assert(a.n_rows() == b.n_rows());
   assert(a.n_rows() == a.n_cols());
 
-  int n = a.n_rows();
-  int nrhs = b.n_cols();
-  int lda = a.n_cols();
-  int ldb = b.n_cols();
+  std::size_t n = a.n_rows();
+  std::size_t nrhs = b.n_cols();
+  std::size_t lda = a.n_cols();
+  std::size_t ldb = b.n_cols();
 
   Matrix<float, 2> a_copy(a);
   Matrix<int, 1> ipiv(n);
   Matrix<float, 2> b_copy(b);
 
-  int info = LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, (float *)a_copy.data(),
-                           lda, ipiv.data(), (float *)b_copy.data(), ldb);
+  int info =
+      LAPACKE_sgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs, (float *)a_copy.data(),
+                    (int)lda, ipiv.data(), (float *)b_copy.data(), (int)ldb);
+  if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -76,20 +80,21 @@ inline Matrix<std::complex<double>, 2> solve(
   assert(a.n_rows() == b.n_rows());
   assert(a.n_rows() == a.n_cols());
 
-  int n = a.n_rows();
-  int nrhs = b.n_cols();
-  int lda = a.n_cols();
-  int ldb = b.n_cols();
+  std::size_t n = a.n_rows();
+  std::size_t nrhs = b.n_cols();
+  std::size_t lda = a.n_cols();
+  std::size_t ldb = b.n_cols();
 
   Matrix<std::complex<double>, 2> a_copy(a);
   Matrix<int, 1> ipiv(n);
   Matrix<std::complex<double>, 2> b_copy(b);
 
   int info = LAPACKE_zgesv(
-      LAPACK_ROW_MAJOR, n, nrhs,
-      reinterpret_cast<lapack_complex_double *>(a_copy.data()), lda,
+      LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+      reinterpret_cast<lapack_complex_double *>(a_copy.data()), (int)lda,
       ipiv.data(), reinterpret_cast<lapack_complex_double *>(b_copy.data()),
-      ldb);
+      (int)ldb);
+  if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -101,19 +106,21 @@ inline Matrix<std::complex<float>, 2> solve(
   assert(a.n_rows() == b.n_rows());
   assert(a.n_rows() == a.n_cols());
 
-  int n = a.n_rows();
-  int nrhs = b.n_cols();
-  int lda = a.n_cols();
-  int ldb = b.n_cols();
+  std::size_t n = a.n_rows();
+  std::size_t nrhs = b.n_cols();
+  std::size_t lda = a.n_cols();
+  std::size_t ldb = b.n_cols();
 
   Matrix<std::complex<float>, 2> a_copy(a);
   Matrix<int, 1> ipiv(n);
   Matrix<std::complex<float>, 2> b_copy(b);
 
   int info = LAPACKE_cgesv(
-      LAPACK_ROW_MAJOR, n, nrhs,
-      reinterpret_cast<lapack_complex_float *>(a_copy.data()), lda, ipiv.data(),
-      reinterpret_cast<lapack_complex_float *>(b_copy.data()), ldb);
+      LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
+      reinterpret_cast<lapack_complex_float *>(a_copy.data()), (int)lda,
+      ipiv.data(), reinterpret_cast<lapack_complex_float *>(b_copy.data()),
+      (int)ldb);
+  if (info < 0) err_msg("parameter i had an illegal value.");
 
   return b_copy;
 }

@@ -15,7 +15,7 @@
 //
 
 /// @file gemv.h
-/// @brief Matrix-vector product using a general matrix
+/// @brief C++ template wrapper for C functions cblas_?gemv
 
 #ifndef SLAB_MATRIX_BLAS_GEMV_H_
 #define SLAB_MATRIX_BLAS_GEMV_H_
@@ -28,51 +28,74 @@ namespace slab {
 /// @addtogroup blas_level2 BLAS Level 2
 /// @{
 
+/// @brief Matrix-vector product using a general matrix.
+///
+/// The ?gemv routines perform a matrix-vector operation defined as:
+/// \f[y := alpha*A*x + beta*y\f],
+/// or
+/// \f[y := alpha*A'*x + beta*y\f],
+/// or
+/// \f[y := alpha*conjg(A')*x + beta*y],
+/// where \f$alpha\f$ and \f$beta\f$ are scalars, \f$x\f$ and \f$y\f$ are
+/// vectors, \f$A\f$ is an m-by-n matrix.
+///
 template <typename T>
 inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
                       const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x,
                       const T &beta, MatrixBase<T, 1> &y) {
-  const int m = y.n_rows();
-  const int n = x.n_rows();
+  const std::size_t m = y.n_rows();
+  const std::size_t n = x.n_rows();
 
-  const int lda = a.n_cols();
+  const std::size_t lda = a.n_cols();
 
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
 
   if (is_double<T>::value) {
-    cblas_dgemv(CblasRowMajor, trans, m, n, (const double)alpha,
-                (const double *)(a.data() + a.descriptor().start), lda,
-                (const double *)(x.data() + x.descriptor().start), incx,
-                (const double)beta, (double *)(y.data() + y.descriptor().start),
-                incy);
-  } else if (is_float<T>::value) {
-    cblas_sgemv(CblasRowMajor, trans, m, n, (const float)alpha,
-                (const float *)(a.data() + a.descriptor().start), lda,
-                (const float *)(x.data() + x.descriptor().start), incx,
-                (const float)beta, (float *)(y.data() + y.descriptor().start),
-                incy);
+    cblas_dgemv(
+        CblasRowMajor, trans, (const int)m, (const int)n, (const double)alpha,
+        (const double *)(a.data() + a.descriptor().start), (const int)lda,
+        (const double *)(x.data() + x.descriptor().start), (const int)incx,
+        (const double)beta, (double *)(y.data() + y.descriptor().start),
+        (const int)incy);
   } else if (is_complex_double<T>::value) {
     cblas_zgemv(
-        CblasRowMajor, trans, m, n, reinterpret_cast<const double *>(&alpha),
-        reinterpret_cast<const double *>(a.data() + a.descriptor().start), lda,
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<const double *>(&beta),
-        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+        CblasRowMajor, trans, (const int)m, (const int)n,
+        reinterpret_cast<const double *>(&alpha),
+        reinterpret_cast<const double *>(a.data() + a.descriptor().start),
+        (const int)lda,
+        reinterpret_cast<const double *>(x.data() + x.descriptor().start),
+        (const int)incx, reinterpret_cast<const double *>(&beta),
+        reinterpret_cast<double *>(y.data() + y.descriptor().start),
+        (const int)incy);
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
+    cblas_sgemv(
+        CblasRowMajor, trans, (const int)m, (const int)n, (const float)alpha,
+        (const float *)(a.data() + a.descriptor().start), (const int)lda,
+        (const float *)(x.data() + x.descriptor().start), (const int)incx,
+        (const float)beta, (float *)(y.data() + y.descriptor().start),
+        (const int)incy);
   } else if (is_complex_float<T>::value) {
     cblas_cgemv(
-        CblasRowMajor, trans, m, n, reinterpret_cast<const float *>(&alpha),
-        reinterpret_cast<const float *>(a.data() + a.descriptor().start), lda,
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<const float *>(&beta),
-        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
-  } else {
+        CblasRowMajor, trans, (const int)m, (const int)n,
+        reinterpret_cast<const float *>(&alpha),
+        reinterpret_cast<const float *>(a.data() + a.descriptor().start),
+        (const int)lda,
+        reinterpret_cast<const float *>(x.data() + x.descriptor().start),
+        (const int)incx, reinterpret_cast<const float *>(&beta),
+        reinterpret_cast<float *>(y.data() + y.descriptor().start),
+        (const int)incy);
+  }
+#endif
+  else {
     err_quit("blas_gemv(): unsupported element type.");
   }
 }
 
 /// @}
-/// @} BLAS INTERFACE
+/// @} BLAS Interface
 
 }  // namespace slab
 

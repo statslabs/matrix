@@ -83,6 +83,12 @@ add_executable(main
 target_link_libraries(main PUBLIC ${MKL_LINKER_LIBS})
 target_compile_features(main PRIVATE cxx_alias_templates)
 
+if(MSVC)
+    target_compile_options(main PRIVATE /W4 /WX)
+else()
+    target_compile_options(main PRIVATE -Wall -Wextra -pedantic)
+endif()
+
 # Set target properties
 target_include_directories(main
         PUBLIC
@@ -98,7 +104,15 @@ add_library(matrix
 if (HAVE_MKL)
     target_compile_definitions(matrix PUBLIC "USE_MKL")
 endif()
+
 target_compile_features(matrix PRIVATE cxx_alias_templates)
+
+if(MSVC)
+    target_compile_options(matrix PRIVATE /W4 /WX)
+else()
+    target_compile_options(matrix PRIVATE -Wall -Wextra -pedantic)
+endif()
+
 target_link_libraries(matrix PUBLIC ${MKL_LINKER_LIBS})
 
 # Add an alias so that library can be used inside the build tree, e.g. when testing

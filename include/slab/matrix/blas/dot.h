@@ -54,10 +54,14 @@ inline T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
   if (is_double<T>::value) {
     res = cblas_ddot(n, (const double *)(x.data() + x.descriptor().start), incx,
                      (const double *)(y.data() + y.descriptor().start), incy);
-  } else if (is_float<T>::value) {
+  }
+#ifndef USE_R_BLAS
+  else if (is_float<T>::value) {
     res = cblas_sdot(n, (const float *)(x.data() + x.descriptor().start), incx,
                      (const float *)(y.data() + y.descriptor().start), incy);
-  } else {
+  }
+#endif
+  else {
     err_quit("blas_dot(): unsupported element type.");
   }
 
