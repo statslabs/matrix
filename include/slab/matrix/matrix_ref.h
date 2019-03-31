@@ -27,7 +27,6 @@
 #include <string>
 #include <type_traits>
 
-#include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/packed_matrix.h"
@@ -159,7 +158,8 @@ class MatrixRef : public MatrixBase<T, N> {
   // Member functions for matrix arithmetic operations
   // --------------------------------------------------
  public:
-  //! @cond Doxygen_Suppress
+  //! matrix arithmetic operations
+  ///@{
   template <typename F>
   MatrixRef &apply(F f);  // f(x) for every element x
 
@@ -192,32 +192,20 @@ class MatrixRef : public MatrixBase<T, N> {
 
   template <typename U = typename std::remove_const<T>::type>
   Matrix<U, N> operator-() const;
-  //! @endcond
+  ///@}
+
+  // -----------------------------------
+  // Member functions for a MatrixRef<T, 1>
+  // -----------------------------------
 
  public:
+  //! Assign a vector from a matrix
+  ///@{
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  MatrixRef &operator=(const MatrixRef<U, 2> &x) {
-    static_assert(Convertible<U, T>(),
-                  "MatrixRef =: incompatible element types");
-    assert(this->size() == x.size());
-    assert(x.n_cols() == 1);
-
-    std::copy(x.begin(), x.end(), begin());
-
-    return *this;
-  }
-
+    MatrixRef &operator=(const MatrixRef<U, 2> &x);
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 1)>>
-  MatrixRef &operator=(const Matrix<U, 2> &x) {
-    static_assert(Convertible<U, T>(),
-                  "MatrixRef =: incompatible element types");
-    assert(this->size() == x.size());
-    assert(x.n_cols() == 1);
-
-    std::copy(x.begin(), x.end(), begin());
-
-    return *this;
-  }
+    MatrixRef &operator=(const Matrix<U, 2> &x);
+  ///@}
 
   //! sub-vector access for Matrix<T, 1>
   ///@{
@@ -232,30 +220,24 @@ class MatrixRef : public MatrixBase<T, N> {
   }
   ///@}
 
+  //! Construct a std::vector from a slab::MatrixRef<T, 1>
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1)>>
+    std::vector<T> std_vec() const {
+    return std::vector<T>(begin(), end());
+  }
+
+  // -----------------------------------
+  // Member functions for a Matrix<T, 2>
+  // -----------------------------------
+
  public:
+  //! Assign a matrix from a vector
+  ///@{
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef &operator=(const MatrixRef<U, 1> &x) {
-    static_assert(Convertible<U, T>(),
-                  "MatrixRef =: incompatible element types");
-    assert(this->size() == x.size());
-    assert(this->n_cols() == 1);
-
-    std::copy(x.begin(), x.end(), begin());
-
-    return *this;
-  }
-
+    MatrixRef &operator=(const MatrixRef<U, 1> &x);
   template <typename U, std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-  MatrixRef &operator=(const Matrix<U, 1> &x) {
-    static_assert(Convertible<U, T>(),
-                  "MatrixRef =: incompatible element types");
-    assert(this->size() == x.size());
-    assert(this->n_cols() == 1);
-
-    std::copy(x.begin(), x.end(), begin());
-
-    return *this;
-  }
+    MatrixRef &operator=(const Matrix<U, 1> &x);
+  ///@}
 
   //! sub-matrix access for Matrix<T, 2>
   ///@{
@@ -308,11 +290,6 @@ class MatrixRef : public MatrixBase<T, N> {
       raw_print(row(i));
       printf("\n");
     }
-  }
-
-  template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
-  Matrix<T, 2> t() const {
-    return transpose(*this);
   }
 };
 
@@ -605,6 +582,58 @@ Matrix<U, N> MatrixRef<T, N>::operator-() const {
   Matrix<U, N> res(*this);
   return res.apply([&](U &a) { a = -a; });
 }
+
+ template <typename T, std::size_t N>
+ template <typename U, std::size_t NN, typename X>
+   MatrixRef<T, N> &MatrixRef<T, N>::operator=(const MatrixRef<U, 2> &x) {
+   static_assert(Convertible<U, T>(),
+                 "MatrixRef =: incompatible element types");
+   assert(this->size() == x.size());
+   assert(x.n_cols() == 1);
+
+   std::copy(x.begin(), x.end(), begin());
+
+   return *this;
+ }
+
+ template <typename T, std::size_t N>
+ template <typename U, std::size_t NN, typename X>
+   MatrixRef<T, N> &MatrixRef<T, N>::operator=(const Matrix<U, 2> &x) {
+   static_assert(Convertible<U, T>(),
+                 "MatrixRef =: incompatible element types");
+   assert(this->size() == x.size());
+   assert(x.n_cols() == 1);
+
+   std::copy(x.begin(), x.end(), begin());
+
+   return *this;
+ }
+
+ template <typename T, std::size_t N>
+ template <typename U, std::size_t NN, typename X>
+   MatrixRef<T, N> &MatrixRef<T, N>::operator=(const MatrixRef<U, 1> &x) {
+   static_assert(Convertible<U, T>(),
+                 "MatrixRef =: incompatible element types");
+   assert(this->size() == x.size());
+   assert(this->n_cols() == 1);
+
+   std::copy(x.begin(), x.end(), begin());
+
+   return *this;
+ }
+
+ template <typename T, std::size_t N>
+   template <typename U, std::size_t NN, typename X>
+   MatrixRef<T, N> &MatrixRef<T, N>::operator=(const Matrix<U, 1> &x) {
+   static_assert(Convertible<U, T>(),
+                 "MatrixRef =: incompatible element types");
+   assert(this->size() == x.size());
+   assert(this->n_cols() == 1);
+
+   std::copy(x.begin(), x.end(), begin());
+
+   return *this;
+ }
 
 template <typename T>
 class MatrixRef<T, 0> : public MatrixBase<T, 0> {
