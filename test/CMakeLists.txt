@@ -20,5 +20,5 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
         EXCLUDE_FROM_ALL)
 
 # Now simply link against gtest or gtest_main as needed.
-add_executable(matrix_test src/main.cc)
+add_executable(matrix_test main.cc)
 target_link_libraries(matrix_test gtest_main Statslabs::matrix)

@@ -8,7 +8,7 @@
 
 namespace slab {
 
-TEST(MatrixConstructionTest, ConstructFromExtent) {
+TEST(MatrixTest, ConstructFromExtent) {
   Matrix<double, 0> m0;
   auto ms0 = m0.descriptor();  // MatrixSlice<0>
 
@@ -52,7 +52,7 @@ TEST(MatrixConstructionTest, ConstructFromExtent) {
   }
 }
 
-TEST(MatrixConstructionTest, ConstructFromMatrixInitializer) {
+TEST(MatrixTest, ConstructFromMatrixInitializer) {
   Matrix<double, 0> m0{1};
 
   EXPECT_EQ(1, m0());
@@ -81,7 +81,7 @@ TEST(MatrixConstructionTest, ConstructFromMatrixInitializer) {
   EXPECT_EQ(8, m3(1, 1, 1));
 }
 
-TEST(MatrixConstructionTest, ConstructFromMatrixRef) {
+TEST(MatrixTest, ConstructFromMatrixRef) {
   Matrix<double, 1> m1{1, 2, 3};
   auto mr1 = m1(slice(1));  // MatrixRef<double, 1>
   Matrix<double, 1> m1sub(mr1);
@@ -114,7 +114,7 @@ TEST(MatrixConstructionTest, ConstructFromMatrixRef) {
   EXPECT_EQ(9, m3sub(1, 1, 1));
 }
 
-TEST(MatrixAssignmentTest, AssignFromMatrixInitializer) {
+TEST(MatrixTest, AssignFromMatrixInitializer) {
   Matrix<double, 0> m0 = {1};
 
   EXPECT_EQ(1, m0());
@@ -143,7 +143,7 @@ TEST(MatrixAssignmentTest, AssignFromMatrixInitializer) {
   EXPECT_EQ(8, m3(1, 1, 1));
 }
 
-TEST(MatrixAssignmentTest, AssignFromMatrixRef) {
+TEST(MatrixTest, AssignFromMatrixRef) {
   Matrix<double, 1> m1{1, 2, 3};
   auto mr1 = m1(slice(1));  // MatrixRef<double, 1>
   Matrix<double, 1> m1sub = mr1;

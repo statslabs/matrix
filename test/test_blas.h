@@ -5,12 +5,12 @@
 
 namespace slab {
 
-TEST(BLASL1Test, ASUM) {
+TEST(BLASTest, LEVEL1_ASUM) {
   vec v = {1, 2, 3};
   EXPECT_EQ(6, blas_asum(v));
 }
 
-TEST(BLASL1Test, AXPY) {
+TEST(BLASTest, LEVEL1_AXPY) {
   double a = 9.0;
   vec x = {1, 2, 3};
   vec y = {1, 2, 3};
@@ -22,7 +22,7 @@ TEST(BLASL1Test, AXPY) {
   EXPECT_EQ(30, y(2));
 }
 
-TEST(BLASL1Test, COPY) {
+TEST(BLASTest, LEVEL1_COPY) {
   vec x = {1, 2, 3}, y;
 
   blas_copy(x, y);
@@ -32,18 +32,18 @@ TEST(BLASL1Test, COPY) {
   EXPECT_EQ(3, y(2));
 }
 
-TEST(BLASL1Test, DOT) {
+TEST(BLASTest, LEVEL1_DOT) {
   vec v = {1, 2, 3};
   EXPECT_EQ(14, blas_dot(v, v));
 }
 
-TEST(BLASL1Test, SDOT) {
+TEST(BLASTest, LEVEL1_SDOT) {
   fvec v = {1, 2, 3};
   EXPECT_EQ(15, blas_sdsdot(1.0f, v, v));
   EXPECT_EQ(14, blas_dsdot(v, v));
 }
 
-TEST(BLASL1Test, SWAP) {
+TEST(BLASTest, LEVEL1_SWAP) {
   Matrix<double, 1> m1 = {4, 5, 6};
   Matrix<double, 1> m1s = {1, 2, 3};
 
@@ -68,7 +68,7 @@ TEST(BLASL1Test, SWAP) {
   EXPECT_EQ(6, m2s(2));
 }
 
-TEST(BLASL1Test, SCAL) {
+TEST(BLASTest, LEVEL1_SCAL) {
   double a1 = 0.1;
   Matrix<double, 1> m1 = {10, 20, 30};
 
@@ -87,7 +87,7 @@ TEST(BLASL1Test, SCAL) {
   EXPECT_EQ(3, m2(2));
 }
 
-TEST(BLASL1Test, IAMAX) {
+TEST(BLASTest, LEVEL1_IAMAX) {
   Matrix<double, 1> m1 = {1, 3, 2};
   Matrix<float, 1> m2 = {1, 3, 2};
 
@@ -98,7 +98,7 @@ TEST(BLASL1Test, IAMAX) {
   EXPECT_EQ(1, idx2);
 }
 
-TEST(BLASlevel2Test, GEMV) {
+TEST(BLASTest, LEVEL2_GEMV) {
   Matrix<double, 2> a1 = {{8.0, 3.0, 1.0}, {4.0, 5.0, 3.0}, {7.0, 1.0, 2.0}};
 
   Matrix<double, 1> x1 = {-1.0, 2.0, 1.0};
@@ -120,7 +120,7 @@ TEST(BLASlevel2Test, GEMV) {
   EXPECT_EQ(10, y2(2));
 }
 
-TEST(BLASlevel2Test, SPR) {
+TEST(BLASTest, LEVEL2_SPR) {
   Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
   SymmetricMatrix<double, upper> ap1(3);
 
@@ -151,7 +151,7 @@ TEST(BLASlevel2Test, SPR) {
   EXPECT_EQ(40, ap2(2, 2));
 }
 
-TEST(BLASlevel2Test, SPR2) {
+TEST(BLASTest, LEVEL2_SPR2) {
   Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
   Matrix<double, 1> y1 = {1.0, 2.0, 3.0};
   SymmetricMatrix<double, upper> ap1(3);
@@ -184,7 +184,7 @@ TEST(BLASlevel2Test, SPR2) {
   EXPECT_EQ(40, ap2(2, 2));
 }
 
-TEST(BLASlevel3Test, GEMM) {
+TEST(BLASTest, LEVEL3_GEMM) {
   Matrix<double, 2> a1 = {{1.0, -3.0}, {2.0, 4.0}, {1.0, -1.0}};
   Matrix<float, 2> a2 = {{1.0, -3.0}, {2.0, 4.0}, {1.0, -1.0}};
 
