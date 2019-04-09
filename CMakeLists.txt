@@ -17,8 +17,8 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(PROJECT_NAME "Statslabs.Matrix")
-set(PROJECT_FULL_NAME "Statslabs.Matrix C++ Linear Algebra Library")
+set(PROJECT_NAME "Statslabs::Matrix")
+set(PROJECT_FULL_NAME "Statslabs::Matrix C++ Linear Algebra Library")
 
 set(MATRIX_VERSION_MAJOR 0)
 set(MATRIX_VERSION_MINOR 4)
