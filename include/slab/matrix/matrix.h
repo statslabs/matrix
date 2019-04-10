@@ -29,21 +29,13 @@
 
 #include "slab/matrix/config.h"
 #include "slab/matrix/matrix_base.h"
+#include "slab/matrix/matrix_fwd.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/support.h"
 
 namespace slab {
-
-template <typename T>
-Matrix<T, 2> transpose(const Matrix<T, 1> &a);
-
-template <typename T>
-Matrix<T, 2> transpose(const Matrix<T, 2> &a);
-
-template <typename T>
-Matrix<T, 2> inverse(const Matrix<T, 2> &a);
 
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
