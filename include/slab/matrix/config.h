@@ -20,9 +20,9 @@
 #ifndef STATSLABS_MATRIX_CONFIG_H_
 #define STATSLABS_MATRIX_CONFIG_H_
 
-#if defined (USE_MKL)
+#if defined(USE_MKL)
 #include "mkl.h"
-#elif defined (USE_SUNPERF)
+#elif defined(USE_SUNPERF)
 #include "sunperf.h"
 #else
 extern "C" {

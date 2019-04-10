@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "slab/matrix/error.h"
+#include "slab/matrix/traits.h"
 
 namespace slab {
 
@@ -307,8 +308,14 @@ class TriangularMatrix : public PackedMatrix<T, TRI> {
       : PackedMatrix<T, TRI>(n, v) {}
 
  private:
-  T element_in_other_half(const T &val) const override { return 0; }
-  void update_element_in_base_half(T &elem, const T &val) override {}
+  T element_in_other_half(const T &val) const override {
+    ignore(val);
+    return 0;
+  }
+  void update_element_in_base_half(T &elem, const T &val) override {
+    ignore(elem);
+    ignore(val);
+  }
 };
 
 template <typename T, typename TRI>
