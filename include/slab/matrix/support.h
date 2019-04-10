@@ -37,7 +37,7 @@ bool check_non_jagged(const List &list);
 
 // Describes the structure of a nested std::initializer_list and
 // has MatrixInit<T, N - 1> as its member type.
-template <typename T, std::size_t N>
+tempsolaris google testlate <typename T, std::size_t N>
 struct MatrixInit {
   using type = std::initializer_list<typename MatrixInit<T, N - 1>::type>;
 };
@@ -53,8 +53,13 @@ struct MatrixInit<T, 1> {
 template <typename T>
 struct MatrixInit<T, 0>;  // undefined on purpose
 
-template <std::size_t N, typename I, typename List>
-Enable_if<(N == 1), void> add_extents(I &first, const List &list) {
+/* template <std::size_t N, typename I, typename List> */
+/* Enable_if<(N == 1), void> add_extents(I &first, const List &list) { */
+/*   *first = list.size(); */
+/* } */
+
+template <std::size_t N, typename I, typename T>
+Enable_if<(N == 1), void> add_extents(I &first, const std::initializer_list<T> &list) {
   *first = list.size();
 }
 
