@@ -30,12 +30,18 @@ namespace slab {
 
 /// @brief Matrix-vector product using a general matrix.
 ///
-/// The ?gemv routines perform a matrix-vector operation defined as:
-/// \f[y := alpha*A*x + beta*y\f],
+/// The gemv routines perform a matrix-vector operation defined as:
+/// \f[
+/// y := alpha*A*x + beta*y
+/// \f],
 /// or
-/// \f[y := alpha*A'*x + beta*y\f],
+/// \f[
+/// y := alpha*A'*x + beta*y
+/// \f],
 /// or
-/// \f[y := alpha*conjg(A')*x + beta*y],
+/// \f[
+/// y := alpha*conjg(A')*x + beta*y
+/// \f],
 /// where \f$alpha\f$ and \f$beta\f$ are scalars, \f$x\f$ and \f$y\f$ are
 /// vectors, \f$A\f$ is an m-by-n matrix.
 ///
