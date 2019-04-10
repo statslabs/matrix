@@ -24,6 +24,8 @@ namespace slab {
 
 template <typename T>
 inline Matrix<T, 2> solve(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
+  ignore(a);
+  ignore(b);
   err_quit("solve(): unsupported element type");
 }
 
