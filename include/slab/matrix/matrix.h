@@ -361,6 +361,7 @@ class Matrix : public MatrixBase<T, N> {
   }
   ///@}
 
+  //! print mat/vec object to std::cout
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   void print(const std::string &str = "") const {
     printf("\n %s\n", str.c_str());
@@ -375,24 +376,31 @@ class Matrix : public MatrixBase<T, N> {
   // ---------------------------------------------
 
  public:
+  //! clear content
   void clear();
 
+  //! return matrix transpose
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const {
     return transpose(*this);
   }
 
+  //! return inverse of square matrix
   template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   Matrix<T, 2> i() const {
     return inverse(*this);
   }
 
+  //! check whether object is empty
+  ///@{
   bool empty() const { return begin() == end(); }
   bool is_empty() const { return empty(); }
+  ///@}
 
   //  void save(const std::string &filename) {
   //    std::ostream os(filename);
   //  }
+  //! load matrix from a file
   void load(const std::string &filename);
 
 #ifdef USE_RCPP_AS_WRAP
@@ -409,6 +417,8 @@ class Matrix : public MatrixBase<T, N> {
 
 #endif
 };
+
+//! @cond Doxygen_Suppress
 
 template <typename T, std::size_t N>
 template <typename M, typename X>
@@ -613,7 +623,6 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
   return {d, data()};
 }
 
-//! @cond Doxygen_Suppress
 template <typename T, std::size_t N>
 template <typename F>
 Matrix<T, N> &Matrix<T, N>::apply(F f) {
@@ -718,7 +727,6 @@ Matrix<U, N> Matrix<T, N>::operator-() const {
   Matrix<U, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
 }
-//! @endcond
 
 template <typename T, std::size_t N>
 template <typename U, std::size_t NN, typename X>
@@ -967,6 +975,8 @@ void Matrix<T, N>::load(const std::string &filename) {
     std::cout << "Fail to open the file" << std::endl;
   }
 }
+
+//! @endcond
 
 #ifdef USE_RCPP_AS_WRAP
 
