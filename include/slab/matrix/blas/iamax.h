@@ -55,7 +55,7 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_iamax(): unsupported element type.");
+    SLAB_ERROR("blas_iamax(): unsupported element type.");
   }
 
   return res;

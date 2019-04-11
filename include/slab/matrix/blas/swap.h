@@ -60,7 +60,7 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 #endif
   else {
-    err_quit("blas_swap(): unsupported element type.");
+    SLAB_ERROR("blas_swap(): unsupported element type.");
   }
 }
 

@@ -55,7 +55,7 @@ inline void blas_scal(const T a, Matrix<T, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_scal(): unsupported element type.");
+    SLAB_ERROR("blas_scal(): unsupported element type.");
   }
 }
 
@@ -79,7 +79,7 @@ inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_scal(): unsupported element type.");
+    SLAB_ERROR("blas_scal(): unsupported element type.");
   }
 }
 

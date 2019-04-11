@@ -101,7 +101,7 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
   }
 #endif
   else {
-    err_quit("blas_gemm(): unsupported element type.");
+    SLAB_ERROR("blas_gemm(): unsupported element type.");
   }
 }
 

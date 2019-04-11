@@ -67,7 +67,7 @@ inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
   }
 #endif
   else {
-    err_quit("blas_dotc_sub(): unsupported element type.");
+    SLAB_ERROR("blas_dotc_sub(): unsupported element type.");
   }
 }
 

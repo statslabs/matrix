@@ -54,7 +54,7 @@ inline void blas_spr(const T &alpha, const MatrixBase<T, 1> &x,
   }
 #endif
   else {
-    err_quit("blas_spr(): unsupported element type.");
+    SLAB_ERROR("blas_spr(): unsupported element type.");
   }
 }
 

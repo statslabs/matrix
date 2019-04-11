@@ -47,7 +47,7 @@ inline T blas_asum(const Matrix<T, 1> &x) {
   const int n = x.size();
   const int incx = x.descriptor().strides[0];
 
-  T res;
+  T res = T{0};
   if (is_double<T>::value) {
     res = cblas_dasum(n, (const double *)x.data(), incx);
   } else if (is_complex_double<T>::value) {
@@ -61,7 +61,7 @@ inline T blas_asum(const Matrix<T, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_asum(): unsupported element type.");
+    SLAB_ERROR("blas_asum(): unsupported element type.");
   }
 
   return res;

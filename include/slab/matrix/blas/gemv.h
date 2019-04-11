@@ -96,7 +96,7 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
   }
 #endif
   else {
-    err_quit("blas_gemv(): unsupported element type.");
+    SLAB_ERROR("blas_gemv(): unsupported element type.");
   }
 }
 

@@ -67,7 +67,7 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_nrm2(): unsupported element type.");
+    SLAB_ERROR("blas_nrm2(): unsupported element type.");
   }
 
   return res;

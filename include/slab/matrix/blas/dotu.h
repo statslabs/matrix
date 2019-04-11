@@ -66,7 +66,7 @@ inline void blas_dotu_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
   }
 #endif
   else {
-    err_quit("blas_dotu_sub(): unsupported element type.");
+    SLAB_ERROR("blas_dotu_sub(): unsupported element type.");
   }
 }
 

@@ -72,7 +72,7 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
   }
 #endif
   else {
-    err_quit("blas_axpy(): unsupported element type.");
+    SLAB_ERROR("blas_axpy(): unsupported element type.");
   }
 }
 

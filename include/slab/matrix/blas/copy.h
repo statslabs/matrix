@@ -69,7 +69,7 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 #endif
   else {
-    err_quit("blas_copy(): unsupported element type.");
+    SLAB_ERROR("blas_copy(): unsupported element type.");
   }
 }
 

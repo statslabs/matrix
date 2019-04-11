@@ -62,7 +62,7 @@ inline T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
   }
 #endif
   else {
-    err_quit("blas_dot(): unsupported element type.");
+    SLAB_ERROR("blas_dot(): unsupported element type.");
   }
 
   return res;
