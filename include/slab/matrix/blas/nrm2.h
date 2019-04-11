@@ -55,7 +55,7 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
         n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
         incx);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     res =
         cblas_snrm2(n, (const float *)(x.data() + x.descriptor().start), incx);
@@ -67,7 +67,7 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
   }
 #endif
   else {
-    SLAB_ERROR("blas_nrm2(): unsupported element type.");
+    _SLAB_ERROR("blas_nrm2(): unsupported element type.");
   }
 
   return res;

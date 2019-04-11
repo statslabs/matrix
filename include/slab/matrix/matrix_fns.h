@@ -24,7 +24,7 @@
 #include <complex>
 #include <type_traits>
 
-#ifdef USE_MKL
+#ifdef _SLAB_USE_MKL
 #include "mkl.h"
 #else
 extern "C" {

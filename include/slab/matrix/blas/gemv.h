@@ -75,7 +75,7 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
         reinterpret_cast<double *>(y.data() + y.descriptor().start),
         (const int)incy);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_sgemv(
         CblasRowMajor, trans, (const int)m, (const int)n, (const float)alpha,
@@ -96,7 +96,7 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
   }
 #endif
   else {
-    SLAB_ERROR("blas_gemv(): unsupported element type.");
+    _SLAB_ERROR("blas_gemv(): unsupported element type.");
   }
 }
 

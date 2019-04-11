@@ -29,5 +29,5 @@ for DIRECTORY in examples examples/lapack include/slab include/slab/matrix \
                  include/slab/matrix/lapack src test
 do
     echo "Formatting code under $DIRECTORY/"
-    find "$DIRECTORY" \( -name '*.h' -or -name '*.cc' \) -print0 | xargs -0 "$CLANG_FORMAT" -i
+    find "$DIRECTORY" \( -name '*.h' -or -name '*.cc' -or -name '__*'  \) -print0 | xargs -0 "$CLANG_FORMAT" -i
 done

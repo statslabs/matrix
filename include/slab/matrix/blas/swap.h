@@ -49,7 +49,7 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
         n, reinterpret_cast<double *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_sswap(n, (float *)(x.data() + x.descriptor().start), incx,
                 (float *)(y.data() + y.descriptor().start), incy);
@@ -60,7 +60,7 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 #endif
   else {
-    SLAB_ERROR("blas_swap(): unsupported element type.");
+    _SLAB_ERROR("blas_swap(): unsupported element type.");
   }
 }
 

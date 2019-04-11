@@ -57,7 +57,7 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
         reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
         reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_scopy(x.size(), (const float *)(x.data() + x.descriptor().start),
                 incx, (float *)(y.data() + y.descriptor().start), incy);
@@ -69,7 +69,7 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   }
 #endif
   else {
-    SLAB_ERROR("blas_copy(): unsupported element type.");
+    _SLAB_ERROR("blas_copy(): unsupported element type.");
   }
 }
 

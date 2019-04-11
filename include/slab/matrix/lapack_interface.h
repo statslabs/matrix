@@ -25,7 +25,7 @@
 
 #include <complex>
 
-#ifdef USE_MKL
+#ifdef _SLAB_USE_MKL
 #include "mkl.h"
 #else
 extern "C" {
@@ -33,7 +33,8 @@ extern "C" {
 }
 #endif
 
-#include "slab/matrix/error.h"
+#include "slab/__error"
+
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/traits.h"

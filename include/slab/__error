@@ -14,11 +14,11 @@
 // limitations under the License.
 //
 
-/// @file error.h
+/// @file __error
 /// @brief Error routines
 
-#ifndef STATSLABS_MATRIX_ERROR_H_
-#define STATSLABS_MATRIX_ERROR_H_
+#ifndef SLAB_MATRIX_ERROR_H_
+#define SLAB_MATRIX_ERROR_H_
 
 #include <cerrno>   // for definition of errno
 #include <cstdarg>  // ISO C variable arguments
@@ -143,4 +143,4 @@ inline static void err_doit(int errnoflag, int error, const char *fmt,
 
 }  // namespace slab
 
-#endif  // STATSLABS_MATRIX_ERROR_H_
+#endif  // SLAB_MATRIX_ERROR_H_

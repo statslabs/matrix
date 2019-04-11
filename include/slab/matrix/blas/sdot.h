@@ -22,7 +22,7 @@
 
 namespace slab {
 
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{

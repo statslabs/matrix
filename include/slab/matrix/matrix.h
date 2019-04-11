@@ -27,7 +27,8 @@
 #include <string>
 #include <vector>
 
-#include "slab/matrix/config.h"
+#include "slab/__config"
+
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_fwd.h"
 #include "slab/matrix/matrix_ref.h"
@@ -395,7 +396,7 @@ class Matrix : public MatrixBase<T, N> {
   //! load matrix from a file
   void load(const std::string &filename);
 
-#ifdef USE_RCPP_AS_WRAP
+#ifdef _SLAB_USE_RCPP_AS_WRAP
   // -----------------------------
   // Conversion between R and C++
   // -----------------------------
@@ -970,12 +971,13 @@ void Matrix<T, N>::load(const std::string &filename) {
 
 //! @endcond
 
-#ifdef USE_RCPP_AS_WRAP
+#ifdef _SLAB_USE_RCPP_AS_WRAP
 
 template <typename T, std::size_t N>
 Matrix<T, N>::Matrix(SEXP s) {
   SEXP dims = Rf_getAttrib(s, R_DimSymbol);
-  assert(Rf_length(dims) == order());
+  _SLAB_ASSERT(Rf_length(dims) == this->order(),
+               "Matrix(SEXP): unmatched dimensions.");
 
   int num_dims = Rf_length(dims);
   int num_elems = Rf_length(s);

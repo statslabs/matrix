@@ -44,7 +44,7 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
         reinterpret_cast<const double *>(x.data() + x.descriptor().start),
         incx);
   }
-#ifndef R_USE_BLAS
+#ifndef _SLAB_R_USE_BLAS
   else if (is_float<T>::value) {
     res = cblas_isamax(x.size(),
                        (const float *)(x.data() + x.descriptor().start), incx);
@@ -55,7 +55,7 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
   }
 #endif
   else {
-    SLAB_ERROR("blas_iamax(): unsupported element type.");
+    _SLAB_ERROR("blas_iamax(): unsupported element type.");
   }
 
   return res;
