@@ -299,20 +299,19 @@ class MatrixRef : public MatrixBase<T, N> {
 
  public:
   //! clear content
-  //void clear();
+  // void clear();
 
   //! return matrix transpose
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
-    Matrix<T, 2> t() const {
+  Matrix<T, 2> t() const {
     return transpose(*this);
   }
 
   //! return inverse of square matrix
   template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
-    Matrix<T, 2> i() const {
+  Matrix<T, 2> i() const {
     return inverse(*this);
   }
-
 };
 
 template <typename T, std::size_t N>
