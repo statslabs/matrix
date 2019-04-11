@@ -67,8 +67,12 @@ extern "C" {
 #  define SLAB_WARNING(...) Rf_warning(__VA_ARGS__)
 #else
 #  include "slab/matrix/error.h"
-#  define SLAB_ERROR(...) err_quit(__VA_ARGS__)
-#  define SLAB_WARNING(...) err_msg(__VA_ARGS__)
+#  define SLAB_ERROR(...) slab::err_quit(__VA_ARGS__)
+#  define SLAB_WARNING(...) slab::err_msg(__VA_ARGS__)
 #endif
+
+#  define SLAB_ASSERT(x, m) ((x) ? (void)0 :                            \
+                             SLAB_ERROR("%s:%d: SLAB_ASSERT '%s' failed. %s", __FILE__, __LINE__, #x, m))
+
 
 #endif  // STATSLABS_MATRIX_CONFIG_H_
