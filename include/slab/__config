@@ -35,7 +35,8 @@
 ////   1. _SLAB_USE_R_BLAS
 ////   2. _SLAB_USE_R_LAPACK
 ////   3. _SLAB_USE_R_ERROR
-////   4. _SLAB_USE_RCPP_AS_WRAP
+////   4. _SLAB_USE_R_RANDOM
+////   5. _SLAB_USE_RCPP_AS_WRAP
 //// and make Statslabs ready for use in R environment
 #endif
 
@@ -54,6 +55,11 @@
 //// Uncomment the above line if using Rf_error/Rf_warning in file R_Ext/Error.h
 #endif
 
+#if !defined(_SLAB_USE_R_RANDOM)
+// #define _SLAB_USE_R_RANDOM
+//// Uncomment the above line if using GetRNGstate/PutRNGstate in R_Ext/Random.h
+#endif
+
 #if !defined(_SLAB_USE_RCPP_AS_WRAP)
 // #define _SLAB_USE_RCPP_AS_WRAP
 //// Uncomment the above line if using Rcpp::as (for conversion of objects from
@@ -64,6 +70,7 @@
 #define _SLAB_USE_R_BLAS
 #define _SLAB_USE_R_LAPACK
 #define _SLAB_USE_R_ERROR
+#define _SLAB_USE_R_RANDOM
 #define _SLAB_USE_RCPP_AS_WRAP
 #endif
 
