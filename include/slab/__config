@@ -15,10 +15,10 @@
 //
 
 /// @file __config
-/// @brief Configuration Header
+/// @brief Configuration for Statslabs
 
-#ifndef STATSLABS_MATRIX_CONFIG_H_
-#define STATSLABS_MATRIX_CONFIG_H_
+#ifndef SLAB_CONFIG_
+#define SLAB_CONFIG_
 
 #ifdef USE_MKL
 #define _SLAB_USE_MKL
@@ -93,4 +93,4 @@
        : _SLAB_ERROR("%s:%d: _SLAB_ASSERT '%s' failed. %s", __FILE__, \
                      __LINE__, #x, m))
 
-#endif  // STATSLABS_MATRIX_CONFIG_H_
+#endif  // SLAB_CONFIG_
