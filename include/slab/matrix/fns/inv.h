@@ -52,7 +52,7 @@ inline bool inverse(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
     LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_float *)b.data(), lda,
                    ipiv.data());
   } else {
-    err_msg("inverse(): unspported element type.");
+    _SLAB_ERROR("inverse(): unspported element type.");
   }
 
   if (info) return false;
@@ -90,7 +90,7 @@ inline bool inverse(Matrix<T, 2> &b, const MatrixRef<T, 2> &a) {
     LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, (lapack_complex_float *)b.data(), lda,
                    ipiv.data());
   } else {
-    err_msg("inverse(): unspported element type.");
+    _SLAB_ERROR("inverse(): unspported element type.");
   }
 
   if (info) return false;

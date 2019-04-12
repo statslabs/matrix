@@ -28,7 +28,7 @@ inline Matrix<T, 2> chol(const Matrix<T, 2> &x) {
 
   Matrix<T, 2> x_copy(x);
   int info = lapack_potrf(x_copy);
-  if (info) err_quit("chol(): unsuccessful");
+  if (info) _SLAB_ERROR("chol(): unsuccessful");
 
   Matrix<T, 2> res = zeros<Matrix<T, 2>>(x.n_rows(), x.n_cols());
   for (std::size_t i = 0; i != x.n_rows(); ++i) {

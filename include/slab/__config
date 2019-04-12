@@ -84,8 +84,8 @@
 #define _SLAB_WARNING(...) Rf_warning(__VA_ARGS__)
 #else
 #include "slab/__error"
-#define _SLAB_ERROR(...) slab::err_quit(__VA_ARGS__)
-#define _SLAB_WARNING(...) slab::err_msg(__VA_ARGS__)
+#define _SLAB_ERROR(...) apue::err_quit(__VA_ARGS__)
+#define _SLAB_WARNING(...) apue::err_msg(__VA_ARGS__)
 #endif
 
 #define _SLAB_ASSERT(x, m)                                            \

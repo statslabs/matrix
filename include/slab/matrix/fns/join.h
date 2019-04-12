@@ -82,7 +82,7 @@ inline Matrix<T, 2> join_rows(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   else if (b.empty())
     return a;
   else if (a.n_rows() != b.n_rows())
-    err_quit("joint_rows(): inconsistent number of rows");
+    _SLAB_ERROR("joint_rows(): inconsistent number of rows");
 
   res = slab::zeros<Matrix<T, 2>>(a.n_rows(), a.n_cols() + b.n_cols());
   res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
@@ -137,7 +137,7 @@ inline Matrix<T, 2> join_cols(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   else if (b.empty())
     return a;
   else if (a.n_cols() != b.n_cols())
-    err_quit("joint_rows(): inconsistent number of columns");
+    _SLAB_ERROR("joint_rows(): inconsistent number of columns");
 
   res = slab::zeros<Matrix<T, 2>>(a.n_rows() + b.n_rows(), a.n_cols());
   res(slice{0, a.n_rows()}, slice{0, a.n_cols()}) = a;
