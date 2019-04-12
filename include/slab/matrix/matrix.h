@@ -981,14 +981,18 @@ Matrix<T, N>::Matrix(SEXP s) {
 
   int num_dims = Rf_length(dims);
   int num_elems = Rf_length(s);
-  SEXP s2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
-                                   (R_xlen_t)num_elems));
+  SEXP s2 = PROTECT(Rf_allocVector(TYPEOF(s), (R_xlen_t)num_elems));
   Rf_setAttrib(s2, R_DimSymbol, dims);
   if (num_dims <= 2) Rf_copyMatrix(s2, s, TRUE);
 
   elems_.reserve(num_elems);
   for (int i = 0; i != num_elems; ++i) {
-    elems_.push_back(REAL(s2)[i]);
+    if (Rf_isReal(s))
+      elems_.push_back(REAL(s2)[i]);
+    else if (Rf_isInteger(s))
+      elems_.push_back(INTEGER(s2)[i]);
+    else
+      _SLAB_ERROR("Matrix(SEXP): unsupported SEXP type");
   }
 
   std::array<std::size_t, N> exts;
