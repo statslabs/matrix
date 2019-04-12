@@ -29,6 +29,16 @@
 //// Uncomment the above line if using Sun Performance Library
 #endif
 
+#if !defined(_SLAB_USE_R)
+// #define _SLAB_USE_R
+//// Uncomment the above line to define the following macros:
+////   1. _SLAB_USE_R_BLAS
+////   2. _SLAB_USE_R_LAPACK
+////   3. _SLAB_USE_R_ERROR
+////   4. _SLAB_USE_RCPP_AS_WRAP
+//// and make Statslabs ready for use in R environment
+#endif
+
 #if !defined(_SLAB_USE_R_BLAS)
 // #define _SLAB_USE_R_BLAS
 //// Uncomment the above line if using R's internal BLAS
@@ -48,6 +58,13 @@
 // #define _SLAB_USE_RCPP_AS_WRAP
 //// Uncomment the above line if using Rcpp::as (for conversion of objects from
 //// R to C++) and Rcpp::wrap (for conversion from C++ to R)
+#endif
+
+#if defined(_SLAB_USE_R)
+#define _SLAB_USE_R_BLAS
+#define _SLAB_USE_R_LAPACK
+#define _SLAB_USE_R_ERROR
+#define _SLAB_USE_RCPP_AS_WRAP
 #endif
 
 #if defined(_SLAB_USE_MKL)
