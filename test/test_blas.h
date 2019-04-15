@@ -14,15 +14,30 @@ TEST(BLASTest, LEVEL1_ASUM) {
 }
 
 TEST(BLASTest, LEVEL1_AXPY) {
-  double a = 9.0;
-  vec x = {1, 2, 3};
-  vec y = {1, 2, 3};
+  int a = 9;
+  vec x = {6, 6, 6, 1, 2, 3};
+  vec y = {6, 6, 6, 1, 2, 3};
+  vec z = {6, 6, 6, 1, 2, 3};
 
   blas_axpy(a, x, y);
 
-  EXPECT_EQ(10, y(0));
-  EXPECT_EQ(20, y(1));
-  EXPECT_EQ(30, y(2));
+  EXPECT_EQ(60, y(0));
+  EXPECT_EQ(60, y(1));
+  EXPECT_EQ(60, y(2));
+  EXPECT_EQ(10, y(3));
+  EXPECT_EQ(20, y(4));
+  EXPECT_EQ(30, y(5));
+
+  // no known conversion from 'MatrixRef<double, 1>' to 'MatrixBase<double, 1>
+  // &' for 3rd argument ?!
+  /* blas_axpy(a, x.subvec(3, 5), z.subvec(3, 5)); */
+
+  /* EXPECT_EQ(0, z(0)); */
+  /* EXPECT_EQ(0, z(1)); */
+  /* EXPECT_EQ(0, z(2)); */
+  /* EXPECT_EQ(10, z(3)); */
+  /* EXPECT_EQ(20, z(4)); */
+  /* EXPECT_EQ(30, z(5)); */
 }
 
 TEST(BLASTest, LEVEL1_COPY) {

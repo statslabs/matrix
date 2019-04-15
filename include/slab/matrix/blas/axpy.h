@@ -42,11 +42,15 @@ _SLAB_BEGIN_NAMESPACE
 /// @param y Vector with type vec/fvec/cx_vec/cx_fvec.
 /// @return Void.
 ///
-template <typename T>
-inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
+template <typename T, typename T1>
+inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x,
                       MatrixBase<T, 1> &y) {
+  static_assert(Convertible<T1, T>(),
+                "blas_axpy(): incompatible element type for alpha");
   _SLAB_ASSERT(x.size() == y.size(),
                "blas_axpy(): incompatible vector dimensions");
+  _SLAB_ASSERT(std::addressof(x) != std::addressof(y),
+               "blas_axpy(): x and y should not be the same object");
 
   const SLAB_INT n = x.size();
   const SLAB_INT incx = x.descriptor().strides[0];

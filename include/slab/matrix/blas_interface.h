@@ -24,6 +24,7 @@
 #include <cstddef>
 
 #include <complex>
+#include <memory>  // std::addressof
 
 #include "slab/__config"
 #include "slab/__error"
