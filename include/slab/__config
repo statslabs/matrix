@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,11 @@
 
 #ifdef USE_MKL
 #define _SLAB_USE_MKL
+#endif
+
+#if !defined(_SLAB_USE_MKL)
+// #define _SLAB_USE_MKL
+//// Uncomment the above line if using Intel MKL
 #endif
 
 #if !defined(_SLAB_USE_OPENBLAS)
@@ -85,13 +90,27 @@
 #endif
 
 #if defined(_SLAB_USE_MKL)
+
 #define SLAB_INT MKL_INT
 #define SLAB_UINT MKL_UINT
-#define SLAB_Complex8 MKL_Complex8
-#define SLAB_Complex16 MKL_Complex16
+#define SLAB_COMPLEX8 MKL_Complex8
+#define SLAB_COMPLEX16 MKL_Complex16
+
+#define SLAB_COMPLEX8_PTR(x) (void *)x
+#define SLAB_COMPLEX8_CPTR(x) (const void *)x
+#define SLAB_COMPLEX16_PTR(x) (void *)x
+#define SLAB_COMPLEX16_CPTR(x) (const void *)x
+
 #else
+
 #define SLAB_INT int
 #define SLAB_UINT unsigned int
+
+#define SLAB_COMPLEX8_PTR(x) reinterpret_cast<float *>(x)
+#define SLAB_COMPLEX8_CPTR(x) reinterpret_cast<const float *>(x)
+#define SLAB_COMPLEX16_PTR(x) reinterpret_cast<double *>(x)
+#define SLAB_COMPLEX16_CPTR(x) reinterpret_cast<const double *>(x)
+
 #endif
 
 #if defined(_SLAB_USE_MKL)

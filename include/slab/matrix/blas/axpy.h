@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file axpy.h
 /// @brief C++ template wrapper for C functions cblas_?axpy
 
-#ifndef SLAB_MATRIX_BLAS_AXPY_H_
-#define SLAB_MATRIX_BLAS_AXPY_H_
+#ifndef _SLAB_MATRIX_BLAS_AXPY_H
+#define _SLAB_MATRIX_BLAS_AXPY_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -45,30 +45,27 @@ namespace slab {
 template <typename T>
 inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
                       MatrixBase<T, 1> &y) {
-  assert(x.size() == y.size());
+  _SLAB_ASSERT(x.size() == y.size(),
+               "blas_axpy(): incompatible vector dimensions");
 
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
+  const SLAB_INT n = x.size();
+  const SLAB_INT incx = x.descriptor().strides[0];
+  const SLAB_INT incy = y.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
+  T *y_ptr = y.data() + y.descriptor().start;
 
   if (is_double<T>::value) {
-    cblas_daxpy(n, a, (const double *)(x.data() + x.descriptor().start), incx,
-                (double *)(y.data() + y.descriptor().start), incy);
+    cblas_daxpy(n, a, (const double *)x_ptr, incx, (double *)y_ptr, incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zaxpy(
-        n, reinterpret_cast<const double *>(&a),
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+    cblas_zaxpy(n, SLAB_COMPLEX16_CPTR(&a), SLAB_COMPLEX16_CPTR(x_ptr), incx,
+                SLAB_COMPLEX16_PTR(y_ptr), incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_saxpy(n, a, (const float *)(x.data() + x.descriptor().start), incx,
-                (float *)(y.data() + y.descriptor().start), incy);
+    cblas_saxpy(n, a, (const float *)x_ptr, incx, (float *)y_ptr, incy);
   } else if (is_complex_float<T>::value) {
-    cblas_caxpy(
-        n, reinterpret_cast<const float *>(&a),
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
+    cblas_caxpy(n, SLAB_COMPLEX8_CPTR(&a), SLAB_COMPLEX8_CPTR(x_ptr), incx,
+                SLAB_COMPLEX8_PTR(y_ptr), incy);
   }
 #endif
   else {
@@ -79,6 +76,6 @@ inline void blas_axpy(const T &a, const MatrixBase<T, 1> &x,
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

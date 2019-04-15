@@ -6,8 +6,11 @@
 namespace slab {
 
 TEST(BLASTest, LEVEL1_ASUM) {
-  vec v = {1, 2, 3};
-  EXPECT_EQ(6, blas_asum(v));
+  vec v = {6, 6, 6, 1, 2, 3};
+  mat m = {{6, 1}, {6, 2}, {6, 3}};
+  EXPECT_EQ(24, blas_asum(v));
+  EXPECT_EQ(6, blas_asum(v.subvec(3, 5)));
+  EXPECT_EQ(6, blas_asum(m.col(1)));
 }
 
 TEST(BLASTest, LEVEL1_AXPY) {

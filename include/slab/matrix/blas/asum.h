@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file asum.h
 /// @brief C++ template wrapper for C functions cblas_?asum
 
-#ifndef SLAB_MATRIX_BLAS_ASUM_H_
-#define SLAB_MATRIX_BLAS_ASUM_H_
+#ifndef _SLAB_MATRIX_BLAS_ASUM_H
+#define _SLAB_MATRIX_BLAS_ASUM_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -43,21 +43,22 @@ namespace slab {
 ///         of all elements of the vector.
 ///
 template <typename T>
-inline T blas_asum(const Matrix<T, 1> &x) {
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
+inline T blas_asum(const MatrixBase<T, 1> &x) {
+  const SLAB_INT n = x.size();
+  const SLAB_INT incx = x.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
 
-  T res = T{0};
+  T res = {};  // C++11: zero initialization
   if (is_double<T>::value) {
-    res = cblas_dasum(n, (const double *)x.data(), incx);
+    res = cblas_dasum(n, (const double *)x_ptr, incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dzasum(n, reinterpret_cast<const double *>(x.data()), incx);
+    res = cblas_dzasum(n, SLAB_COMPLEX16_CPTR(x_ptr), incx);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    res = cblas_sasum(n, (const float *)x.data(), incx);
+    res = cblas_sasum(n, (const float *)x_ptr, incx);
   } else if (is_complex_float<T>::value) {
-    res = cblas_scasum(n, reinterpret_cast<const float *>(x.data()), incx);
+    res = cblas_scasum(n, SLAB_COMPLEX8_CPTR(x_ptr), incx);
   }
 #endif
   else {
@@ -70,6 +71,6 @@ inline T blas_asum(const Matrix<T, 1> &x) {
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif
