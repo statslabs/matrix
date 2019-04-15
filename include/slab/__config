@@ -24,6 +24,16 @@
 #define _SLAB_USE_MKL
 #endif
 
+#if !defined(_SLAB_USE_OPENBLAS)
+// #define _SLAB_USE_OPENBLAS
+//// Uncomment the above line if using OpenBLAS
+#endif
+
+#if !defined(_SLAB_USE_APPLE)
+// #define _SLAB_USE_APPLE
+//// Uncomment the above line if using Apple Accelerate Framework
+#endif
+
 #if !defined(_SLAB_USE_SUNPERF)
 // #define _SLAB_USE_SUNPERF
 //// Uncomment the above line if using Sun Performance Library
@@ -72,6 +82,16 @@
 #define _SLAB_USE_R_ERROR
 #define _SLAB_USE_R_RANDOM
 #define _SLAB_USE_RCPP_AS_WRAP
+#endif
+
+#if defined(_SLAB_USE_MKL)
+#define SLAB_INT MKL_INT
+#define SLAB_UINT MKL_UINT
+#define SLAB_Complex8 MKL_Complex8
+#define SLAB_Complex16 MKL_Complex16
+#else
+#define SLAB_INT int
+#define SLAB_UINT unsigned int
 #endif
 
 #if defined(_SLAB_USE_MKL)
