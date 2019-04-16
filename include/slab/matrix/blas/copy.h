@@ -41,7 +41,7 @@ _SLAB_BEGIN_NAMESPACE
 /// @return Void.
 ///
 template <typename T>
-inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
+inline void blas_copy(const MatrixBase<T, 1> &x, Matrix<T, 1> &y) {
   y.clear();
   y = Matrix<T, 1>(x.size());
 

@@ -41,9 +41,18 @@ TEST(BLASTest, LEVEL1_AXPY) {
 }
 
 TEST(BLASTest, LEVEL1_COPY) {
-  vec x = {1, 2, 3}, y;
+  vec x = {6, 6, 6, 1, 2, 3}, y;
 
   blas_copy(x, y);
+
+  EXPECT_EQ(6, y(0));
+  EXPECT_EQ(6, y(1));
+  EXPECT_EQ(6, y(2));
+  EXPECT_EQ(1, y(3));
+  EXPECT_EQ(2, y(4));
+  EXPECT_EQ(3, y(5));
+
+  blas_copy(x.subvec(3, 5), y);
 
   EXPECT_EQ(1, y(0));
   EXPECT_EQ(2, y(1));
