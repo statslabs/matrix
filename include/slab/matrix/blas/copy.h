@@ -45,24 +45,28 @@ inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
   y.clear();
   y = Matrix<T, 1>(x.size());
 
-  const SLAB_INT n = x.size();
-  const SLAB_INT incx = x.descriptor().strides[0];
-  const SLAB_INT incy = y.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
   const T *x_ptr = x.data() + x.descriptor().start;
   T *y_ptr = y.data() + y.descriptor().start;
 
   if (is_double<T>::value) {
-    cblas_dcopy(n, (const double *)x_ptr, incx, (double *)y_ptr, incy);
+    cblas_dcopy((const SLAB_INT)n, (const double *)x_ptr, (const SLAB_INT)incx,
+                (double *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zcopy(n, SLAB_COMPLEX16_CPTR(x_ptr), incx, SLAB_COMPLEX16_PTR(y_ptr),
-                incy);
+    cblas_zcopy((const SLAB_INT)n, SLAB_COMPLEX16_CPTR(x_ptr),
+                (const SLAB_INT)incx, SLAB_COMPLEX16_PTR(y_ptr),
+                (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_scopy(n, (const float *)x_ptr, incx, (float *)y_ptr, incy);
+    cblas_scopy((const SLAB_INT)n, (const float *)x_ptr, (const SLAB_INT)incx,
+                (float *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_ccopy(n, SLAB_COMPLEX8_CPTR(x_ptr), incx, SLAB_COMPLEX8_PTR(y_ptr),
-                incy);
+    cblas_ccopy((const SLAB_INT)n, SLAB_COMPLEX8_CPTR(x_ptr),
+                (const SLAB_INT)incx, SLAB_COMPLEX8_PTR(y_ptr),
+                (const SLAB_INT)incy);
   }
 #endif
   else {
