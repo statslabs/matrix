@@ -39,7 +39,7 @@ _SLAB_BEGIN_NAMESPACE
 ///
 /// @param a Specifies the scalar a.
 /// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
-/// @param y Vector with type vec/fvec/cx_vec/cx_fvec.
+/// @param y Vector with typeaxp vec/fvec/cx_vec/cx_fvec.
 /// @return Void.
 ///
 template <typename T, typename T1>
@@ -52,24 +52,28 @@ inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x,
   _SLAB_ASSERT(std::addressof(x) != std::addressof(y),
                "blas_axpy(): x and y should not be the same object");
 
-  const SLAB_INT n = x.size();
-  const SLAB_INT incx = x.descriptor().strides[0];
-  const SLAB_INT incy = y.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
   const T *x_ptr = x.data() + x.descriptor().start;
   T *y_ptr = y.data() + y.descriptor().start;
 
   if (is_double<T>::value) {
-    cblas_daxpy(n, a, (const double *)x_ptr, incx, (double *)y_ptr, incy);
+    cblas_daxpy((const SLAB_INT)n, (const double)a, (const double *)x_ptr,
+                (const SLAB_INT)incx, (double *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zaxpy(n, SLAB_COMPLEX16_CPTR(&a), SLAB_COMPLEX16_CPTR(x_ptr), incx,
-                SLAB_COMPLEX16_PTR(y_ptr), incy);
+    cblas_zaxpy((const SLAB_INT)n, SLAB_COMPLEX16_CPTR(&a),
+                SLAB_COMPLEX16_CPTR(x_ptr), (const SLAB_INT)incx,
+                SLAB_COMPLEX16_PTR(y_ptr), (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_saxpy(n, a, (const float *)x_ptr, incx, (float *)y_ptr, incy);
+    cblas_saxpy((const SLAB_INT)n, (const float)a, (const float *)x_ptr,
+                (const SLAB_INT)incx, (float *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_caxpy(n, SLAB_COMPLEX8_CPTR(&a), SLAB_COMPLEX8_CPTR(x_ptr), incx,
-                SLAB_COMPLEX8_PTR(y_ptr), incy);
+    cblas_caxpy((const SLAB_INT)n, SLAB_COMPLEX8_CPTR(&a),
+                SLAB_COMPLEX8_CPTR(x_ptr), (const SLAB_INT)incx,
+                SLAB_COMPLEX8_PTR(y_ptr), (const SLAB_INT)incy);
   }
 #endif
   else {
