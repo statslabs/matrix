@@ -44,21 +44,25 @@ _SLAB_BEGIN_NAMESPACE
 ///
 template <typename T>
 inline T blas_asum(const MatrixBase<T, 1> &x) {
-  const SLAB_INT n = x.size();
-  const SLAB_INT incx = x.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
   const T *x_ptr = x.data() + x.descriptor().start;
 
   T res = {};  // C++11: zero initialization
   if (is_double<T>::value) {
-    res = cblas_dasum(n, (const double *)x_ptr, incx);
+    res = cblas_dasum((const SLAB_INT)n, (const double *)x_ptr,
+                      (const SLAB_INT)incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dzasum(n, SLAB_COMPLEX16_CPTR(x_ptr), incx);
+    res = cblas_dzasum((const SLAB_INT)n, SLAB_COMPLEX16_CPTR(x_ptr),
+                       (const SLAB_INT)incx);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    res = cblas_sasum(n, (const float *)x_ptr, incx);
+    res = cblas_sasum((const SLAB_INT)n, (const float *)x_ptr,
+                      (const SLAB_INT)incx);
   } else if (is_complex_float<T>::value) {
-    res = cblas_scasum(n, SLAB_COMPLEX8_CPTR(x_ptr), incx);
+    res = cblas_scasum((const SLAB_INT)n, SLAB_COMPLEX8_CPTR(x_ptr),
+                       (const SLAB_INT)incx);
   }
 #endif
   else {
