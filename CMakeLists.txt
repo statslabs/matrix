@@ -33,6 +33,14 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+if (CMAKE_HOST_WIN32)
+  message(STATUS "Windows detected")
+elseif(CMAKE_HOST_APPLE)
+  message(STATUS "macOS detected")
+elseif(CMAKE_HOST_SOLARIS)
+  message(STATUS, "Solaris detected")
+endif()
+
 include("cmake/MKL.cmake")
 
 if(NOT HAVE_MKL)
