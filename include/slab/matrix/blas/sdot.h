@@ -9,7 +9,7 @@
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express oslabr implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
@@ -20,7 +20,7 @@
 #ifndef SLAB_MATRIX_BLAS_SDOT_H_
 #define SLAB_MATRIX_BLAS_SDOT_H_
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 #ifndef _SLAB_USE_R_BLAS
 
@@ -48,11 +48,12 @@ inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
   const std::size_t n = sx.size();
   const std::size_t incx = sx.descriptor().strides[0];
   const std::size_t incy = sy.descriptor().strides[0];
+  const float *sx_ptr = sx.data() + sx.descriptor().start;
+  const float *sy_ptr = sy.data() + sy.descriptor().start;
 
-  float res = cblas_sdsdot(
-      (const int)n, (const float)sb,
-      (const float *)(sx.data() + sx.descriptor().start), (const int)incx,
-      (const float *)(sy.data() + sy.descriptor().start), (const int)incy);
+  float res =
+      cblas_sdsdot((const int)n, (const float)sb, (const float *)sx_ptr,
+                   (const int)incx, (const float *)sy_ptr, (const int)incy);
 
   return res;
 }
@@ -74,11 +75,11 @@ inline double blas_dsdot(const Matrix<float, 1> &sx,
   const std::size_t n = sx.size();
   const std::size_t incx = sx.descriptor().strides[0];
   const std::size_t incy = sy.descriptor().strides[0];
+  const float *sx_ptr = sx.data() + sx.descriptor().start;
+  const float *sy_ptr = sy.data() + sy.descriptor().start;
 
-  double res = cblas_dsdot(
-      (const int)n, (const float *)(sx.data() + sx.descriptor().start),
-      (const int)incx, (const float *)(sy.data() + sy.descriptor().start),
-      (const int)incy);
+  double res = cblas_dsdot((const int)n, (const float *)sx_ptr, (const int)incx,
+                           (const float *)sy_ptr, (const int)incy);
 
   return res;
 }
@@ -88,6 +89,6 @@ inline double blas_dsdot(const Matrix<float, 1> &sx,
 
 #endif
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif
