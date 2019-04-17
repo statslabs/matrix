@@ -57,6 +57,12 @@ TEST(BLASTest, LEVEL1_COPY) {
   EXPECT_EQ(1, y(0));
   EXPECT_EQ(2, y(1));
   EXPECT_EQ(3, y(2));
+
+  // now: y = {1, 2, 3}
+  blas_copy(y, y);
+  EXPECT_EQ(1, y(0));
+  EXPECT_EQ(2, y(1));
+  EXPECT_EQ(3, y(2));
 }
 
 TEST(BLASTest, LEVEL1_DOT) {

@@ -42,6 +42,7 @@ _SLAB_BEGIN_NAMESPACE
 ///
 template <typename T>
 inline void blas_copy(const MatrixBase<T, 1> &x, Matrix<T, 1> &y) {
+  if (std::addressof(x) == std::addressof(y)) return;
   y.clear();
   y = Matrix<T, 1>(x.size());
 
