@@ -56,18 +56,16 @@ inline void blas_copy(const MatrixBase<T, 1> &x, Matrix<T, 1> &y) {
     cblas_dcopy((const SLAB_INT)n, (const double *)x_ptr, (const SLAB_INT)incx,
                 (double *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zcopy((const SLAB_INT)n, SLAB_COMPLEX16_CPTR(x_ptr),
-                (const SLAB_INT)incx, SLAB_COMPLEX16_PTR(y_ptr),
-                (const SLAB_INT)incy);
+    cblas_zcopy((const SLAB_INT)n, (const void *)x_ptr, (const SLAB_INT)incx,
+                (void *)y_ptr, (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_scopy((const SLAB_INT)n, (const float *)x_ptr, (const SLAB_INT)incx,
                 (float *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_ccopy((const SLAB_INT)n, SLAB_COMPLEX8_CPTR(x_ptr),
-                (const SLAB_INT)incx, SLAB_COMPLEX8_PTR(y_ptr),
-                (const SLAB_INT)incy);
+    cblas_ccopy((const SLAB_INT)n, (const void *)x_ptr, (const SLAB_INT)incx,
+                (void *)y_ptr, (const SLAB_INT)incy);
   }
 #endif
   else {

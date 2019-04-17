@@ -53,7 +53,7 @@ inline T blas_asum(const MatrixBase<T, 1> &x) {
     res = cblas_dasum((const SLAB_INT)n, (const double *)x_ptr,
                       (const SLAB_INT)incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dzasum((const SLAB_INT)n, SLAB_COMPLEX16_CPTR(x_ptr),
+    res = cblas_dzasum((const SLAB_INT)n, (const void *)x_ptr,
                        (const SLAB_INT)incx);
   }
 #ifndef _SLAB_USE_R_BLAS
@@ -61,7 +61,7 @@ inline T blas_asum(const MatrixBase<T, 1> &x) {
     res = cblas_sasum((const SLAB_INT)n, (const float *)x_ptr,
                       (const SLAB_INT)incx);
   } else if (is_complex_float<T>::value) {
-    res = cblas_scasum((const SLAB_INT)n, SLAB_COMPLEX8_CPTR(x_ptr),
+    res = cblas_scasum((const SLAB_INT)n, (const void *)x_ptr,
                        (const SLAB_INT)incx);
   }
 #endif

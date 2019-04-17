@@ -62,18 +62,16 @@ inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x,
     cblas_daxpy((const SLAB_INT)n, (const double)a, (const double *)x_ptr,
                 (const SLAB_INT)incx, (double *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zaxpy((const SLAB_INT)n, SLAB_COMPLEX16_CPTR(&a),
-                SLAB_COMPLEX16_CPTR(x_ptr), (const SLAB_INT)incx,
-                SLAB_COMPLEX16_PTR(y_ptr), (const SLAB_INT)incy);
+    cblas_zaxpy((const SLAB_INT)n, (const void *)(&a), (const void *)x_ptr,
+                (const SLAB_INT)incx, (void *)y_ptr, (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_saxpy((const SLAB_INT)n, (const float)a, (const float *)x_ptr,
                 (const SLAB_INT)incx, (float *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_caxpy((const SLAB_INT)n, SLAB_COMPLEX8_CPTR(&a),
-                SLAB_COMPLEX8_CPTR(x_ptr), (const SLAB_INT)incx,
-                SLAB_COMPLEX8_PTR(y_ptr), (const SLAB_INT)incy);
+    cblas_caxpy((const SLAB_INT)n, (const void *)(&a), (const void *)x_ptr,
+                (const SLAB_INT)incx, (void *)y_ptr, (const SLAB_INT)incy);
   }
 #endif
   else {

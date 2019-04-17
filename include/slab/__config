@@ -96,20 +96,10 @@
 #define SLAB_COMPLEX8 MKL_Complex8
 #define SLAB_COMPLEX16 MKL_Complex16
 
-#define SLAB_COMPLEX8_PTR(x) (void *)x
-#define SLAB_COMPLEX8_CPTR(x) (const void *)x
-#define SLAB_COMPLEX16_PTR(x) (void *)x
-#define SLAB_COMPLEX16_CPTR(x) (const void *)x
-
 #else
 
 #define SLAB_INT int
 #define SLAB_UINT unsigned int
-
-#define SLAB_COMPLEX8_PTR(x) reinterpret_cast<float *>(x)
-#define SLAB_COMPLEX8_CPTR(x) reinterpret_cast<const float *>(x)
-#define SLAB_COMPLEX16_PTR(x) reinterpret_cast<double *>(x)
-#define SLAB_COMPLEX16_CPTR(x) reinterpret_cast<const double *>(x)
 
 #endif
 
