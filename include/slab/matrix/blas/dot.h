@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file dot.h
 /// @brief C++ template wrapper for C functions cblas_?dot
 
-#ifndef SLAB_MATRIX_BLAS_DOT_H_
-#define SLAB_MATRIX_BLAS_DOT_H_
+#ifndef _SLAB_MATRIX_BLAS_DOT_H
+#define _SLAB_MATRIX_BLAS_DOT_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -43,22 +43,27 @@ namespace slab {
 /// @return The result of the dot product of \f$x\f$ and \f$y\f$.
 ///
 template <typename T>
-inline T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
-  assert(x.size() == y.size());
+inline T blas_dot(const MatrixBase<T, 1> &x, const MatrixBase<T, 1> &y) {
+  _SLAB_ASSERT(x.size() == y.size(),
+               "blas_axpy(): incompatible vector dimensions");
 
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
+  const T *y_ptr = y.data() + y.descriptor().start;
 
-  T res = 0.0;
+  T res = {};  // C++11: zero initialization
   if (is_double<T>::value) {
-    res = cblas_ddot(n, (const double *)(x.data() + x.descriptor().start), incx,
-                     (const double *)(y.data() + y.descriptor().start), incy);
+    res = cblas_ddot((const SLAB_INT)n, (const double *)x_ptr,
+                     (const SLAB_INT)incx, (const double *)y_ptr,
+                     (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    res = cblas_sdot(n, (const float *)(x.data() + x.descriptor().start), incx,
-                     (const float *)(y.data() + y.descriptor().start), incy);
+    res = cblas_sdot((const SLAB_INT)n, (const float *)x_ptr,
+                     (const SLAB_INT)incx, (const float *)y_ptr,
+                     (const SLAB_INT)incy);
   }
 #endif
   else {
@@ -71,6 +76,6 @@ inline T blas_dot(const Matrix<T, 1> &x, const Matrix<T, 1> &y) {
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

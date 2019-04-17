@@ -66,8 +66,10 @@ TEST(BLASTest, LEVEL1_COPY) {
 }
 
 TEST(BLASTest, LEVEL1_DOT) {
-  vec v = {1, 2, 3};
-  EXPECT_EQ(14, blas_dot(v, v));
+  vec v = {6, 6, 6, 1, 2, 3};
+
+  EXPECT_EQ(14, blas_dot(v.subvec(3, 5), v.subvec(3, 5)));
+  EXPECT_EQ(122, blas_dot(v, v));
 }
 
 TEST(BLASTest, LEVEL1_SDOT) {
