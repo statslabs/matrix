@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file nrm2.h
 /// @brief C++ template wrapper for C functions cblas_?nrm2
 
-#ifndef SLAB_MATRIX_BLAS_NRM2_H_
-#define SLAB_MATRIX_BLAS_NRM2_H_
+#ifndef _SLAB_MATRIX_BLAS_NRM2_H
+#define _SLAB_MATRIX_BLAS_NRM2_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -42,28 +42,25 @@ namespace slab {
 ///
 template <typename T>
 inline double blas_nrm2(const Matrix<T, 1> &x) {
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
+
   double res = 0.0;
-
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-
   if (is_double<T>::value) {
-    res =
-        cblas_dnrm2(n, (const double *)(x.data() + x.descriptor().start), incx);
+    res = cblas_dnrm2((const SLAB_INT)n, (const double *)x_ptr,
+                      (const SLAB_INT)incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dznrm2(
-        n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        incx);
+    res = cblas_dznrm2((const SLAB_INT)n, (const void *)x_ptr,
+                       (const SLAB_INT)incx);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    res =
-        cblas_snrm2(n, (const float *)(x.data() + x.descriptor().start), incx);
-
+    return cblas_snrm2((const SLAB_INT)n, (const float *)x_ptr,
+                       (const SLAB_INT)incx);
   } else if (is_complex_float<T>::value) {
-    res = cblas_scnrm2(
-        n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-        incx);
+    return cblas_scnrm2((const SLAB_INT)n, (const void *)x_ptr,
+                        (const SLAB_INT)incx);
   }
 #endif
   else {
@@ -76,6 +73,6 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif
