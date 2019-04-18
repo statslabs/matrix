@@ -17,8 +17,8 @@
 /// @file sdot.h
 /// @brief C++ wrapper for C functions cblas_?sdot
 
-#ifndef SLAB_MATRIX_BLAS_SDOT_H_
-#define SLAB_MATRIX_BLAS_SDOT_H_
+#ifndef _SLAB_MATRIX_BLAS_SDOT_H
+#define _SLAB_MATRIX_BLAS_SDOT_H
 
 _SLAB_BEGIN_NAMESPACE
 
@@ -43,7 +43,8 @@ _SLAB_BEGIN_NAMESPACE
 ///
 inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
                          const Matrix<float, 1> &sy) {
-  assert(sx.size() == sy.size());
+  _SLAB_ASSERT(sx.size() == sy.size(),
+               "blas_sdsdoc(): incompatible vector dimensions");
 
   const std::size_t n = sx.size();
   const std::size_t incx = sx.descriptor().strides[0];
@@ -51,9 +52,9 @@ inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
   const float *sx_ptr = sx.data() + sx.descriptor().start;
   const float *sy_ptr = sy.data() + sy.descriptor().start;
 
-  float res =
-      cblas_sdsdot((const int)n, (const float)sb, (const float *)sx_ptr,
-                   (const int)incx, (const float *)sy_ptr, (const int)incy);
+  float res = cblas_sdsdot((const SLAB_INT)n, (const float)sb,
+                           (const float *)sx_ptr, (const SLAB_INT)incx,
+                           (const float *)sy_ptr, (const SLAB_INT)incy);
 
   return res;
 }
@@ -70,7 +71,8 @@ inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
 ///
 inline double blas_dsdot(const Matrix<float, 1> &sx,
                          const Matrix<float, 1> &sy) {
-  assert(sx.size() == sy.size());
+  _SLAB_ASSERT(sx.size() == sy.size(),
+               "blas_dsdoc(): incompatible vector dimensions");
 
   const std::size_t n = sx.size();
   const std::size_t incx = sx.descriptor().strides[0];
@@ -78,8 +80,9 @@ inline double blas_dsdot(const Matrix<float, 1> &sx,
   const float *sx_ptr = sx.data() + sx.descriptor().start;
   const float *sy_ptr = sy.data() + sy.descriptor().start;
 
-  double res = cblas_dsdot((const int)n, (const float *)sx_ptr, (const int)incx,
-                           (const float *)sy_ptr, (const int)incy);
+  double res = cblas_dsdot((const SLAB_INT)n, (const float *)sx_ptr,
+                           (const SLAB_INT)incx, (const float *)sy_ptr,
+                           (const SLAB_INT)incy);
 
   return res;
 }

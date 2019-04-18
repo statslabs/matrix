@@ -45,7 +45,7 @@ _SLAB_BEGIN_NAMESPACE
 template <typename T>
 inline T blas_dot(const MatrixBase<T, 1> &x, const MatrixBase<T, 1> &y) {
   _SLAB_ASSERT(x.size() == y.size(),
-               "blas_axpy(): incompatible vector dimensions");
+               "blas_doc(): incompatible vector dimensions");
 
   const std::size_t n = x.size();
   const std::size_t incx = x.descriptor().strides[0];

@@ -17,10 +17,10 @@
 /// @file dotc.h
 /// @brief C++ template wrapper for C functions cblas_?dotc
 
-#ifndef SLAB_MATRIX_BLAS_DOTC_H_
-#define SLAB_MATRIX_BLAS_DOTC_H_
+#ifndef _SLAB_MATRIX_BLAS_DOTC_H
+#define _SLAB_MATRIX_BLAS_DOTC_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -45,25 +45,27 @@ namespace slab {
 template <typename T>
 inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
                           Matrix<T, 1> &dotc) {
-  assert(x.size() == y.size());
+  _SLAB_ASSERT(x.size() == y.size(),
+               "blas_dotc_sub(): incompatible vector dimensions");
+  dotc = Matrix<T, 1>(x.size());
 
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
+  const T *y_ptr = y.data() + y.descriptor().start;
+  T *dotc_ptr = dotc.data() + dotc.descriptor().start;
 
-  dotc = Matrix<T, 1>(n);
   if (is_complex_double<T>::value) {
-    cblas_zdotc_sub(
-        n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<const double *>(y.data() + y.descriptor().start),
-        incy, reinterpret_cast<__complex__ double *>(dotc.data()));
+    cblas_zdotc_sub((const SLAB_INT)n, (const void *)x_ptr,
+                    (const SLAB_INT)incx, (const void *)y_ptr,
+                    (const SLAB_INT)incy, (void *)dotc_ptr);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_complex_float<T>::value) {
-    cblas_cdotc_sub(
-        n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<const float *>(y.data() + y.descriptor().start),
-        incy, reinterpret_cast<__complex__ float *>(dotc.data()));
+    cblas_cdotc_sub((const SLAB_INT)n, (const void *)x_ptr,
+                    (const SLAB_INT)incx, (const void *)y_ptr,
+                    (const SLAB_INT)incy, (void *)dotc_ptr);
   }
 #endif
   else {
@@ -74,6 +76,6 @@ inline void blas_dotc_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif
