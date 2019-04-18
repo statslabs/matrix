@@ -46,18 +46,18 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
   const std::size_t incx = x.descriptor().strides[0];
   const T *x_ptr = x.data() + x.descriptor().start;
 
-  double res = 0.0;
+  T res = {};  // C++11: zero initialization
   if (is_double<T>::value) {
     res = cblas_dnrm2((const SLAB_INT)n, (const double *)x_ptr,
                       (const SLAB_INT)incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dznrm2((const SLAB_INT)n, (const void *)x_ptr,
-                       (const SLAB_INT)incx);
+    return cblas_dznrm2((const SLAB_INT)n, (const void *)x_ptr,
+                        (const SLAB_INT)incx);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    return cblas_snrm2((const SLAB_INT)n, (const float *)x_ptr,
-                       (const SLAB_INT)incx);
+    res = cblas_snrm2((const SLAB_INT)n, (const float *)x_ptr,
+                      (const SLAB_INT)incx);
   } else if (is_complex_float<T>::value) {
     return cblas_scnrm2((const SLAB_INT)n, (const void *)x_ptr,
                         (const SLAB_INT)incx);
