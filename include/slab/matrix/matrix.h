@@ -16,8 +16,8 @@
 /// @file matrix.h
 /// @brief A Matrix template
 
-#ifndef SLAB_MATRIX_MATRIX_H_
-#define SLAB_MATRIX_MATRIX_H_
+#ifndef _SLAB_MATRIX_MATRIX_H
+#define _SLAB_MATRIX_MATRIX_H
 
 #include <cassert>
 #include <cstddef>
@@ -36,7 +36,7 @@
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/support.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
@@ -369,6 +369,24 @@ class Matrix : public MatrixBase<T, N> {
   // ---------------------------------------------
 
  public:
+  Matrix<std::complex<double>, N>(const Matrix<double, N> &x, const Matrix<double, N> &y)
+      : MatrixBase<T, N>(x.descriptor()) {
+    _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
+
+    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end(); ++iter1, ++iter2) {
+        elems_.push_back(std::complex<double>(*iter1, *iter2));
+    }
+  }
+
+  Matrix<std::complex<float>, N>(const Matrix<float, N> &x, const Matrix<float, N> &y)
+      : MatrixBase<T, N>(x.descriptor()) {
+    _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
+
+    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end(); ++iter1, ++iter2) {
+      elems_.push_back(std::complex<float>(*iter1, *iter2));
+    }
+  }
+
   //! clear content
   void clear();
 
@@ -1129,6 +1147,6 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
   return os << (const T &)m0();
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_MATRIX_H_
+#endif  // _SLAB_MATRIX_MATRIX_H
