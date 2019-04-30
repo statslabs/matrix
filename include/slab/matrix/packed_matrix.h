@@ -27,7 +27,9 @@
 #include <iostream>
 #include <vector>
 
-#include "slab/matrix/error.h"
+#include "slab/__config"
+
+#include "slab/matrix/traits.h"
 
 namespace slab {
 
@@ -182,7 +184,7 @@ class PackedMatrix {
   PackedMatrix(std::size_t n) : elems_(n * n), desc_(n) {}
   PackedMatrix(std::size_t n, const std::vector<T> &v) : desc_(n) {
     if (v.size() != desc_.size)
-      err_quit(
+      _SLAB_ERROR(
           "Fail to construct a packed matrix, the size of vector provided is "
           "incorrect");
 
@@ -190,7 +192,7 @@ class PackedMatrix {
   }
   PackedMatrix(std::size_t n, const std::initializer_list<T> &il) : desc_(n) {
     if (il.size() != desc_.size)
-      err_quit(
+      _SLAB_ERROR(
           "Fail to construct a packed matrix, the size of vector provided is "
           "incorrect");
 
@@ -307,8 +309,14 @@ class TriangularMatrix : public PackedMatrix<T, TRI> {
       : PackedMatrix<T, TRI>(n, v) {}
 
  private:
-  T element_in_other_half(const T &val) const override { return 0; }
-  void update_element_in_base_half(T &elem, const T &val) override {}
+  T element_in_other_half(const T &val) const override {
+    ignore(val);
+    return 0;
+  }
+  void update_element_in_base_half(T &elem, const T &val) override {
+    ignore(elem);
+    ignore(val);
+  }
 };
 
 template <typename T, typename TRI>

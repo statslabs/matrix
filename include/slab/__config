@@ -1,0 +1,132 @@
+//
+// Copyright 2018-2019 The Statslabs Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+/// @file __config
+/// @brief Configuration for Statslabs
+
+#ifndef SLAB_CONFIG_
+#define SLAB_CONFIG_
+
+#ifdef USE_MKL
+#define _SLAB_USE_MKL
+#endif
+
+#if !defined(_SLAB_USE_MKL)
+// #define _SLAB_USE_MKL
+//// Uncomment the above line if using Intel MKL
+#endif
+
+#if !defined(_SLAB_USE_OPENBLAS)
+// #define _SLAB_USE_OPENBLAS
+//// Uncomment the above line if using OpenBLAS
+#endif
+
+#if !defined(_SLAB_USE_APPLE)
+// #define _SLAB_USE_APPLE
+//// Uncomment the above line if using Apple Accelerate Framework
+#endif
+
+#if !defined(_SLAB_USE_SUNPERF)
+// #define _SLAB_USE_SUNPERF
+//// Uncomment the above line if using Sun Performance Library
+#endif
+
+#if !defined(_SLAB_USE_R)
+// #define _SLAB_USE_R
+//// Uncomment the above line to define the following macros:
+////   1. _SLAB_USE_R_BLAS
+////   2. _SLAB_USE_R_LAPACK
+////   3. _SLAB_USE_R_ERROR
+////   4. _SLAB_USE_R_RANDOM
+////   5. _SLAB_USE_RCPP_AS_WRAP
+//// and make Statslabs ready for use in R environment
+#endif
+
+#if !defined(_SLAB_USE_R_BLAS)
+// #define _SLAB_USE_R_BLAS
+//// Uncomment the above line if using R's internal BLAS
+#endif
+
+#if !defined(_SLAB_USE_R_LAPACK)
+// #define _SLAB_USE_R_LAPACK
+//// Uncomment the above line if using R's internal LAPACK
+#endif
+
+#if !defined(_SLAB_USE_R_ERROR)
+// #define _SLAB_USE_R_ERROR
+//// Uncomment the above line if using Rf_error/Rf_warning in file R_Ext/Error.h
+#endif
+
+#if !defined(_SLAB_USE_R_RANDOM)
+// #define _SLAB_USE_R_RANDOM
+//// Uncomment the above line if using GetRNGstate/PutRNGstate in R_Ext/Random.h
+#endif
+
+#if !defined(_SLAB_USE_RCPP_AS_WRAP)
+// #define _SLAB_USE_RCPP_AS_WRAP
+//// Uncomment the above line if using Rcpp::as (for conversion of objects from
+//// R to C++) and Rcpp::wrap (for conversion from C++ to R)
+#endif
+
+#if defined(_SLAB_USE_R)
+#define _SLAB_USE_R_BLAS
+#define _SLAB_USE_R_LAPACK
+#define _SLAB_USE_R_ERROR
+#define _SLAB_USE_R_RANDOM
+#define _SLAB_USE_RCPP_AS_WRAP
+#endif
+
+#if defined(_SLAB_USE_MKL)
+
+#define SLAB_INT MKL_INT
+#define SLAB_UINT MKL_UINT
+#define SLAB_COMPLEX8 MKL_Complex8
+#define SLAB_COMPLEX16 MKL_Complex16
+
+#else
+
+#define SLAB_INT int
+#define SLAB_UINT unsigned int
+
+#endif
+
+#if defined(_SLAB_USE_MKL)
+#include "mkl.h"
+#elif defined(_SLAB_USE_SUNPERF)
+#include "sunperf.h"
+#else
+#include "cblas.h"
+#endif
+
+#define _SLAB_BEGIN_NAMESPACE namespace slab {
+#define _SLAB_END_NAMESPACE }
+
+#if defined(_SLAB_USE_R_ERROR)
+#include <R_ext/Error.h>
+#define _SLAB_ERROR(...) Rf_error(__VA_ARGS__)
+#define _SLAB_WARNING(...) Rf_warning(__VA_ARGS__)
+#else
+#include "slab/__error"
+#define _SLAB_ERROR(...) apue::err_quit(__VA_ARGS__)
+#define _SLAB_WARNING(...) apue::err_msg(__VA_ARGS__)
+#endif
+
+#define _SLAB_ASSERT(x, m)                                            \
+  ((x) ? (void)0                                                      \
+       : _SLAB_ERROR("%s:%d: _SLAB_ASSERT '%s' failed. %s", __FILE__, \
+                     __LINE__, #x, m))
+
+#endif  // SLAB_CONFIG_

@@ -24,7 +24,9 @@ namespace slab {
 
 template <typename T>
 inline Matrix<T, 2> solve(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
-  err_quit("solve(): unsupported element type");
+  ignore(a);
+  ignore(b);
+  _SLAB_ERROR("solve(): unsupported element type");
 }
 
 template <>
@@ -45,7 +47,7 @@ inline Matrix<double, 2> solve(const Matrix<double, 2> &a,
   int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs,
                            (double *)a_copy.data(), (int)lda, ipiv.data(),
                            (double *)b_copy.data(), (int)ldb);
-  if (info < 0) err_msg("parameter i had an illegal value.");
+  if (info < 0) _SLAB_ERROR("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -68,7 +70,7 @@ inline Matrix<float, 2> solve(const Matrix<float, 2> &a,
   int info =
       LAPACKE_sgesv(LAPACK_ROW_MAJOR, (int)n, (int)nrhs, (float *)a_copy.data(),
                     (int)lda, ipiv.data(), (float *)b_copy.data(), (int)ldb);
-  if (info < 0) err_msg("parameter i had an illegal value.");
+  if (info < 0) _SLAB_ERROR("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -94,7 +96,7 @@ inline Matrix<std::complex<double>, 2> solve(
       reinterpret_cast<lapack_complex_double *>(a_copy.data()), (int)lda,
       ipiv.data(), reinterpret_cast<lapack_complex_double *>(b_copy.data()),
       (int)ldb);
-  if (info < 0) err_msg("parameter i had an illegal value.");
+  if (info < 0) _SLAB_ERROR("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -120,7 +122,7 @@ inline Matrix<std::complex<float>, 2> solve(
       reinterpret_cast<lapack_complex_float *>(a_copy.data()), (int)lda,
       ipiv.data(), reinterpret_cast<lapack_complex_float *>(b_copy.data()),
       (int)ldb);
-  if (info < 0) err_msg("parameter i had an illegal value.");
+  if (info < 0) _SLAB_ERROR("parameter i had an illegal value.");
 
   return b_copy;
 }
@@ -128,7 +130,7 @@ inline Matrix<std::complex<float>, 2> solve(
 template <typename T>
 inline Matrix<T, 2> solve(const Matrix<T, 2> &a) {
   if (a.n_rows() != a.n_cols())
-    err_quit("solve(): matrix A should be a square matrix");
+    _SLAB_ERROR("solve(): matrix A should be a square matrix");
 
   Matrix<T, 2> b = eye<Matrix<T, 2>>(a.n_rows(), a.n_cols());
   return solve(a, b);

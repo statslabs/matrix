@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file asum.h
 /// @brief C++ template wrapper for C functions cblas_?asum
 
-#ifndef SLAB_MATRIX_BLAS_ASUM_H_
-#define SLAB_MATRIX_BLAS_ASUM_H_
+#ifndef _SLAB_MATRIX_BLAS_ASUM_H
+#define _SLAB_MATRIX_BLAS_ASUM_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -43,25 +43,30 @@ namespace slab {
 ///         of all elements of the vector.
 ///
 template <typename T>
-inline T blas_asum(const Matrix<T, 1> &x) {
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
+inline T blas_asum(const MatrixBase<T, 1> &x) {
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
 
-  T res;
+  T res = {};  // C++11: zero initialization
   if (is_double<T>::value) {
-    res = cblas_dasum(n, (const double *)x.data(), incx);
+    res = cblas_dasum((const SLAB_INT)n, (const double *)x_ptr,
+                      (const SLAB_INT)incx);
   } else if (is_complex_double<T>::value) {
-    res = cblas_dzasum(n, reinterpret_cast<const double *>(x.data()), incx);
+    res = cblas_dzasum((const SLAB_INT)n, (const void *)x_ptr,
+                       (const SLAB_INT)incx);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    res = cblas_sasum(n, (const float *)x.data(), incx);
+    res = cblas_sasum((const SLAB_INT)n, (const float *)x_ptr,
+                      (const SLAB_INT)incx);
   } else if (is_complex_float<T>::value) {
-    res = cblas_scasum(n, reinterpret_cast<const float *>(x.data()), incx);
+    res = cblas_scasum((const SLAB_INT)n, (const void *)x_ptr,
+                       (const SLAB_INT)incx);
   }
 #endif
   else {
-    err_quit("blas_asum(): unsupported element type.");
+    _SLAB_ERROR("blas_asum(): unsupported element type.");
   }
 
   return res;
@@ -70,6 +75,6 @@ inline T blas_asum(const Matrix<T, 1> &x) {
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

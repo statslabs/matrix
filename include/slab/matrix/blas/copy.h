@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file copy.h
 /// @brief C++ template wrapper for C functions cblas_?copy
 
-#ifndef SLAB_MATRIX_BLAS_COPY_H_
-#define SLAB_MATRIX_BLAS_COPY_H_
+#ifndef _SLAB_MATRIX_BLAS_COPY_H
+#define _SLAB_MATRIX_BLAS_COPY_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -41,41 +41,41 @@ namespace slab {
 /// @return Void.
 ///
 template <typename T>
-inline void blas_copy(const Matrix<T, 1> &x, Matrix<T, 1> &y) {
+inline void blas_copy(const MatrixBase<T, 1> &x, Matrix<T, 1> &y) {
+  if (std::addressof(x) == std::addressof(y)) return;
   y.clear();
   y = Matrix<T, 1>(x.size());
 
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
+  T *y_ptr = y.data() + y.descriptor().start;
 
   if (is_double<T>::value) {
-    cblas_dcopy(x.size(), (const double *)(x.data() + x.descriptor().start),
-                incx, (double *)(y.data() + y.descriptor().start), incy);
+    cblas_dcopy((const SLAB_INT)n, (const double *)x_ptr, (const SLAB_INT)incx,
+                (double *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zcopy(
-        x.size(),
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<double *>(y.data() + y.descriptor().start), incy);
+    cblas_zcopy((const SLAB_INT)n, (const void *)x_ptr, (const SLAB_INT)incx,
+                (void *)y_ptr, (const SLAB_INT)incy);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_scopy(x.size(), (const float *)(x.data() + x.descriptor().start),
-                incx, (float *)(y.data() + y.descriptor().start), incy);
+    cblas_scopy((const SLAB_INT)n, (const float *)x_ptr, (const SLAB_INT)incx,
+                (float *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_ccopy(
-        x.size(),
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start), incx,
-        reinterpret_cast<float *>(y.data() + y.descriptor().start), incy);
+    cblas_ccopy((const SLAB_INT)n, (const void *)x_ptr, (const SLAB_INT)incx,
+                (void *)y_ptr, (const SLAB_INT)incy);
   }
 #endif
   else {
-    err_quit("blas_copy(): unsupported element type.");
+    _SLAB_ERROR("blas_copy(): unsupported element type.");
   }
 }
 
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

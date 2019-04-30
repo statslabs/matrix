@@ -28,6 +28,7 @@
 #include <type_traits>
 
 #include "slab/matrix/matrix_base.h"
+#include "slab/matrix/matrix_fwd.h"
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/support.h"
@@ -227,7 +228,7 @@ class MatrixRef : public MatrixBase<T, N> {
   }
 
   // -----------------------------------
-  // Member functions for a Matrix<T, 2>
+  // Member functions for a MatrixRef<T, 2>
   // -----------------------------------
 
  public:
@@ -290,6 +291,26 @@ class MatrixRef : public MatrixBase<T, N> {
       raw_print(row(i));
       printf("\n");
     }
+  }
+
+  // ---------------------------------------------
+  // More member functions for the MatrixRef template
+  // ---------------------------------------------
+
+ public:
+  //! clear content
+  // void clear();
+
+  //! return matrix transpose
+  template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
+  Matrix<T, 2> t() const {
+    return transpose(*this);
+  }
+
+  //! return inverse of square matrix
+  template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
+  Matrix<T, 2> i() const {
+    return inverse(*this);
   }
 };
 

@@ -20,11 +20,12 @@
 #ifndef SLAB_MATRIX_H_
 #define SLAB_MATRIX_H_
 
-#include "slab/matrix/config.h"
-#include "slab/matrix/error.h"
+#include "slab/__config"
+#include "slab/__error"
+
 #include "slab/matrix/slice.h"
 
-#ifdef USE_RCPP_AS_WRAP
+#ifdef _SLAB_USE_RCPP_AS_WRAP
 #include <RcppCommon.h>
 #endif
 
@@ -38,7 +39,7 @@
 
 #include "slab/matrix/lapack_interface.h"  // TODO: remove this header, provide BLAS interface only
 
-#ifdef USE_RCPP_AS_WRAP
+#ifdef _SLAB_USE_RCPP_AS_WRAP
 #include <Rcpp.h>
 #endif
 

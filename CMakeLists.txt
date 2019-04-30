@@ -17,8 +17,8 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(PROJECT_NAME "Statslabs.Matrix")
-set(PROJECT_FULL_NAME "Statslabs.Matrix C++ Linear Algebra Library")
+set(PROJECT_NAME "Statslabs::Matrix")
+set(PROJECT_FULL_NAME "Statslabs::Matrix C++ Linear Algebra Library")
 
 set(MATRIX_VERSION_MAJOR 0)
 set(MATRIX_VERSION_MINOR 4)
@@ -31,6 +31,14 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}")
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE is unset, defaulting to Release")
     set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+if (CMAKE_HOST_WIN32)
+  message(STATUS "Windows detected")
+elseif(CMAKE_HOST_APPLE)
+  message(STATUS "macOS detected")
+elseif(CMAKE_HOST_SOLARIS)
+  message(STATUS, "Solaris detected")
 endif()
 
 include("cmake/MKL.cmake")

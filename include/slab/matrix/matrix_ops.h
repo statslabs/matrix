@@ -26,8 +26,7 @@
 #include <algorithm>
 #include <complex>
 
-#include "slab/matrix/config.h"
-#include "slab/matrix/error.h"
+#include "slab/__config"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
@@ -344,7 +343,7 @@ inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
   return y;
 }
 
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
 template <>
 inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 1> &x) {
@@ -411,7 +410,7 @@ inline Matrix<double, 2> matmul(const MatrixBase<double, 2> &a,
   return c;
 }
 
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
 template <>
 inline Matrix<float, 2> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 2> &b) {

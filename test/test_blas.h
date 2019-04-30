@@ -5,45 +5,83 @@
 
 namespace slab {
 
-TEST(BLASL1Test, ASUM) {
-  vec v = {1, 2, 3};
-  EXPECT_EQ(6, blas_asum(v));
+TEST(BLASTest, LEVEL1_ASUM) {
+  vec v = {6, 6, 6, 1, 2, 3};
+  mat m = {{6, 1}, {6, 2}, {6, 3}};
+  EXPECT_EQ(24, blas_asum(v));
+  EXPECT_EQ(6, blas_asum(v.subvec(3, 5)));
+  EXPECT_EQ(6, blas_asum(m.col(1)));
 }
 
-TEST(BLASL1Test, AXPY) {
-  double a = 9.0;
-  vec x = {1, 2, 3};
-  vec y = {1, 2, 3};
+TEST(BLASTest, LEVEL1_AXPY) {
+  int a = 9;
+  vec x = {6, 6, 6, 1, 2, 3};
+  vec y = {6, 6, 6, 1, 2, 3};
+  vec z = {6, 6, 6, 1, 2, 3};
 
   blas_axpy(a, x, y);
 
-  EXPECT_EQ(10, y(0));
-  EXPECT_EQ(20, y(1));
-  EXPECT_EQ(30, y(2));
+  EXPECT_EQ(60, y(0));
+  EXPECT_EQ(60, y(1));
+  EXPECT_EQ(60, y(2));
+  EXPECT_EQ(10, y(3));
+  EXPECT_EQ(20, y(4));
+  EXPECT_EQ(30, y(5));
+
+  // no known conversion from 'MatrixRef<double, 1>' to 'MatrixBase<double, 1>
+  // &' for 3rd argument ?!
+  /* blas_axpy(a, x.subvec(3, 5), z.subvec(3, 5)); */
+
+  /* EXPECT_EQ(0, z(0)); */
+  /* EXPECT_EQ(0, z(1)); */
+  /* EXPECT_EQ(0, z(2)); */
+  /* EXPECT_EQ(10, z(3)); */
+  /* EXPECT_EQ(20, z(4)); */
+  /* EXPECT_EQ(30, z(5)); */
 }
 
-TEST(BLASL1Test, COPY) {
-  vec x = {1, 2, 3}, y;
+TEST(BLASTest, LEVEL1_COPY) {
+  vec x = {6, 6, 6, 1, 2, 3}, y;
 
   blas_copy(x, y);
 
+  EXPECT_EQ(6, y(0));
+  EXPECT_EQ(6, y(1));
+  EXPECT_EQ(6, y(2));
+  EXPECT_EQ(1, y(3));
+  EXPECT_EQ(2, y(4));
+  EXPECT_EQ(3, y(5));
+
+  blas_copy(x.subvec(3, 5), y);
+
+  EXPECT_EQ(1, y(0));
+  EXPECT_EQ(2, y(1));
+  EXPECT_EQ(3, y(2));
+
+  // now: y = {1, 2, 3}
+  blas_copy(y, y);
   EXPECT_EQ(1, y(0));
   EXPECT_EQ(2, y(1));
   EXPECT_EQ(3, y(2));
 }
 
-TEST(BLASL1Test, DOT) {
-  vec v = {1, 2, 3};
-  EXPECT_EQ(14, blas_dot(v, v));
+TEST(BLASTest, LEVEL1_DOT) {
+  vec v = {6, 6, 6, 1, 2, 3};
+
+  EXPECT_EQ(122, blas_dot(v, v));
+  EXPECT_EQ(14, blas_dot(v.subvec(3, 5), v.subvec(3, 5)));
 }
 
-TEST(BLASL1Test, SDOT) {
-  fvec v = {1, 2, 3};
-  EXPECT_EQ(15, blas_sdsdot(1.0f, v, v));
-  EXPECT_EQ(14, blas_dsdot(v, v));
+TEST(BLASTest, LEVEL1_SDOT) {
+  fvec v = {6, 6, 6, 1, 2, 3};
+
+  EXPECT_EQ(123, blas_sdsdot(1.0f, v, v));
+  EXPECT_EQ(122, blas_dsdot(v, v));
+  EXPECT_EQ(15, blas_sdsdot(1.0f, v.subvec(3, 5), v.subvec(3, 5)));
+  EXPECT_EQ(14, blas_dsdot(v.subvec(3, 5), v.subvec(3, 5)));
 }
 
-TEST(BLASL1Test, SWAP) {
+TEST(BLASTest, LEVEL1_SWAP) {
   Matrix<double, 1> m1 = {4, 5, 6};
   Matrix<double, 1> m1s = {1, 2, 3};
 
@@ -68,7 +106,7 @@ TEST(BLASL1Test, SWAP) {
   EXPECT_EQ(6, m2s(2));
 }
 
-TEST(BLASL1Test, SCAL) {
+TEST(BLASTest, LEVEL1_SCAL) {
   double a1 = 0.1;
   Matrix<double, 1> m1 = {10, 20, 30};
 
@@ -87,7 +125,7 @@ TEST(BLASL1Test, SCAL) {
   EXPECT_EQ(3, m2(2));
 }
 
-TEST(BLASL1Test, IAMAX) {
+TEST(BLASTest, LEVEL1_IAMAX) {
   Matrix<double, 1> m1 = {1, 3, 2};
   Matrix<float, 1> m2 = {1, 3, 2};
 
@@ -98,7 +136,7 @@ TEST(BLASL1Test, IAMAX) {
   EXPECT_EQ(1, idx2);
 }
 
-TEST(BLASlevel2Test, GEMV) {
+TEST(BLASTest, LEVEL2_GEMV) {
   Matrix<double, 2> a1 = {{8.0, 3.0, 1.0}, {4.0, 5.0, 3.0}, {7.0, 1.0, 2.0}};
 
   Matrix<double, 1> x1 = {-1.0, 2.0, 1.0};
@@ -120,7 +158,7 @@ TEST(BLASlevel2Test, GEMV) {
   EXPECT_EQ(10, y2(2));
 }
 
-TEST(BLASlevel2Test, SPR) {
+TEST(BLASTest, LEVEL2_SPR) {
   Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
   SymmetricMatrix<double, upper> ap1(3);
 
@@ -151,7 +189,7 @@ TEST(BLASlevel2Test, SPR) {
   EXPECT_EQ(40, ap2(2, 2));
 }
 
-TEST(BLASlevel2Test, SPR2) {
+TEST(BLASTest, LEVEL2_SPR2) {
   Matrix<double, 1> x1 = {1.0, 2.0, 3.0};
   Matrix<double, 1> y1 = {1.0, 2.0, 3.0};
   SymmetricMatrix<double, upper> ap1(3);
@@ -184,7 +222,7 @@ TEST(BLASlevel2Test, SPR2) {
   EXPECT_EQ(40, ap2(2, 2));
 }
 
-TEST(BLASlevel3Test, GEMM) {
+TEST(BLASTest, LEVEL3_GEMM) {
   Matrix<double, 2> a1 = {{1.0, -3.0}, {2.0, 4.0}, {1.0, -1.0}};
   Matrix<float, 2> a2 = {{1.0, -3.0}, {2.0, 4.0}, {1.0, -1.0}};
 

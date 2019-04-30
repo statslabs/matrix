@@ -14,11 +14,11 @@
 // limitations under the License.
 //
 
-/// @file error.h
-/// @brief Error routines
+/// @file __error
+/// @brief Error routines from APUE
 
-#ifndef STATSLABS_MATRIX_ERROR_H_
-#define STATSLABS_MATRIX_ERROR_H_
+#ifndef SLAB_ERROR_
+#define SLAB_ERROR_
 
 #include <cerrno>   // for definition of errno
 #include <cstdarg>  // ISO C variable arguments
@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace slab {
+namespace apue {
 
 static void err_doit(int, int, const char *, va_list);
 
@@ -141,6 +141,6 @@ inline static void err_doit(int errnoflag, int error, const char *fmt,
   //  }
 }
 
-}  // namespace slab
+}  // namespace apue
 
-#endif  // STATSLABS_MATRIX_ERROR_H_
+#endif  // SLAB_ERROR_

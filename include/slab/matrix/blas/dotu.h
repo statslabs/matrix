@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file dotu.h
 /// @brief C++ template wrapper for C functions cblas_?dotu
 
-#ifndef SLAB_MATRIX_BLAS_DOTU_H_
-#define SLAB_MATRIX_BLAS_DOTU_H_
+#ifndef _SLAB_MATRIX_BLAS_DOTU_H
+#define _SLAB_MATRIX_BLAS_DOTU_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -44,35 +44,37 @@ namespace slab {
 template <typename T>
 inline void blas_dotu_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
                           Matrix<T, 1> &dotu) {
-  assert(x.size() == y.size());
+  _SLAB_ASSERT(x.size() == y.size(),
+               "blas_dotu_sub(): incompatible vector dimensions");
+  dotu = Matrix<T, 1>(x.size());
 
-  const int n = x.size();
-  const int incx = x.descriptor().strides[0];
-  const int incy = y.descriptor().strides[0];
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::size_t incy = y.descriptor().strides[0];
+  const T *x_ptr = x.data() + x.descriptor().start;
+  const T *y_ptr = y.data() + y.descriptor().start;
+  T *dotu_ptr = dotu.data() + dotu.descriptor().start;
 
-  dotu = Matrix<T, 1>(n);
   if (is_complex_double<T>::value) {
-    cblas_zdotu_sub(
-        n, reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<const double *>(y.data() + y.descriptor().start),
-        incy, reinterpret_cast<__complex__ double *>(dotu.data()));
+    cblas_zdotu_sub((const SLAB_INT)n, (const void *)x_ptr,
+                    (const SLAB_INT)incx, (const void *)y_ptr,
+                    (const SLAB_INT)incy, (void *)dotu_ptr);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_complex_float<T>::value) {
-    cblas_cdotu_sub(
-        n, reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-        incx, reinterpret_cast<const float *>(y.data() + y.descriptor().start),
-        incy, reinterpret_cast<__complex__ float *>(dotu.data()));
+    cblas_cdotu_sub((const SLAB_INT)n, (const void *)x_ptr,
+                    (const SLAB_INT)incx, (const void *)y_ptr,
+                    (const SLAB_INT)incy, (void *)dotu_ptr);
   }
 #endif
   else {
-    err_quit("blas_dotu_sub(): unsupported element type.");
+    _SLAB_ERROR("blas_dotu_sub(): unsupported element type.");
   }
 }
 
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

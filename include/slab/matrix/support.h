@@ -53,8 +53,14 @@ struct MatrixInit<T, 1> {
 template <typename T>
 struct MatrixInit<T, 0>;  // undefined on purpose
 
-template <std::size_t N, typename I, typename List>
-Enable_if<(N == 1), void> add_extents(I &first, const List &list) {
+/* template <std::size_t N, typename I, typename List> */
+/* Enable_if<(N == 1), void> add_extents(I &first, const List &list) { */
+/*   *first = list.size(); */
+/* } */
+
+template <std::size_t N, typename I, typename T>
+Enable_if<(N == 1), void> add_extents(I &first,
+                                      const std::initializer_list<T> &list) {
   *first = list.size();
 }
 

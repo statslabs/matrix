@@ -43,7 +43,7 @@ inline void blas_scal(const T a, Matrix<T, 1> &x) {
                  reinterpret_cast<double *>(x.data() + x.descriptor().start),
                  incx);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_sscal(n, (const float)a, (float *)(x.data() + x.descriptor().start),
                 incx);
@@ -55,10 +55,12 @@ inline void blas_scal(const T a, Matrix<T, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_scal(): unsupported element type.");
+    _SLAB_ERROR("blas_scal(): unsupported element type.");
   }
 }
 
+/// @brief Computes the product of a vector by a scalar.
+///
 template <typename T>
 inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   const int n = x.size();
@@ -69,7 +71,7 @@ inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
                 reinterpret_cast<double *>(x.data() + x.descriptor().start),
                 incx);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_cscal(n, reinterpret_cast<const float *>(&a),
                 reinterpret_cast<float *>(x.data() + x.descriptor().start),
@@ -77,7 +79,7 @@ inline void blas_scal(const std::complex<T> &a, Matrix<std::complex<T>, 1> &x) {
   }
 #endif
   else {
-    err_quit("blas_scal(): unsupported element type.");
+    _SLAB_ERROR("blas_scal(): unsupported element type.");
   }
 }
 

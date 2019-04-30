@@ -30,12 +30,18 @@ namespace slab {
 
 /// @brief Matrix-vector product using a general matrix.
 ///
-/// The ?gemv routines perform a matrix-vector operation defined as:
-/// \f[y := alpha*A*x + beta*y\f],
+/// The gemv routines perform a matrix-vector operation defined as:
+/// \f[
+/// y := alpha*A*x + beta*y
+/// \f],
 /// or
-/// \f[y := alpha*A'*x + beta*y\f],
+/// \f[
+/// y := alpha*A'*x + beta*y
+/// \f],
 /// or
-/// \f[y := alpha*conjg(A')*x + beta*y],
+/// \f[
+/// y := alpha*conjg(A')*x + beta*y
+/// \f],
 /// where \f$alpha\f$ and \f$beta\f$ are scalars, \f$x\f$ and \f$y\f$ are
 /// vectors, \f$A\f$ is an m-by-n matrix.
 ///
@@ -69,7 +75,7 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
         reinterpret_cast<double *>(y.data() + y.descriptor().start),
         (const int)incy);
   }
-#ifndef USE_R_BLAS
+#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_sgemv(
         CblasRowMajor, trans, (const int)m, (const int)n, (const float)alpha,
@@ -90,7 +96,7 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
   }
 #endif
   else {
-    err_quit("blas_gemv(): unsupported element type.");
+    _SLAB_ERROR("blas_gemv(): unsupported element type.");
   }
 }
 

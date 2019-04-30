@@ -27,23 +27,16 @@
 #include <string>
 #include <vector>
 
-#include "slab/matrix/config.h"
+#include "slab/__config"
+
 #include "slab/matrix/matrix_base.h"
+#include "slab/matrix/matrix_fwd.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/support.h"
 
 namespace slab {
-
-template <typename T>
-Matrix<T, 2> transpose(const Matrix<T, 1> &a);
-
-template <typename T>
-Matrix<T, 2> transpose(const Matrix<T, 2> &a);
-
-template <typename T>
-Matrix<T, 2> inverse(const Matrix<T, 2> &a);
 
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
@@ -361,6 +354,7 @@ class Matrix : public MatrixBase<T, N> {
   }
   ///@}
 
+  //! print mat/vec object to std::cout
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   void print(const std::string &str = "") const {
     printf("\n %s\n", str.c_str());
@@ -375,27 +369,34 @@ class Matrix : public MatrixBase<T, N> {
   // ---------------------------------------------
 
  public:
+  //! clear content
   void clear();
 
+  //! return matrix transpose
   template <std::size_t NN = N, typename = Enable_if<(NN == 1) || (NN == 2)>>
   Matrix<T, 2> t() const {
     return transpose(*this);
   }
 
+  //! return inverse of square matrix
   template <std::size_t NN = N, typename = Enable_if<(NN == 2)>>
   Matrix<T, 2> i() const {
     return inverse(*this);
   }
 
+  //! check whether object is empty
+  ///@{
   bool empty() const { return begin() == end(); }
   bool is_empty() const { return empty(); }
+  ///@}
 
   //  void save(const std::string &filename) {
   //    std::ostream os(filename);
   //  }
+  //! load matrix from a file
   void load(const std::string &filename);
 
-#ifdef USE_RCPP_AS_WRAP
+#ifdef _SLAB_USE_RCPP_AS_WRAP
   // -----------------------------
   // Conversion between R and C++
   // -----------------------------
@@ -409,6 +410,8 @@ class Matrix : public MatrixBase<T, N> {
 
 #endif
 };
+
+//! @cond Doxygen_Suppress
 
 template <typename T, std::size_t N>
 template <typename M, typename X>
@@ -613,7 +616,6 @@ MatrixRef<const T, N> Matrix<T, N>::cols(std::size_t i, std::size_t j) const {
   return {d, data()};
 }
 
-//! @cond Doxygen_Suppress
 template <typename T, std::size_t N>
 template <typename F>
 Matrix<T, N> &Matrix<T, N>::apply(F f) {
@@ -718,7 +720,6 @@ Matrix<U, N> Matrix<T, N>::operator-() const {
   Matrix<U, N> res(*this);
   return res.apply([&](T &a) { a = -a; });
 }
-//! @endcond
 
 template <typename T, std::size_t N>
 template <typename U, std::size_t NN, typename X>
@@ -968,23 +969,30 @@ void Matrix<T, N>::load(const std::string &filename) {
   }
 }
 
-#ifdef USE_RCPP_AS_WRAP
+//! @endcond
+
+#ifdef _SLAB_USE_RCPP_AS_WRAP
 
 template <typename T, std::size_t N>
 Matrix<T, N>::Matrix(SEXP s) {
   SEXP dims = Rf_getAttrib(s, R_DimSymbol);
-  assert(Rf_length(dims) == order());
+  _SLAB_ASSERT(Rf_length(dims) == this->order(),
+               "Matrix(SEXP): unmatched dimensions.");
 
   int num_dims = Rf_length(dims);
   int num_elems = Rf_length(s);
-  SEXP s2 = PROTECT(Rf_allocVector(Rcpp::traits::r_sexptype_traits<T>::rtype,
-                                   (R_xlen_t)num_elems));
+  SEXP s2 = PROTECT(Rf_allocVector(TYPEOF(s), (R_xlen_t)num_elems));
   Rf_setAttrib(s2, R_DimSymbol, dims);
   if (num_dims <= 2) Rf_copyMatrix(s2, s, TRUE);
 
   elems_.reserve(num_elems);
   for (int i = 0; i != num_elems; ++i) {
-    elems_.push_back(REAL(s2)[i]);
+    if (Rf_isReal(s))
+      elems_.push_back(REAL(s2)[i]);
+    else if (Rf_isInteger(s))
+      elems_.push_back(INTEGER(s2)[i]);
+    else
+      _SLAB_ERROR("Matrix(SEXP): unsupported SEXP type");
   }
 
   std::array<std::size_t, N> exts;

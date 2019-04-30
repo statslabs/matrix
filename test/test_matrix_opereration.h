@@ -10,7 +10,7 @@
 
 namespace slab {
 
-TEST(MatrixOperationTest, Diag_Vec) {
+TEST(MatrixTest, Diag_Vec) {
   vec v = {1, 2, 3};
   mat m = diag(v);
 
@@ -25,7 +25,7 @@ TEST(MatrixOperationTest, Diag_Vec) {
   EXPECT_EQ(3, m(2, 2));
 }
 
-TEST(MatrixOperationTest, Transpose_Mat) {
+TEST(MatrixTest, Transpose_Mat) {
   mat m1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
   mat m2 = transpose(m1);
 
@@ -40,7 +40,7 @@ TEST(MatrixOperationTest, Transpose_Mat) {
   EXPECT_EQ(9, m2(2, 2));
 }
 
-TEST(MatrixOperationTest, Matmul_Mat_Vec) {
+TEST(MatrixTest, Matmul_Mat_Vec) {
   mat m1 = {{8, 4, 7}, {3, 5, 1}, {1, 3, 2}};
   vec v1 = {-1, 2, 1};
   vec v2 = {3, 2, 3};
@@ -52,7 +52,7 @@ TEST(MatrixOperationTest, Matmul_Mat_Vec) {
   EXPECT_EQ(10, res(2));
 }
 
-TEST(MatrixOperationTest, Matmul_Mat_Mat) {
+TEST(MatrixTest, Matmul_Mat_Mat) {
   mat m1 = {{1, 2, 3}, {4, 5, 6}};
   mat m2 = {{7, 8}, {9, 10}, {11, 12}};
   mat res = matmul(m1, m2);
@@ -63,7 +63,7 @@ TEST(MatrixOperationTest, Matmul_Mat_Mat) {
   EXPECT_EQ(154, res(1, 1));
 }
 
-TEST(MatrixOperationTest, Matmul_N) {
+TEST(MatrixTest, Matmul_N) {
   mat m1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
   mat m2 = m1;
   mat m3 = m1;
@@ -83,7 +83,7 @@ TEST(MatrixOperationTest, Matmul_N) {
   EXPECT_EQ(2412, res(2, 2));
 }
 
-TEST(MatrixOperationTest, Exp) {
+TEST(MatrixTest, Exp) {
   mat m = zeros<mat>(3, 3);
   mat res = exp(m);
 
@@ -98,7 +98,7 @@ TEST(MatrixOperationTest, Exp) {
   EXPECT_EQ(1, res(2, 2));
 }
 
-TEST(MatrixOperationTest, Log) {
+TEST(MatrixTest, Log) {
   mat m = ones<mat>(3, 3);
   mat res = log(m);
 
@@ -113,7 +113,7 @@ TEST(MatrixOperationTest, Log) {
   EXPECT_EQ(0, res(2, 2));
 }
 
-TEST(MatrixOperationTest, Pow) {
+TEST(MatrixTest, Pow) {
   mat m = ones<mat>(3, 3) * 2.0;
   mat res = pow(m, -1);
 

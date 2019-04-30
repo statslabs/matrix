@@ -24,9 +24,11 @@
 #include <cstddef>
 
 #include <complex>
+#include <memory>  // std::addressof
 
-#include "slab/matrix/config.h"
-#include "slab/matrix/error.h"
+#include "slab/__config"
+#include "slab/__error"
+
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/traits.h"

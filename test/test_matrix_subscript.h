@@ -5,7 +5,7 @@
 #include "slab/matrix.h"
 
 namespace slab {
-TEST(MatrixSubscriptTest, SubscriptByFortranStyle) {
+TEST(MatrixTest, SubscriptByFortranStyle) {
   Matrix<int, 2> m{{01, 02, 03}, {11, 12, 13}};
   m(1, 2) = 99;
 
