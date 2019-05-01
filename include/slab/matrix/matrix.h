@@ -371,7 +371,7 @@ class Matrix : public MatrixBase<T, N> {
  public:
   Matrix(const Matrix<double, N> &x, const Matrix<double, N> &y)
       : MatrixBase<T, N>(x.descriptor()) {
-    _SLAB_ASSERT(is_complex_double<value_type>::value, "invalid constructor");
+    _SLAB_ASSERT(is_complex_double<T>::value, "invalid constructor");
     _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
 
     for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end();
@@ -382,7 +382,7 @@ class Matrix : public MatrixBase<T, N> {
 
   Matrix(const Matrix<float, N> &x, const Matrix<float, N> &y)
       : MatrixBase<T, N>(x.descriptor()) {
-    _SLAB_ASSERT(is_complex_float<value_type>::value, "invalid constructor");
+    _SLAB_ASSERT(is_complex_float<T>::value, "invalid constructor");
     _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
 
     for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end();
