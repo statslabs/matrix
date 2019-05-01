@@ -95,50 +95,6 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T1 &alpha,
   }
 }
 
-void blas_dgemv(const CBLAS_TRANSPOSE trans, const double &alpha,
-                const MatrixBase<double, 2> &a, const MatrixBase<double, 1> &x,
-                const double &beta, MatrixBase<double, 1> &y) {
-  const std::size_t m = y.n_rows();
-  const std::size_t n = x.n_rows();
-
-  const std::size_t lda = a.n_cols();
-
-  const std::size_t incx = x.descriptor().strides[0];
-  const std::size_t incy = y.descriptor().strides[0];
-
-  const double *a_ptr = a.data() + a.descriptor().start;
-  const double *x_ptr = x.data() + x.descriptor().start;
-  double *y_ptr = y.data() + y.descriptor().start;
-
-  cblas_dgemv(CblasRowMajor, trans, (const SLAB_INT)m, (const SLAB_INT)n,
-              (const double)alpha, (const double *)a_ptr, (const SLAB_INT)lda,
-              (const double *)x_ptr, (const SLAB_INT)incx, (const double)beta,
-              (double *)y_ptr, (const SLAB_INT)incy);
-}
-
-#ifndef _SLAB_USE_R_BLAS
-void blas_sgemv(const CBLAS_TRANSPOSE trans, const float &alpha,
-                const MatrixBase<float, 2> &a, const MatrixBase<float, 1> &x,
-                const float &beta, MatrixBase<float, 1> &y) {
-  const std::size_t m = y.n_rows();
-  const std::size_t n = x.n_rows();
-
-  const std::size_t lda = a.n_cols();
-
-  const std::size_t incx = x.descriptor().strides[0];
-  const std::size_t incy = y.descriptor().strides[0];
-
-  const float *a_ptr = a.data() + a.descriptor().start;
-  const float *x_ptr = x.data() + x.descriptor().start;
-  float *y_ptr = y.data() + y.descriptor().start;
-
-  cblas_sgemv(CblasRowMajor, trans, (const SLAB_INT)m, (const SLAB_INT)n,
-              (const float)alpha, (const float *)a_ptr, (const SLAB_INT)lda,
-              (const float *)x_ptr, (const SLAB_INT)incx, (const float)beta,
-              (float *)y_ptr, (const SLAB_INT)incy);
-}
-#endif
-
 /// @}
 /// @} BLAS Interface
 

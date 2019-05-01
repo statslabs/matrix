@@ -329,7 +329,7 @@ inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 1> &x) {
   assert(a.extent(1) == x.extent(0));
   Matrix<double, 1> y(a.n_rows());
-  blas_dgemv(CblasNoTrans, 1.0, a, x, 1.0, y);
+  blas_gemv(CblasNoTrans, 1.0, a, x, 0.0, y);
 
   return y;
 }
@@ -340,7 +340,7 @@ inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 1> &x) {
   assert(a.extent(1) == x.extent(0));
   Matrix<float, 1> y(a.n_rows());
-  blas_sgemv(CblasNoTrans, 1.0f, a, x, 1.0f, y);
+  blas_gemv(CblasNoTrans, 1.0f, a, x, 0.0f, y);
 
   return y;
 }
@@ -372,21 +372,8 @@ template <>
 inline Matrix<double, 2> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 2> &b) {
   assert(a.extent(1) == b.extent(0));
-
-  const std::size_t m = a.n_rows();
-  const std::size_t n = b.n_cols();
-  const std::size_t k = a.n_cols();
-
-  const std::size_t lda = a.n_cols();
-  const std::size_t ldb = b.n_cols();
-  const std::size_t ldc = b.n_cols();
-
-  Matrix<double, 2> c(m, n);
-  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, (const int)m,
-              (const int)n, (const int)k, (const double)1.0,
-              (const double *)(a.data() + a.descriptor().start), (const int)lda,
-              (const double *)(b.data() + b.descriptor().start), (const int)ldb,
-              (const double)0.0, (double *)c.data(), (const int)ldc);
+  Matrix<double, 2> c(a.n_rows(), b.n_cols());
+  blas_gemm(CblasNoTrans, CblasNoTrans, 1.0, a, b, 0.0, c);
 
   return c;
 }
@@ -396,21 +383,8 @@ template <>
 inline Matrix<float, 2> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 2> &b) {
   assert(a.extent(1) == b.extent(0));
-
-  const std::size_t m = a.n_rows();
-  const std::size_t n = b.n_cols();
-  const std::size_t k = a.n_cols();
-
-  const std::size_t lda = a.n_cols();
-  const std::size_t ldb = b.n_cols();
-  const std::size_t ldc = b.n_cols();
-
-  Matrix<float, 2> c(m, n);
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, (const int)m,
-              (const int)n, (const int)k, (const float)1.0,
-              (const float *)(a.data() + a.descriptor().start), (const int)lda,
-              (const float *)(b.data() + b.descriptor().start), (const int)ldb,
-              (const float)0.0, (float *)c.data(), (const int)ldc);
+  Matrix<float, 2> c(a.n_rows(), b.n_cols());
+  blas_gemm(CblasNoTrans, CblasNoTrans, 1.0f, a, b, 0.0f, c);
 
   return c;
 }
