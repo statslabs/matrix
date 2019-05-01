@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 // operations.h
 // -----------------------------------------------------------------------------
 //
-#ifndef SLAB_MATRIX_OPERATIONS_H_
-#define SLAB_MATRIX_OPERATIONS_H_
+#ifndef _SLAB_MATRIX_OPERATIONS_H
+#define _SLAB_MATRIX_OPERATIONS_H
 
 #include <cassert>
 #include <cstddef>
@@ -27,12 +27,13 @@
 #include <complex>
 
 #include "slab/__config"
+#include "slab/matrix/blas_interface.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/support.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename M1, typename M2>
 inline Enable_if<Matrix_type<M1>() && Matrix_type<M2>(), bool> operator==(
@@ -327,18 +328,8 @@ template <>
 inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 1> &x) {
   assert(a.extent(1) == x.extent(0));
-  const std::size_t m = a.n_rows();
-  const std::size_t n = a.n_cols();
-  const std::size_t lda = n;
-  const std::size_t incx = x.descriptor().strides[0];
-  const std::size_t incy = 1;
-
-  Matrix<double, 1> y(m);
-  cblas_dgemv(
-      CblasRowMajor, CblasNoTrans, (const int)m, (const int)n,
-      (const double)1.0, (const double *)(a.data() + a.descriptor().start),
-      (const int)lda, (const double *)(x.data() + x.descriptor().start),
-      (const int)incx, (const double)0.0, (double *)y.data(), (const int)incy);
+  Matrix<double, 1> y(a.n_rows());
+  blas_dgemv(CblasNoTrans, 1.0, a, x, 1.0, y);
 
   return y;
 }
@@ -348,18 +339,8 @@ template <>
 inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
                                const MatrixBase<float, 1> &x) {
   assert(a.extent(1) == x.extent(0));
-  const std::size_t m = a.n_rows();
-  const std::size_t n = a.n_cols();
-  const std::size_t lda = n;
-  const std::size_t incx = x.descriptor().strides[0];
-  const std::size_t incy = 1;
-
-  Matrix<float, 1> y(m);
-  cblas_sgemv(CblasRowMajor, CblasNoTrans, (const int)m, (const int)n,
-              (const float)1.0,
-              (const float *)(a.data() + a.descriptor().start), (const int)lda,
-              (const float *)(x.data() + x.descriptor().start), (const int)incx,
-              (const float)0.0, (float *)y.data(), (const int)incy);
+  Matrix<float, 1> y(a.n_rows());
+  blas_sgemv(CblasNoTrans, 1.0f, a, x, 1.0f, y);
 
   return y;
 }
@@ -471,6 +452,6 @@ inline T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
   return res;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_OPERATIONS_H_
+#endif  // _SLAB_MATRIX_OPERATIONS_H

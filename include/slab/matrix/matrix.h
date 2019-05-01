@@ -369,20 +369,24 @@ class Matrix : public MatrixBase<T, N> {
   // ---------------------------------------------
 
  public:
-  Matrix<std::complex<double>, N>(const Matrix<double, N> &x, const Matrix<double, N> &y)
+  Matrix<std::complex<double>, N>(const Matrix<double, N> &x,
+                                  const Matrix<double, N> &y)
       : MatrixBase<T, N>(x.descriptor()) {
     _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
 
-    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end(); ++iter1, ++iter2) {
-        elems_.push_back(std::complex<double>(*iter1, *iter2));
+    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end();
+         ++iter1, ++iter2) {
+      elems_.push_back(std::complex<double>(*iter1, *iter2));
     }
   }
 
-  Matrix<std::complex<float>, N>(const Matrix<float, N> &x, const Matrix<float, N> &y)
+  Matrix<std::complex<float>, N>(const Matrix<float, N> &x,
+                                 const Matrix<float, N> &y)
       : MatrixBase<T, N>(x.descriptor()) {
     _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
 
-    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end(); ++iter1, ++iter2) {
+    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end();
+         ++iter1, ++iter2) {
       elems_.push_back(std::complex<float>(*iter1, *iter2));
     }
   }
