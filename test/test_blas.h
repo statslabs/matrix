@@ -11,6 +11,11 @@ TEST(BLASTest, LEVEL1_ASUM) {
   EXPECT_EQ(24, blas_asum(v));
   EXPECT_EQ(6, blas_asum(v.subvec(3, 5)));
   EXPECT_EQ(6, blas_asum(m.col(1)));
+
+  vec cx_v_real = {6, 6, 6, 1, 2, 3};
+  vec cx_v_imag = {1, 1, 1, 1, 1, 1};
+  cx_vec cx_v(cx_v_real, cx_v_imag);
+  EXPECT_EQ(30, blas_asum(cx_v));
 }
 
 TEST(BLASTest, LEVEL1_AXPY) {
