@@ -1,10 +1,7 @@
 #ifndef MATRIX_TEST_MATRIX_BLAS_H
 #define MATRIX_TEST_MATRIX_BLAS_H
 
-#include <cstring>
-
 #include <complex>
-
 #include "slab/matrix.h"
 
 namespace slab {
