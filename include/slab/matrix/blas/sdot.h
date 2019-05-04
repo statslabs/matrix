@@ -41,8 +41,8 @@ _SLAB_BEGIN_NAMESPACE
 /// @param sy Vector with type fvec.
 /// @return The result of the dot product of sx and sy (with sb added).
 ///
-inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
-                         const Matrix<float, 1> &sy) {
+inline float blas_sdsdot(const float sb, const MatrixBase<float, 1> &sx,
+                         const MatrixBase<float, 1> &sy) {
   _SLAB_ASSERT(sx.size() == sy.size(),
                "blas_sdsdoc(): incompatible vector dimensions");
 
@@ -69,8 +69,8 @@ inline float blas_sdsdot(const float sb, const Matrix<float, 1> &sx,
 /// @param sy Vector with type fvec
 /// @return The result of the dot product of sx and sy
 ///
-inline double blas_dsdot(const Matrix<float, 1> &sx,
-                         const Matrix<float, 1> &sy) {
+inline double blas_dsdot(const MatrixBase<float, 1> &sx,
+                         const MatrixBase<float, 1> &sy) {
   _SLAB_ASSERT(sx.size() == sy.size(),
                "blas_dsdoc(): incompatible vector dimensions");
 

@@ -81,6 +81,7 @@ TEST(BLASTest, LEVEL1_COPY) {
 }
 
 TEST(BLASTest, LEVEL1_DOT) {
+  // value_type: double
   vec v = {6, 6, 6, 1, 2, 3};
 
   EXPECT_EQ(122, blas_dot(v, v));
@@ -94,6 +95,21 @@ TEST(BLASTest, LEVEL1_SDOT) {
   EXPECT_EQ(122, blas_dsdot(v, v));
   EXPECT_EQ(15, blas_sdsdot(1.0f, v.subvec(3, 5), v.subvec(3, 5)));
   EXPECT_EQ(14, blas_dsdot(v.subvec(3, 5), v.subvec(3, 5)));
+}
+
+TEST(BLASTest, LEVEL1_DOTC) {
+  // value_type: std::complex<double>
+  vec cx_v_real = {6, 6, 6, 1, 2, 3};
+  vec cx_v_imag = {1, 1, 1, 1, 1, 1};
+  cx_vec cx_v(cx_v_real, cx_v_imag);
+  std::complex<double> dotc;
+  blas_dotc_sub(cx_v, cx_v, dotc);
+
+  EXPECT_EQ(std::complex<double>(128, 0), dotc);
+
+  blas_dotc_sub(cx_v.subvec(3, 5), cx_v.subvec(3, 5), dotc);
+
+  EXPECT_EQ(std::complex<double>(17, 0), dotc);
 }
 
 TEST(BLASTest, LEVEL1_SWAP) {

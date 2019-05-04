@@ -43,8 +43,7 @@ _SLAB_BEGIN_NAMESPACE
 /// @return Void.
 ///
 template <typename T, typename T1>
-inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x,
-                      MatrixBase<T, 1> &y) {
+inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x, Matrix<T, 1> &y) {
   static_assert(Convertible<T1, T>(),
                 "blas_axpy(): incompatible element type for alpha");
   _SLAB_ASSERT(x.size() == y.size(),
