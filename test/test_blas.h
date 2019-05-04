@@ -1,17 +1,23 @@
 #ifndef MATRIX_TEST_MATRIX_BLAS_H
 #define MATRIX_TEST_MATRIX_BLAS_H
 
+#include <cstring>
+
+#include <complex>
+
 #include "slab/matrix.h"
 
 namespace slab {
 
 TEST(BLASTest, LEVEL1_ASUM) {
+  // value_type: double
   vec v = {6, 6, 6, 1, 2, 3};
   mat m = {{6, 1}, {6, 2}, {6, 3}};
   EXPECT_EQ(24, blas_asum(v));
   EXPECT_EQ(6, blas_asum(v.subvec(3, 5)));
   EXPECT_EQ(6, blas_asum(m.col(1)));
 
+  // value_type: std::complex<double>
   vec cx_v_real = {6, 6, 6, 1, 2, 3};
   vec cx_v_imag = {1, 1, 1, 1, 1, 1};
   cx_vec cx_v(cx_v_real, cx_v_imag);
@@ -19,30 +25,33 @@ TEST(BLASTest, LEVEL1_ASUM) {
 }
 
 TEST(BLASTest, LEVEL1_AXPY) {
+  // value_type: double
   int a = 9;
   vec x = {6, 6, 6, 1, 2, 3};
   vec y = {6, 6, 6, 1, 2, 3};
-  vec z = {6, 6, 6, 1, 2, 3};
-
   blas_axpy(a, x, y);
 
-  EXPECT_EQ(60, y(0));
-  EXPECT_EQ(60, y(1));
-  EXPECT_EQ(60, y(2));
-  EXPECT_EQ(10, y(3));
-  EXPECT_EQ(20, y(4));
-  EXPECT_EQ(30, y(5));
+  vec y_expect = {60, 60, 60, 10, 20, 30};
+  for (uword i = 0; i != y.size(); ++i) EXPECT_EQ(y_expect(i), y(i));
 
-  // no known conversion from 'MatrixRef<double, 1>' to 'MatrixBase<double, 1>
-  // &' for 3rd argument ?!
-  /* blas_axpy(a, x.subvec(3, 5), z.subvec(3, 5)); */
+  vec y2 = {1, 2, 3};
+  blas_axpy(a, x.subvec(3, 5), y2);
 
-  /* EXPECT_EQ(0, z(0)); */
-  /* EXPECT_EQ(0, z(1)); */
-  /* EXPECT_EQ(0, z(2)); */
-  /* EXPECT_EQ(10, z(3)); */
-  /* EXPECT_EQ(20, z(4)); */
-  /* EXPECT_EQ(30, z(5)); */
+  vec y2_expect = {10, 20, 30};
+  for (uword i = 0; i != y2.size(); ++i) EXPECT_EQ(y2_expect(i), y2(i));
+
+  // value_type: std::complex<double>
+  std::complex<double> cx_a(9.0, 1.0);
+  vec cx_x_real = {6, 6, 6, 1, 2, 3};
+  vec cx_x_imag = {1, 1, 1, 1, 1, 1};
+  cx_vec cx_x(cx_x_real, cx_x_imag);
+  cx_vec cx_y(cx_x_real, cx_x_imag);
+  blas_axpy(cx_a, cx_x, cx_y);
+
+  vec cx_y_real_expect = {59, 59, 59, 9, 19, 29};
+  vec cx_y_imag_expect = {16, 16, 16, 11, 12, 13};
+  cx_vec cx_y_expect(cx_y_real_expect, cx_y_imag_expect);
+  for (uword i = 0; i != cx_y.size(); ++i) EXPECT_EQ(cx_y_expect(i), cx_y(i));
 }
 
 TEST(BLASTest, LEVEL1_COPY) {
