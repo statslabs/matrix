@@ -142,6 +142,37 @@ TEST(BLASTest, LEVEL1_NRM2) {
   EXPECT_NEAR(11.313708499, blas_nrm2(cx_v), 1e-5);
 }
 
+TEST(BLASTest, Level1_ROT) {
+  // We set up two vec's, x and y
+  vec x = {6.0, 0.0, 1.0, 4.0, -1.0};
+  vec y = {5.0, 1.0, -4.0, 4.0, -4.0};
+
+  // We rotate them by 45 degrees where
+  //    cos(45) = 0.707106781
+  //    sin(45) = 0.707106781
+  blas_rot(x, y, 0.707106781, 0.707106781);
+
+  // NOTE that the input arguments, x and y were modified
+  vec x_expect = {7.778174591, 0.70710678100000002, -2.1213203429999998,
+                  5.6568542480000001, -3.5355339050000003};
+  vec y_expect = {-0.70710678100000002, 0.70710678100000002,
+                  -3.5355339050000003, 0., -2.1213203429999998};
+  for (uword i = 0; i != x.size(); ++i) EXPECT_NEAR(x_expect(i), x(i), 1e-5);
+  for (uword i = 0; i != y.size(); ++i) EXPECT_NEAR(y_expect(i), y(i), 1e-5);
+
+  // We rotate them by -45 degrees where
+  //    cos(45) = 0.707106781
+  //    sin(45) = -0.707106781
+  blas_rot(x, y, 0.707106781, -0.707106781);
+
+  x_expect = {5.9999999968341839, 7.8496237287950521E-17, 0.99999999947236384,
+              3.9999999978894558, -0.99999999947236451};
+  y_expect = {4.9999999973618188, 0.99999999947236384, -3.9999999978894558,
+              3.9999999978894554, -3.9999999978894554};
+  for (uword i = 0; i != x.size(); ++i) EXPECT_NEAR(x_expect(i), x(i), 1e-5);
+  for (uword i = 0; i != y.size(); ++i) EXPECT_NEAR(y_expect(i), y(i), 1e-5);
+}
+
 TEST(BLASTest, LEVEL1_SWAP) {
   Matrix<double, 1> m1 = {4, 5, 6};
   Matrix<double, 1> m1s = {1, 2, 3};
