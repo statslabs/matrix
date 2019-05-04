@@ -127,6 +127,21 @@ TEST(BLASTest, LEVEL1_DOTU) {
   EXPECT_EQ(std::complex<double>(11, 12), dotu);
 }
 
+TEST(BLASTest, LEVEL1_NRM2) {
+  // value_type: double
+  vec v = {6, 6, 6, 1, 2, 3};
+  mat m = {{6, 1}, {6, 2}, {6, 3}};
+  EXPECT_NEAR(11.0453610172, blas_nrm2(v), 1e-5);
+  EXPECT_NEAR(3.74165738677, blas_nrm2(v.subvec(3, 5)), 1e-5);
+  EXPECT_NEAR(3.74165738677, blas_nrm2(m.col(1)), 1e-5);
+
+  // value_type: std::complex<double>
+  vec cx_v_real = {6, 6, 6, 1, 2, 3};
+  vec cx_v_imag = {1, 1, 1, 1, 1, 1};
+  cx_vec cx_v(cx_v_real, cx_v_imag);
+  EXPECT_NEAR(11.313708499, blas_nrm2(cx_v), 1e-5);
+}
+
 TEST(BLASTest, LEVEL1_SWAP) {
   Matrix<double, 1> m1 = {4, 5, 6};
   Matrix<double, 1> m1s = {1, 2, 3};

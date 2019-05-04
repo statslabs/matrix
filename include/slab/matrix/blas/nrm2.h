@@ -41,7 +41,7 @@ _SLAB_BEGIN_NAMESPACE
 /// @return The Euclidean norm of the vector x.
 ///
 template <typename T>
-inline double blas_nrm2(const Matrix<T, 1> &x) {
+inline T blas_nrm2(const MatrixBase<T, 1> &x) {
   const std::size_t n = x.size();
   const std::size_t incx = x.descriptor().strides[0];
   const T *x_ptr = x.data() + x.descriptor().start;
@@ -50,17 +50,35 @@ inline double blas_nrm2(const Matrix<T, 1> &x) {
   if (is_double<T>::value) {
     res = cblas_dnrm2((const SLAB_INT)n, (const double *)x_ptr,
                       (const SLAB_INT)incx);
-  } else if (is_complex_double<T>::value) {
-    return cblas_dznrm2((const SLAB_INT)n, (const void *)x_ptr,
-                        (const SLAB_INT)incx);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     res = cblas_snrm2((const SLAB_INT)n, (const float *)x_ptr,
                       (const SLAB_INT)incx);
-  } else if (is_complex_float<T>::value) {
-    return cblas_scnrm2((const SLAB_INT)n, (const void *)x_ptr,
-                        (const SLAB_INT)incx);
+  }
+#endif
+  else {
+    _SLAB_ERROR("blas_nrm2(): unsupported element type.");
+  }
+
+  return res;
+}
+
+template <typename T>
+inline T blas_nrm2(const MatrixBase<std::complex<T>, 1> &x) {
+  const std::size_t n = x.size();
+  const std::size_t incx = x.descriptor().strides[0];
+  const std::complex<T> *x_ptr = x.data() + x.descriptor().start;
+
+  T res = {};  // C++11: zero initialization
+  if (is_double<T>::value) {
+    res = cblas_dznrm2((const SLAB_INT)n, (const void *)x_ptr,
+                       (const SLAB_INT)incx);
+  }
+#ifndef _SLAB_USE_R_BLAS
+  else if (is_float<T>::value) {
+    res = cblas_scnrm2((const SLAB_INT)n, (const void *)x_ptr,
+                       (const SLAB_INT)incx);
   }
 #endif
   else {
