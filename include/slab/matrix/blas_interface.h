@@ -42,6 +42,7 @@
 #include "slab/matrix/blas/dotu.h"
 #include "slab/matrix/blas/iamax.h"
 #include "slab/matrix/blas/nrm2.h"
+#include "slab/matrix/blas/rot.h"
 #include "slab/matrix/blas/scal.h"
 #include "slab/matrix/blas/sdot.h"
 #include "slab/matrix/blas/swap.h"
@@ -53,32 +54,5 @@
 
 // BLAS Level 3 Routines and Functions
 #include "slab/matrix/blas/gemm.h"
-
-namespace slab {
-
-// Computes the parameters for a Givens rotation
-// template<typename T>
-// void blas_rotg(Matrix<T, 1> &a, Matrix<T, 1> &b, Matrix<T, 1> &c, Matrix<T,
-// 1> &s) {
-//  if (is_double<T>::value) {
-//    cblas_drotg((double *) a.data(),
-//                (double *) b.data(),
-//                (double *) c.data(),
-//                (double *) s.data());
-//  } else if (is_float<T>::value) {
-//    cblas_srotg((float *) a.data(), (float *) b.data(), (float *) c.data(),
-//    (float *) s.data());
-//  } else if (is_complex_double<T>::value) {
-//    cblas_zrotg((std::complex<double> *) a.data(), (const std::complex<double>
-//    *) b.data(),
-//                (double *) c.data(), (std::complex<double> *) s.data());
-//  } else if (is_complex_float<T>::value) {
-//    cblas_crotg((std::complex<float> *) a.data(), (const std::complex<float>
-//    *) b.data(),
-//                (float *) c.data(), (std::complex<float> *) s.data());
-//  }
-//}
-
-}  // namespace slab
 
 #endif  // SLAB_MATRIX_BLAS_INTERFACE_H_
