@@ -52,28 +52,32 @@ TEST(BLASTest, LEVEL1_AXPY) {
 }
 
 TEST(BLASTest, LEVEL1_COPY) {
+  // value_type: double
   vec x = {6, 6, 6, 1, 2, 3}, y;
-
   blas_copy(x, y);
 
-  EXPECT_EQ(6, y(0));
-  EXPECT_EQ(6, y(1));
-  EXPECT_EQ(6, y(2));
-  EXPECT_EQ(1, y(3));
-  EXPECT_EQ(2, y(4));
-  EXPECT_EQ(3, y(5));
+  vec y_expect = {6, 6, 6, 1, 2, 3};
+  for (uword i = 0; i != y.size(); ++i) EXPECT_EQ(y_expect(i), y(i));
 
   blas_copy(x.subvec(3, 5), y);
 
-  EXPECT_EQ(1, y(0));
-  EXPECT_EQ(2, y(1));
-  EXPECT_EQ(3, y(2));
+  y_expect = {1, 2, 3};
+  for (uword i = 0; i != y.size(); ++i) EXPECT_EQ(y_expect(i), y(i));
 
   // now: y = {1, 2, 3}
   blas_copy(y, y);
-  EXPECT_EQ(1, y(0));
-  EXPECT_EQ(2, y(1));
-  EXPECT_EQ(3, y(2));
+
+  y_expect = {1, 2, 3};
+  for (uword i = 0; i != y.size(); ++i) EXPECT_EQ(y_expect(i), y(i));
+
+  // value_type: std::complex<double>
+  vec cx_x_real = {6, 6, 6, 1, 2, 3};
+  vec cx_x_imag = {1, 1, 1, 1, 1, 1};
+  cx_vec cx_x(cx_x_real, cx_x_imag), cx_y;
+  blas_copy(cx_x, cx_y);
+
+  cx_vec cx_y_expect{cx_x};
+  for (uword i = 0; i != cx_y.size(); ++i) EXPECT_EQ(cx_y_expect(i), cx_y(i));
 }
 
 TEST(BLASTest, LEVEL1_DOT) {
