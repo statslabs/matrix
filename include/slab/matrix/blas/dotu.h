@@ -42,29 +42,27 @@ _SLAB_BEGIN_NAMESPACE
 /// @return Void.
 ///
 template <typename T>
-inline void blas_dotu_sub(const Matrix<T, 1> &x, const Matrix<T, 1> &y,
-                          Matrix<T, 1> &dotu) {
+inline void blas_dotu_sub(const MatrixBase<T, 1> &x, const MatrixBase<T, 1> &y,
+                          T &dotu) {
   _SLAB_ASSERT(x.size() == y.size(),
                "blas_dotu_sub(): incompatible vector dimensions");
-  dotu = Matrix<T, 1>(x.size());
 
   const std::size_t n = x.size();
   const std::size_t incx = x.descriptor().strides[0];
   const std::size_t incy = y.descriptor().strides[0];
   const T *x_ptr = x.data() + x.descriptor().start;
   const T *y_ptr = y.data() + y.descriptor().start;
-  T *dotu_ptr = dotu.data() + dotu.descriptor().start;
 
   if (is_complex_double<T>::value) {
     cblas_zdotu_sub((const SLAB_INT)n, (const void *)x_ptr,
                     (const SLAB_INT)incx, (const void *)y_ptr,
-                    (const SLAB_INT)incy, (void *)dotu_ptr);
+                    (const SLAB_INT)incy, (void *)(&dotu));
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_complex_float<T>::value) {
     cblas_cdotu_sub((const SLAB_INT)n, (const void *)x_ptr,
                     (const SLAB_INT)incx, (const void *)y_ptr,
-                    (const SLAB_INT)incy, (void *)dotu_ptr);
+                    (const SLAB_INT)incy, (void *)(&dotu));
   }
 #endif
   else {

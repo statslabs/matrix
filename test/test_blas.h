@@ -112,6 +112,21 @@ TEST(BLASTest, LEVEL1_DOTC) {
   EXPECT_EQ(std::complex<double>(17, 0), dotc);
 }
 
+TEST(BLASTest, LEVEL1_DOTU) {
+  // value_type: std::complex<double>
+  vec cx_v_real = {6, 6, 6, 1, 2, 3};
+  vec cx_v_imag = {1, 1, 1, 1, 1, 1};
+  cx_vec cx_v(cx_v_real, cx_v_imag);
+  std::complex<double> dotu;
+  blas_dotu_sub(cx_v, cx_v, dotu);
+
+  EXPECT_EQ(std::complex<double>(116, 48), dotu);
+
+  blas_dotu_sub(cx_v.subvec(3, 5), cx_v.subvec(3, 5), dotu);
+
+  EXPECT_EQ(std::complex<double>(11, 12), dotu);
+}
+
 TEST(BLASTest, LEVEL1_SWAP) {
   Matrix<double, 1> m1 = {4, 5, 6};
   Matrix<double, 1> m1s = {1, 2, 3};
