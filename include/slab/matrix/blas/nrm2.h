@@ -37,7 +37,7 @@ _SLAB_BEGIN_NAMESPACE
 /// where: \f$x\f$ is a vector, \f$res\f$ is a value containing the
 /// Euclidean norm of the elements of \f$x\f$.
 ///
-/// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
+/// @param x Vector with type vec/fvec.
 /// @return The Euclidean norm of the vector x.
 ///
 template <typename T>
@@ -64,6 +64,18 @@ inline T blas_nrm2(const MatrixBase<T, 1> &x) {
   return res;
 }
 
+/// @brief Computes the Euclidean norm of a vector.
+///
+/// The nrm2 routines perform a vector reduction operation defined as
+/// \f[
+/// res = ||x||
+/// \f]
+/// where: \f$x\f$ is a vector, \f$res\f$ is a value containing the
+/// Euclidean norm of the elements of \f$x\f$.
+///
+/// @param x Vector with type cx_vec/cx_fvec.
+/// @return The Euclidean norm of the vector x.
+///
 template <typename T>
 inline T blas_nrm2(const MatrixBase<std::complex<T>, 1> &x) {
   const std::size_t n = x.size();
