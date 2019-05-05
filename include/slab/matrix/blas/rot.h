@@ -65,7 +65,7 @@ inline void blas_rot(Matrix<T, 1> &x, Matrix<T, 1> &y, const T c, const T s) {
   }
 #endif
   else {
-    _SLAB_ERROR("blas_asum(): unsupported element type.");
+    _SLAB_ERROR("blas_rot(): unsupported element type.");
   }
 }
 
@@ -107,7 +107,7 @@ inline void blas_rot(Matrix<std::complex<T>, 1> &x,
   }
 #endif
   else {
-    _SLAB_ERROR("blas_asum(): unsupported element type.");
+    _SLAB_ERROR("blas_rot(): unsupported element type.");
   }
 }
 
