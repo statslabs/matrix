@@ -43,6 +43,7 @@
 #include "slab/matrix/blas/iamax.h"
 #include "slab/matrix/blas/nrm2.h"
 #include "slab/matrix/blas/rot.h"
+#include "slab/matrix/blas/rotg.h"
 #include "slab/matrix/blas/scal.h"
 #include "slab/matrix/blas/sdot.h"
 #include "slab/matrix/blas/swap.h"
