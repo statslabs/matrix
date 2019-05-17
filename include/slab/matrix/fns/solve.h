@@ -22,6 +22,7 @@
 
 namespace slab {
 
+#ifndef _SLAB_USE_NO_LAPACK
 template <typename T>
 inline Matrix<T, 2> solve(const Matrix<T, 2> &a, const Matrix<T, 2> &b) {
   ignore(a);
@@ -135,6 +136,7 @@ inline Matrix<T, 2> solve(const Matrix<T, 2> &a) {
   Matrix<T, 2> b = eye<Matrix<T, 2>>(a.n_rows(), a.n_cols());
   return solve(a, b);
 }
+#endif
 
 }  // namespace slab
 

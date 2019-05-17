@@ -20,9 +20,37 @@
 #ifndef _SLAB_CONFIG
 #define _SLAB_CONFIG
 
+//////////////////////////////////////////////////
+// Configure BLAS/LAPACK through cmake
+//////////////////////////////////////////////////
+
 #ifdef USE_MKL
 #define _SLAB_USE_MKL
 #endif
+
+#ifdef USE_OPENBLAS
+#define _SLAB_USE_OPENBLAS
+#endif
+
+#ifdef USE_APPLE
+#define _SLAB_USE_APPLE
+#endif
+
+#ifdef USE_SUNPERF
+#define _SLAB_USE_SUNPERF
+#endif
+
+#ifdef USE_NO_BLAS
+#define _SLAB_USE_NO_BLAS
+#endif
+
+#ifdef USE_NO_LAPACK
+#define _SLAB_USE_NO_LAPACK
+#endif
+
+//////////////////////////////////////////////////
+// Configure BLAS/LAPACK manually
+//////////////////////////////////////////////////
 
 #if !defined(_SLAB_USE_MKL)
 // #define _SLAB_USE_MKL
@@ -43,6 +71,20 @@
 // #define _SLAB_USE_SUNPERF
 //// Uncomment the above line if using Sun Performance Library
 #endif
+
+#if !defined(_SLAB_USE_NO_BLAS)
+// #define _SLAB_USE_NO_BLAS
+//// Uncomment the above line to disable BLAS use
+#endif
+
+#if !defined(_SLAB_USE_NO_LAPACK)
+// #define _SLAB_USE_NO_LAPACK
+//// Uncomment the above line to disable LAPACK use
+#endif
+
+//////////////////////////////////////////////////
+// Configure R package RcppStatslabs
+//////////////////////////////////////////////////
 
 #if !defined(_SLAB_USE_R)
 // #define _SLAB_USE_R
@@ -107,7 +149,7 @@
 #include "mkl.h"
 #elif defined(_SLAB_USE_SUNPERF)
 #include "sunperf.h"
-#else
+#elseif !defined(_SLAB_USE_NO_BLAS)
 #include "cblas.h"
 #endif
 

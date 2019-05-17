@@ -33,11 +33,16 @@
 #include "slab/matrix/matrix_ops.h"
 #include "slab/matrix/packed_matrix.h"
 
-#include "slab/matrix/blas_interface.h"
 #include "slab/matrix/matrix_fns.h"
 #include "slab/matrix/type_alias.h"
 
+#ifndef _SLAB_USE_NO_BLAS
+#include "slab/matrix/blas_interface.h"
+#endif
+
+#ifndef _SLAB_USE_NO_LAPACK
 #include "slab/matrix/lapack_interface.h"  // TODO: remove this header, provide BLAS interface only
+#endif
 
 #ifdef _SLAB_USE_RCPP_AS_WRAP
 #include <Rcpp.h>

@@ -92,19 +92,7 @@ class MatrixRef : public MatrixBase<T, N> {
   // ---------------------------------------------
  public:
   //! m(i,j,k) subscripting with integers
-  ///@{
-  template <typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), T &> operator()(
-      Args... args) {
-    return MatrixBase<T, N>::template operator()<Args...>(args...);
-  }
-
-  template <typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), const T &> operator()(
-      Args... args) const {
-    return MatrixBase<T, N>::template operator()<Args...>(args...);
-  }
-  ///@}
+  using MatrixBase<T, N>::operator();
 
   //! m(s1, s2, s3) subscripting with slides
   ///@{

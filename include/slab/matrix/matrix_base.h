@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// -----------------------------------------------------------------------------
-// matrix_base.h
-// -----------------------------------------------------------------------------
-//
-#ifndef SLAB_MATRIX_MATRIX_BASE_H_
-#define SLAB_MATRIX_MATRIX_BASE_H_
+
+/// @file matrix_base.h
+
+#ifndef _SLAB_MATRIX_MATRIX_BASE_H
+#define _SLAB_MATRIX_MATRIX_BASE_H
 
 #include <cassert>
 #include <cstddef>
@@ -26,11 +24,13 @@
 
 #include <iostream>
 
+#include "slab/__config"
+
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/support.h"
 #include "slab/matrix/traits.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename T, std::size_t N>
 class MatrixBase {
@@ -74,10 +74,12 @@ class MatrixBase {
 
   // m(i,j,k) subscripting with integers
   template <typename... Args>
-  T &operator()(Args... args);
+  Enable_if<matrix_impl::Requesting_element<Args...>(), T &> operator()(
+      Args... args);
 
   template <typename... Args>
-  const T &operator()(Args... args) const;
+  Enable_if<matrix_impl::Requesting_element<Args...>(), const T &> operator()(
+      Args... args) const;
 
  protected:
   MatrixSlice<N> desc_;  // slice defining extents in the N dimensions
@@ -85,14 +87,16 @@ class MatrixBase {
 
 template <typename T, std::size_t N>
 template <typename... Args>
-T &MatrixBase<T, N>::operator()(Args... args) {
+Enable_if<matrix_impl::Requesting_element<Args...>(), T &> MatrixBase<T, N>::
+operator()(Args... args) {
   assert(matrix_impl::check_bounds(this->desc_, args...));
   return *(data() + this->desc_(args...));
 }
 
 template <typename T, std::size_t N>
 template <typename... Args>
-const T &MatrixBase<T, N>::operator()(Args... args) const {
+Enable_if<matrix_impl::Requesting_element<Args...>(), const T &>
+MatrixBase<T, N>::operator()(Args... args) const {
   assert(matrix_impl::check_bounds(this->desc_, args...));
   return *(data() + this->desc_(args...));
 }
@@ -115,6 +119,6 @@ void raw_print(const M &m) {
   }
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_MATRIX_BASE_H_
+#endif  // _SLAB_MATRIX_MATRIX_BASE_H

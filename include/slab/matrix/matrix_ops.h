@@ -27,11 +27,14 @@
 #include <complex>
 
 #include "slab/__config"
-#include "slab/matrix/blas_interface.h"
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/matrix_ref.h"
 #include "slab/matrix/support.h"
+
+#ifndef _SLAB_USE_NO_BLAS
+#include "slab/matrix/blas_interface.h"
+#endif
 
 _SLAB_BEGIN_NAMESPACE
 
@@ -324,6 +327,7 @@ inline Matrix<T, 1> matmul(const MatrixBase<T, 2> &a,
   return y;
 }
 
+#ifndef _SLAB_USE_NO_BLAS
 template <>
 inline Matrix<double, 1> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 1> &x) {
@@ -344,6 +348,7 @@ inline Matrix<float, 1> matmul(const MatrixBase<float, 2> &a,
 
   return y;
 }
+#endif
 #endif
 
 template <typename T>
@@ -368,6 +373,7 @@ inline Matrix<T, 2> matmul(const MatrixBase<T, 2> &a,
   return c;
 }
 
+#ifndef _SLAB_USE_NO_BLAS
 template <>
 inline Matrix<double, 2> matmul(const MatrixBase<double, 2> &a,
                                 const MatrixBase<double, 2> &b) {
@@ -388,6 +394,7 @@ inline Matrix<float, 2> matmul(const MatrixBase<float, 2> &a,
 
   return c;
 }
+#endif
 #endif
 
 template <typename T>

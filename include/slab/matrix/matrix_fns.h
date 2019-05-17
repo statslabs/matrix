@@ -24,12 +24,16 @@
 #include <complex>
 #include <type_traits>
 
+#include "slab/__config"
+
+#ifndef _SLAB_USE_NO_LAPACK
 #ifdef _SLAB_USE_MKL
 #include "mkl.h"
 #else
 extern "C" {
 #include "lapacke.h"
 }
+#endif
 #endif
 
 #include "slab/matrix/fns/eye.h"
