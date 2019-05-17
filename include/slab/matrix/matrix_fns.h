@@ -17,8 +17,8 @@
 /// @file matrix_fns.h
 /// @brief A collection of functions for Matrix
 
-#ifndef STATSLABS_MATRIX_MATRIX_FNS_H_
-#define STATSLABS_MATRIX_MATRIX_FNS_H_
+#ifndef _SLAB_MATRIX_MATRIX_FNS_H
+#define _SLAB_MATRIX_MATRIX_FNS_H
 
 #include <algorithm>
 #include <complex>
@@ -55,7 +55,8 @@ extern "C" {
 
 #include "slab/matrix/fns/chol.h"
 #include "slab/matrix/fns/inv.h"
+#include "slab/matrix/fns/lu.h"
 #include "slab/matrix/fns/pinv.h"
 #include "slab/matrix/fns/solve.h"
 
-#endif  // STATSLABS_MATRIX_MATRIX_FNS_H_
+#endif  // _SLAB_MATRIX_MATRIX_FNS_H
