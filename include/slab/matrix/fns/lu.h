@@ -23,8 +23,7 @@
 _SLAB_BEGIN_NAMESPACE
 
 template <typename T>
-inline void lu(Matrix<T, 2> &L, Matrix<T, 2> &U, const Matrix<T, 2> &X)
-{
+inline void lu(Matrix<T, 2> &L, Matrix<T, 2> &U, const Matrix<T, 2> &X) {
   _SLAB_ASSERT(X.n_rows() == X.n_cols(), "X should be a square matrix");
 
   std::size_t n = X.n_rows();
@@ -42,7 +41,7 @@ inline void lu(Matrix<T, 2> &L, Matrix<T, 2> &U, const Matrix<T, 2> &X)
       // Summation of L(i, j) * U(j, k)
       T sum = {};
       for (std::size_t j = 0; j < i; ++j) {
-  	sum += L(i, j) * U(j, k);
+        sum += L(i, j) * U(j, k);
       }
 
       // Evaluating U(i, k)
@@ -54,7 +53,7 @@ inline void lu(Matrix<T, 2> &L, Matrix<T, 2> &U, const Matrix<T, 2> &X)
       // Summation of L(k, j) * U(j, i)
       T sum = {};
       for (std::size_t j = 0; j < i; ++j) {
-  	sum += L(k, j) * U(j, i);
+        sum += L(k, j) * U(j, i);
       }
 
       // Evaluating L(k, i)

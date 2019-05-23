@@ -124,13 +124,15 @@ Matrix<T, 1> back_substitution(const Matrix<T, 2> &A, const Matrix<T, 1> &b) {
 }
 
 template <typename T>
-Matrix<T, 1> forward_substitution(const Matrix<T, 2> &A, const Matrix<T, 1> &b) {
+Matrix<T, 1> forward_substitution(const Matrix<T, 2> &A,
+                                  const Matrix<T, 1> &b) {
   const std::size_t n = A.n_rows();
   Matrix<T, 1> x(n);
 
   for (int i = 0; i < n; ++i) {
     T s = {};
-    if (i == 0) s = b(i);
+    if (i == 0)
+      s = b(i);
     else {
       s = b(i) - dot_product(A[i](slice(0, i)), x(slice(0, i)));
     }
@@ -145,13 +147,13 @@ Matrix<T, 1> forward_substitution(const Matrix<T, 2> &A, const Matrix<T, 1> &b) 
 template <typename T>
 inline bool inverse(Matrix<T, 2> &b, const Matrix<T, 2> &a) {
   std::size_t n = a.n_rows();
-  b = zeros<Matrix<T, 2>>(n, n);
+  b = zeros<Matrix<T, 2> >(n, n);
 
   Matrix<T, 2> L, U;
   lu(L, U, a);
 
   for (std::size_t i = 0; i != n; ++i) {
-    Matrix<T, 1> vec_one = zeros<Matrix<T, 1>>(n);
+    Matrix<T, 1> vec_one = zeros<Matrix<T, 1> >(n);
     vec_one(i) = T{1};
 
     Matrix<T, 1> tmp;
