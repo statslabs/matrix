@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,15 +17,15 @@
 /// @file type_alias.h
 /// @brief Type alias
 
-#ifndef SLAB_MATRIX_TYPEDEF_H_
-#define SLAB_MATRIX_TYPEDEF_H_
+#ifndef _SLAB_MATRIX_TYPE_ALIAS_H
+#define _SLAB_MATRIX_TYPE_ALIAS_H
 
 #include <complex>
 
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/packed_matrix.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 using uword = unsigned int;
 using sword = signed int;
@@ -102,6 +102,6 @@ using utri_cx_fmat = TriangularMatrix<std::complex<float>, upper>;
 using ltri_cx_fmat = TriangularMatrix<std::complex<float>, lower>;
 using herm_cx_fmat = HermitianMatrix<std::complex<float>, upper>;
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_TYPEDEF_H_
+#endif  // _SLAB_MATRIX_TYPE_ALIAS_H
