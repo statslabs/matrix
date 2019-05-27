@@ -69,6 +69,8 @@ inline void blas_rot(Matrix<T, 1> &x, Matrix<T, 1> &y, const T c, const T s) {
   }
 }
 
+#ifndef _SLAB_USE_R_BLAS
+
 /// @brief Performs rotation of points in the plane.
 ///
 /// Given two complex vectors x and y, each vector element of these vectors is
@@ -99,17 +101,17 @@ inline void blas_rot(Matrix<std::complex<T>, 1> &x,
                 (void *)y_ptr, (const SLAB_INT)incy, (const double)c,
                 (const double)s);
   }
-#ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
     cblas_csrot((const SLAB_INT)n, (void *)x_ptr, (const SLAB_INT)incx,
                 (void *)y_ptr, (const SLAB_INT)incy, (const float)c,
                 (const float)s);
   }
-#endif
   else {
     _SLAB_ERROR("blas_rot(): unsupported element type.");
   }
 }
+
+#endif
 
 /// @} BLAS Level 1
 /// @} BLAS Interface
