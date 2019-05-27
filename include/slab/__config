@@ -17,8 +17,8 @@
 /// @file __config
 /// @brief Configuration for Statslabs Project
 
-#ifndef _SLAB_CONFIG
-#define _SLAB_CONFIG
+#ifndef _SLAB__CONFIG
+#define _SLAB__CONFIG
 
 //////////////////////////////////////////////////
 // Configure BLAS/LAPACK through cmake
@@ -172,4 +172,4 @@
        : _SLAB_ERROR("%s:%d: _SLAB_ASSERT '%s' failed. %s", __FILE__, \
                      __LINE__, #x, m))
 
-#endif  // _SLAB_CONFIG
+#endif  // _SLAB__CONFIG

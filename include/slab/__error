@@ -17,8 +17,8 @@
 /// @file __error
 /// @brief Error routines from APUE
 
-#ifndef _SLAB_ERROR
-#define _SLAB_ERROR
+#ifndef _SLAB__ERROR
+#define _SLAB__ERROR
 
 #include <cerrno>   // for definition of errno
 #include <cstdarg>  // ISO C variable arguments
@@ -143,4 +143,4 @@ inline static void err_doit(int errnoflag, int error, const char *fmt,
 
 }  // namespace apue
 
-#endif  // _SLAB_ERROR
+#endif  // _SLAB__ERROR
