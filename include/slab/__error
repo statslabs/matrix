@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 /// @file __error
 /// @brief Error routines from APUE
 
-#ifndef SLAB_ERROR_
-#define SLAB_ERROR_
+#ifndef _SLAB_ERROR
+#define _SLAB_ERROR
 
 #include <cerrno>   // for definition of errno
 #include <cstdarg>  // ISO C variable arguments
@@ -143,4 +143,4 @@ inline static void err_doit(int errnoflag, int error, const char *fmt,
 
 }  // namespace apue
 
-#endif  // SLAB_ERROR_
+#endif  // _SLAB_ERROR
