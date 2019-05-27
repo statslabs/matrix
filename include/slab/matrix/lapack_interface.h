@@ -17,8 +17,8 @@
 /// @file lapack_interface.h
 /// @brief LAPACK interface
 
-#ifndef SLAB_MATRIX_LAPACK_INTERFACE_H_
-#define SLAB_MATRIX_LAPACK_INTERFACE_H_
+#ifndef _SLAB_MATRIX_LAPACK_INTERFACE_H
+#define _SLAB_MATRIX_LAPACK_INTERFACE_H
 
 #include <cassert>
 #include <cstddef>
@@ -41,7 +41,7 @@ extern "C" {
 
 #include "slab/matrix/lapack/gesv.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup lapack_interface LAPACK INTERFACE
 /// @{
@@ -164,6 +164,6 @@ inline int lapack_gels(char trans, Matrix<T, 2> &a, Matrix<T, 2> &b) {
 }
 /// @}
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_LAPACK_INTERFACE_H_
+#endif  // _SLAB_MATRIX_LAPACK_INTERFACE_H

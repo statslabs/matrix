@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// operations.h
-// -----------------------------------------------------------------------------
-//
-#ifndef _SLAB_MATRIX_OPERATIONS_H
-#define _SLAB_MATRIX_OPERATIONS_H
+
+/// @file matrix_ops.h
+/// @brief Matrix operations
+
+#ifndef _SLAB_MATRIX_OPS_H
+#define _SLAB_MATRIX_OPS_H
 
 #include <cassert>
 #include <cstddef>
@@ -435,4 +435,4 @@ inline T dot(const MatrixBase<T, 1> &a, const MatrixBase<T, 1> &b) {
 
 _SLAB_END_NAMESPACE
 
-#endif  // _SLAB_MATRIX_OPERATIONS_H
+#endif  // _SLAB_MATRIX_OPS_H

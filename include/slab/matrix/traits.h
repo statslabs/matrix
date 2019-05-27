@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// traits.h
-// -----------------------------------------------------------------------------
-//
-#ifndef SLAB_MATRIX_TRAITS_H_
-#define SLAB_MATRIX_TRAITS_H_
+
+/// @file traits.h
+/// @brief Traits
+
+#ifndef _SLAB_MATRIX_TRAITS_H
+#define _SLAB_MATRIX_TRAITS_H
 
 #include <complex>
 #include <type_traits>  // std::enable_if/is_convertible
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <bool B, typename T = void>
 using Enable_if = typename std::enable_if<B, T>::type;
@@ -120,6 +120,6 @@ struct is_complex_float<std::complex<float>> : public std::true_type {};
 template <typename T>
 void ignore(T &&) {}
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_TRAITS_H_
+#endif  // _SLAB_MATRIX_TRAITS_H

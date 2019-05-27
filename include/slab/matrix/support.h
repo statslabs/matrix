@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// support.h
-// -----------------------------------------------------------------------------
-//
-#ifndef SLAB_MATRIX_SUPPORT_H_
-#define SLAB_MATRIX_SUPPORT_H_
+
+/// @file support.h
+/// @brief Support
+
+#ifndef _SLAB_MATRIX_SUPPORT_H
+#define _SLAB_MATRIX_SUPPORT_H
 
 #include <cstddef>
 
@@ -29,7 +29,7 @@
 #include "slab/matrix/matrix_slice.h"
 #include "slab/matrix/traits.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 namespace matrix_impl {
 
 template <std::size_t N, typename List>
@@ -234,6 +234,6 @@ std::size_t do_slice(const MatrixSlice<N> &os, MatrixSlice<N> &ns, const T &s,
 template <typename T, std::size_t N>
 using MatrixInitializer = typename matrix_impl::MatrixInit<T, N>::type;
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_SUPPORT_H_
+#endif  // _SLAB_MATRIX_SUPPORT_H

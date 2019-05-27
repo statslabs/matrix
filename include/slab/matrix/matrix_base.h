@@ -12,8 +12,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 /// @file matrix_base.h
+/// @brief Matrix base template
 
 #ifndef _SLAB_MATRIX_MATRIX_BASE_H
 #define _SLAB_MATRIX_MATRIX_BASE_H

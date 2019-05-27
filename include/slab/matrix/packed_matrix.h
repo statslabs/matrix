@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 /// @file packed_matrix.h
 /// @brief Packed matrix
 
-#ifndef SLAB_MATRIX_PACKED_MATRIX_H_
-#define SLAB_MATRIX_PACKED_MATRIX_H_
+#ifndef _SLAB_MATRIX_PACKED_MATRIX_H
+#define _SLAB_MATRIX_PACKED_MATRIX_H
 
 #include <cstddef>
 
@@ -31,7 +31,7 @@
 
 #include "slab/matrix/traits.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 // Triangular matrix type
 struct lower_tag {};
@@ -345,6 +345,6 @@ std::ostream &operator<<(std::ostream &os, const PackedMatrix<T, TRI> &m) {
   return os << std::endl;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_PACKED_MATRIX_H
+#endif  // _SLAB_MATRIX_PACKED_MATRIX_H

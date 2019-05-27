@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// matrix_slice.h
-// -----------------------------------------------------------------------------
-//
-#ifndef SLAB_MATRIX_MATRIX_SLICE_H_
-#define SLAB_MATRIX_MATRIX_SLICE_H_
+
+/// @file matrix_slice.h
+/// @brief Matrix slice
+
+#ifndef _SLAB_MATRIX_MATRIX_SLICE_H
+#define _SLAB_MATRIX_MATRIX_SLICE_H
 
 #include <cassert>
 #include <cstddef>
@@ -31,7 +31,7 @@
 
 #include "slab/matrix/support.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 // A matrix slice specifies the N-dimensional matrix properties of a contiguous
 // region of memory. The slice is primarily described by 3 parameters:
@@ -170,6 +170,6 @@ std::ostream &operator<<(std::ostream &os, const MatrixSlice<N> &ms) {
   return os;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_MATRIX_SLICE_H_
+#endif  // _SLAB_MATRIX_MATRIX_SLICE_H
