@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 /// @file blas_interface.h
 /// @brief BLAS interface
 
-#ifndef SLAB_MATRIX_BLAS_INTERFACE_H_
-#define SLAB_MATRIX_BLAS_INTERFACE_H_
+#ifndef _SLAB_MATRIX_BLAS_INTERFACE_H
+#define _SLAB_MATRIX_BLAS_INTERFACE_H
 
 #include <cassert>
 #include <cstddef>
@@ -58,4 +58,4 @@
 // BLAS Level 3 Routines and Functions
 #include "slab/matrix/blas/gemm.h"
 
-#endif  // SLAB_MATRIX_BLAS_INTERFACE_H_
+#endif  // _SLAB_MATRIX_BLAS_INTERFACE_H
