@@ -145,11 +145,12 @@
 
 #endif
 
-#if defined(_SLAB_USE_MKL)
+#if defined(_SLAB_USE_NO_BLAS)
+#elif defined(_SLAB_USE_MKL)
 #include "mkl.h"
 #elif defined(_SLAB_USE_SUNPERF)
 #include "sunperf.h"
-#elseif !defined(_SLAB_USE_NO_BLAS)
+#else
 #include "cblas.h"
 #endif
 
