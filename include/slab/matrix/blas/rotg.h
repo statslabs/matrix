@@ -66,12 +66,10 @@ void blas_rotg(Matrix<std::complex<T>, 1> &a,
   if (is_double<T>::value) {
     cblas_zrotg((void *)a.data(), (const void *)b.data(), (double *)c.data(),
                 (void *)s.data());
-  }
-  else if (is_float<T>::value) {
+  } else if (is_float<T>::value) {
     cblas_crotg((void *)a.data(), (const void *)b.data(), (float *)c.data(),
                 (void *)s.data());
-  }
-  else {
+  } else {
     _SLAB_ERROR("blas_rotg(): unsupported element type.");
   }
 }

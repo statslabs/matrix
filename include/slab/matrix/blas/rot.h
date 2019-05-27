@@ -100,13 +100,11 @@ inline void blas_rot(Matrix<std::complex<T>, 1> &x,
     cblas_zdrot((const SLAB_INT)n, (void *)x_ptr, (const SLAB_INT)incx,
                 (void *)y_ptr, (const SLAB_INT)incy, (const double)c,
                 (const double)s);
-  }
-  else if (is_float<T>::value) {
+  } else if (is_float<T>::value) {
     cblas_csrot((const SLAB_INT)n, (void *)x_ptr, (const SLAB_INT)incx,
                 (void *)y_ptr, (const SLAB_INT)incy, (const float)c,
                 (const float)s);
-  }
-  else {
+  } else {
     _SLAB_ERROR("blas_rot(): unsupported element type.");
   }
 }
