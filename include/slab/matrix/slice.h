@@ -48,7 +48,8 @@ struct slice {
   std::size_t stride;  // distance between elements in sequence
 };
 
-slice slice::all{0, std::size_t(-1), 1};
+// FIXME
+// slice slice::all{0, std::size_t(-1), 1};
 
 template <typename C, typename T>
 std::basic_ostream<C, T>& operator<<(std::basic_ostream<C, T>& os,
