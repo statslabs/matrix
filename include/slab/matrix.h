@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// -----------------------------------------------------------------------------
-// matrix.h
-// -----------------------------------------------------------------------------
-//
-#ifndef SLAB_MATRIX_H_
-#define SLAB_MATRIX_H_
+
+/// @file matrix.h
+/// @brief main header file for Statslabs::Matrix
+
+#ifndef _SLAB_MATRIX_H
+#define _SLAB_MATRIX_H
 
 #include "slab/__config"
 #include "slab/__error"
@@ -48,4 +47,4 @@
 #include <Rcpp.h>
 #endif
 
-#endif  // SLAB_MATRIX_H_
+#endif  // _SLAB_MATRIX_H
