@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 /// @brief Computes the solution to the system of linear equations with a square
 /// coefficient matrix A and multiple right-hand sides.
 
-#ifndef SLAB_MATRIX_LAPACK_GESV_H_
-#define SLAB_MATRIX_LAPACK_GESV_H_
+#ifndef _SLAB_MATRIX_LAPACK_GESV_H
+#define _SLAB_MATRIX_LAPACK_GESV_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename T>
 inline int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
@@ -54,6 +54,6 @@ inline int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
   return info;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif
