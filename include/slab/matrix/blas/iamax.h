@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file asum.h
 /// @brief C++ template wrapper for C functions cblas_i?amax
 
-#ifndef SLAB_MATRIX_BLAS_IAMAX_H_
-#define SLAB_MATRIX_BLAS_IAMAX_H_
+#ifndef _SLAB_MATRIX_BLAS_IAMAX_H
+#define _SLAB_MATRIX_BLAS_IAMAX_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -64,6 +64,6 @@ inline std::size_t blas_iamax(const Matrix<T, 1> &x) {
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

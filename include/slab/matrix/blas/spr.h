@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file spr.h
 /// @brief C++ template wrapper for C functions cblas_?spr
 
-#ifndef SLAB_MATRIX_BLAS_SPR_H_
-#define SLAB_MATRIX_BLAS_SPR_H_
+#ifndef _SLAB_MATRIX_BLAS_SPR_H
+#define _SLAB_MATRIX_BLAS_SPR_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -61,6 +61,6 @@ inline void blas_spr(const T &alpha, const MatrixBase<T, 1> &x,
 /// @} BLAS Level 2
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

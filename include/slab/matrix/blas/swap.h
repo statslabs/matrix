@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file swap.h
 /// @brief C++ template wrapper for C functions cblas_?swap
 
-#ifndef SLAB_MATRIX_BLAS_SWAP_H_
-#define SLAB_MATRIX_BLAS_SWAP_H_
+#ifndef _SLAB_MATRIX_BLAS_SWAP_H
+#define _SLAB_MATRIX_BLAS_SWAP_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -67,6 +67,6 @@ inline void blas_swap(Matrix<T, 1> &x, Matrix<T, 1> &y) {
 /// @} BLAS Level 1
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

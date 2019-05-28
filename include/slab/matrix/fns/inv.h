@@ -208,4 +208,4 @@ inline Matrix<T, 2> inv(const MatrixRef<T, 2> &a) {
 
 _SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_FNS_INV_H_
+#endif  // _SLAB_MATRIX_FNS_INV_H
