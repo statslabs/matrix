@@ -17,8 +17,8 @@
 /// @file lu.h
 /// @brief LU decomposition.
 
-#ifndef _SLAB_MATRIX_FNS_TRANS_H
-#define _SLAB_MATRIX_FNS_TRANS_H
+#ifndef _SLAB_MATRIX_FNS_LU_H
+#define _SLAB_MATRIX_FNS_LU_H
 
 _SLAB_BEGIN_NAMESPACE
 
@@ -64,4 +64,4 @@ inline void lu(Matrix<T, 2> &L, Matrix<T, 2> &U, const Matrix<T, 2> &X) {
 
 _SLAB_END_NAMESPACE
 
-#endif  // _SLAB_MATRIX_FNS_TRANS_H
+#endif  // _SLAB_MATRIX_FNS_LU_H
