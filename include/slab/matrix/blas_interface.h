@@ -29,6 +29,15 @@
 #include "slab/__config"
 #include "slab/__error"
 
+#if defined(_SLAB_USE_NO_BLAS)
+#elif defined(_SLAB_USE_MKL)
+#include "mkl.h"
+#elif defined(_SLAB_USE_SUNPERF)
+#include "sunperf.h"
+#else
+#include "cblas.h"
+#endif
+
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
 #include "slab/matrix/traits.h"

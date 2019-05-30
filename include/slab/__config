@@ -145,15 +145,6 @@
 
 #endif
 
-#if defined(_SLAB_USE_NO_BLAS)
-#elif defined(_SLAB_USE_MKL)
-#include "mkl.h"
-#elif defined(_SLAB_USE_SUNPERF)
-#include "sunperf.h"
-#else
-#include "cblas.h"
-#endif
-
 #define _SLAB_BEGIN_NAMESPACE namespace slab {
 #define _SLAB_END_NAMESPACE }
 
