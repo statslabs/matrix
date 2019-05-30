@@ -23,6 +23,9 @@
 
 _SLAB_BEGIN_NAMESPACE
 
+/// @addtogroup lapack_interface LAPACK INTERFACE
+/// @{
+
 template <typename T>
 inline int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
   assert(a.n_rows() == b.n_rows());
@@ -53,6 +56,8 @@ inline int lapack_gesv(Matrix<T, 2> &a, Matrix<int, 1> &ipiv, Matrix<T, 2> &b) {
 
   return info;
 }
+
+/// @}
 
 _SLAB_END_NAMESPACE
 

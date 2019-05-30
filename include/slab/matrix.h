@@ -41,7 +41,7 @@
 #endif
 
 #ifndef _SLAB_USE_NO_LAPACK
-#include "slab/matrix/lapack_interface.h"  // TODO: remove this header, provide BLAS interface only
+#include "slab/matrix/lapack_interface.h"
 #endif
 
 #ifdef _SLAB_USE_RCPP_AS_WRAP

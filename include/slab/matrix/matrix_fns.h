@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,16 +25,7 @@
 #include <type_traits>
 
 #include "slab/__config"
-
-#ifndef _SLAB_USE_NO_LAPACK
-#ifdef _SLAB_USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-#include "lapacke.h"
-}
-#endif
-#endif
+#include "slab/matrix/lapack_interface.h"
 
 #include "slab/matrix/fns/eye.h"
 #include "slab/matrix/fns/ones.h"
