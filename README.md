@@ -26,6 +26,12 @@ Statslabs::Matrix is the fundamental package of Statslabs for statistical comput
    mkdir build && cd build
    cmake ..
    ```
+   To build docs/examples/tests, configure matrix with the following cmake options:
+   ```sh
+   -DSLAB_INCLUDE_DOCS=ON
+   -DSLAB_INCLUDE_EXAMPLES=ON
+   -DSLAB_INCLUDE_TESTS=ON
+   ```
 3. Compile and install the library.
    ```sh
    make
