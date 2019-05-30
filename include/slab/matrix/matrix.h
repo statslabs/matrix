@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 /// @file matrix.h
 /// @brief A Matrix template
 
-#ifndef SLAB_MATRIX_MATRIX_H_
-#define SLAB_MATRIX_MATRIX_H_
+#ifndef _SLAB_MATRIX_MATRIX_H
+#define _SLAB_MATRIX_MATRIX_H
 
 #include <cassert>
 #include <cstddef>
@@ -36,7 +37,7 @@
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/support.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 //! Matrix<T,N> is an N-dimensional matrix of some value type T.
 /*!
@@ -116,19 +117,7 @@ class Matrix : public MatrixBase<T, N> {
   // ---------------------------------------------
  public:
   //! m(i,j,k) subscripting with integers
-  ///@{
-  template <typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), T &> operator()(
-      Args... args) {
-    return MatrixBase<T, N>::template operator()<Args...>(args...);
-  }
-
-  template <typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), const T &> operator()(
-      Args... args) const {
-    return MatrixBase<T, N>::template operator()<Args...>(args...);
-  }
-  ///@}
+  using MatrixBase<T, N>::operator();
 
   //! m(s1, s2, s3) subscripting with slides
   ///@{
@@ -369,6 +358,28 @@ class Matrix : public MatrixBase<T, N> {
   // ---------------------------------------------
 
  public:
+  Matrix(const Matrix<double, N> &x, const Matrix<double, N> &y)
+      : MatrixBase<T, N>(x.descriptor()) {
+    _SLAB_ASSERT(is_complex_double<T>::value, "invalid constructor");
+    _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
+
+    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end();
+         ++iter1, ++iter2) {
+      elems_.push_back(std::complex<double>(*iter1, *iter2));
+    }
+  }
+
+  Matrix(const Matrix<float, N> &x, const Matrix<float, N> &y)
+      : MatrixBase<T, N>(x.descriptor()) {
+    _SLAB_ASSERT(is_complex_float<T>::value, "invalid constructor");
+    _SLAB_ASSERT(x.descriptor() == y.descriptor(), "x and y size unmatched");
+
+    for (auto iter1 = x.begin(), iter2 = y.begin(); iter1 != x.end();
+         ++iter1, ++iter2) {
+      elems_.push_back(std::complex<float>(*iter1, *iter2));
+    }
+  }
+
   //! clear content
   void clear();
 
@@ -1129,6 +1140,6 @@ std::ostream &operator<<(std::ostream &os, const Matrix<T, 0> &m0) {
   return os << (const T &)m0();
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_MATRIX_H_
+#endif  // _SLAB_MATRIX_MATRIX_H

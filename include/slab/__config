@@ -15,14 +15,42 @@
 //
 
 /// @file __config
-/// @brief Configuration for Statslabs
+/// @brief Configuration for Statslabs Project
 
-#ifndef SLAB_CONFIG_
-#define SLAB_CONFIG_
+#ifndef _SLAB__CONFIG
+#define _SLAB__CONFIG
+
+//////////////////////////////////////////////////
+// Configure BLAS/LAPACK through cmake
+//////////////////////////////////////////////////
 
 #ifdef USE_MKL
 #define _SLAB_USE_MKL
 #endif
+
+#ifdef USE_OPENBLAS
+#define _SLAB_USE_OPENBLAS
+#endif
+
+#ifdef USE_APPLE
+#define _SLAB_USE_APPLE
+#endif
+
+#ifdef USE_SUNPERF
+#define _SLAB_USE_SUNPERF
+#endif
+
+#ifdef USE_NO_BLAS
+#define _SLAB_USE_NO_BLAS
+#endif
+
+#ifdef USE_NO_LAPACK
+#define _SLAB_USE_NO_LAPACK
+#endif
+
+//////////////////////////////////////////////////
+// Configure BLAS/LAPACK manually
+//////////////////////////////////////////////////
 
 #if !defined(_SLAB_USE_MKL)
 // #define _SLAB_USE_MKL
@@ -43,6 +71,20 @@
 // #define _SLAB_USE_SUNPERF
 //// Uncomment the above line if using Sun Performance Library
 #endif
+
+#if !defined(_SLAB_USE_NO_BLAS)
+// #define _SLAB_USE_NO_BLAS
+//// Uncomment the above line to disable BLAS use
+#endif
+
+#if !defined(_SLAB_USE_NO_LAPACK)
+// #define _SLAB_USE_NO_LAPACK
+//// Uncomment the above line to disable LAPACK use
+#endif
+
+//////////////////////////////////////////////////
+// Configure R package RcppStatslabs
+//////////////////////////////////////////////////
 
 #if !defined(_SLAB_USE_R)
 // #define _SLAB_USE_R
@@ -103,14 +145,6 @@
 
 #endif
 
-#if defined(_SLAB_USE_MKL)
-#include "mkl.h"
-#elif defined(_SLAB_USE_SUNPERF)
-#include "sunperf.h"
-#else
-#include "cblas.h"
-#endif
-
 #define _SLAB_BEGIN_NAMESPACE namespace slab {
 #define _SLAB_END_NAMESPACE }
 
@@ -129,4 +163,4 @@
        : _SLAB_ERROR("%s:%d: _SLAB_ASSERT '%s' failed. %s", __FILE__, \
                      __LINE__, #x, m))
 
-#endif  // SLAB_CONFIG_
+#endif  // _SLAB__CONFIG

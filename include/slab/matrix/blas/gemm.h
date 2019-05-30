@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file gemm.h
 /// @brief C++ template wrapper for C functions cblas_?gemm
 
-#ifndef SLAB_MATRIX_BLAS_GEMM_H_
-#define SLAB_MATRIX_BLAS_GEMM_H_
+#ifndef _SLAB_MATRIX_BLAS_GEMM_H
+#define _SLAB_MATRIX_BLAS_GEMM_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -61,43 +61,36 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
   const std::size_t ldb = b.n_cols();
   const std::size_t ldc = c.n_cols();
 
+  const T *a_ptr = a.data() + a.descriptor().start;
+  const T *b_ptr = b.data() + b.descriptor().start;
+  T *c_ptr = c.data() + c.descriptor().start;
+
   if (is_double<T>::value) {
-    cblas_dgemm(
-        CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
-        (const double)alpha, (const double *)(a.data() + a.descriptor().start),
-        (const int)lda, (const double *)(b.data() + b.descriptor().start),
-        (const int)ldb, (const double)beta,
-        (double *)(c.data() + c.descriptor().start), (const int)ldc);
+    cblas_dgemm(CblasRowMajor, transa, transb, (const SLAB_INT)m,
+                (const SLAB_INT)n, (const SLAB_INT)k, (const double)alpha,
+                (const double *)a_ptr, (const SLAB_INT)lda,
+                (const double *)b_ptr, (const SLAB_INT)ldb, (const double)beta,
+                (double *)c_ptr, (const SLAB_INT)ldc);
   } else if (is_complex_double<T>::value) {
-    cblas_zgemm(
-        CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
-        reinterpret_cast<const double *>(&alpha),
-        reinterpret_cast<const double *>(a.data() + a.descriptor().start),
-        (const int)lda,
-        reinterpret_cast<const double *>(b.data() + b.descriptor().start),
-        (const int)ldb, reinterpret_cast<const double *>(&beta),
-        reinterpret_cast<double *>(c.data() + c.descriptor().start),
-        (const int)ldc);
+    cblas_zgemm(CblasRowMajor, transa, transb, (const SLAB_INT)m,
+                (const SLAB_INT)n, (const SLAB_INT)k, (const void *)(&alpha),
+                (const void *)a_ptr, (const SLAB_INT)lda, (const void *)b_ptr,
+                (const SLAB_INT)ldb, (const void *)(&beta), (void *)c_ptr,
+                (const SLAB_INT)ldc);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_sgemm(
-        CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
-        (const float)alpha, (const float *)(a.data() + a.descriptor().start),
-        (const int)lda, (const float *)(b.data() + b.descriptor().start),
-        (const int)ldb, (const float)beta,
-        (float *)(c.data() + c.descriptor().start), (const int)ldc);
-
+    cblas_sgemm(CblasRowMajor, transa, transb, (const SLAB_INT)m,
+                (const SLAB_INT)n, (const SLAB_INT)k, (const float)alpha,
+                (const float *)a_ptr, (const SLAB_INT)lda, (const float *)b_ptr,
+                (const SLAB_INT)ldb, (const float)beta, (float *)c_ptr,
+                (const SLAB_INT)ldc);
   } else if (is_complex_float<T>::value) {
-    cblas_cgemm(
-        CblasRowMajor, transa, transb, (const int)m, (const int)n, (const int)k,
-        reinterpret_cast<const float *>(&alpha),
-        reinterpret_cast<const float *>(a.data() + a.descriptor().start),
-        (const int)lda,
-        reinterpret_cast<const float *>(b.data() + b.descriptor().start),
-        (const int)ldb, reinterpret_cast<const float *>(&beta),
-        reinterpret_cast<float *>(c.data() + c.descriptor().start),
-        (const int)ldc);
+    cblas_cgemm(CblasRowMajor, transa, transb, (const SLAB_INT)m,
+                (const SLAB_INT)n, (const SLAB_INT)k, (const void *)(&alpha),
+                (const void *)a_ptr, (const SLAB_INT)lda, (const void *)b_ptr,
+                (const SLAB_INT)ldb, (const void *)(&beta), (void *)c_ptr,
+                (const SLAB_INT)ldc);
   }
 #endif
   else {
@@ -108,6 +101,6 @@ inline void blas_gemm(const CBLAS_TRANSPOSE transa,
 /// @}
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

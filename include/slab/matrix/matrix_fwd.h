@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 ///@file matrix_fwd.h
 ///@brief This file is essentially used to forward declare the main types
 
-#ifndef SLAB_MATRIX_MATRIX_FWD_H_
-#define SLAB_MATRIX_MATRIX_FWD_H_
+#ifndef _SLAB_MATRIX_MATRIX_FWD_H
+#define _SLAB_MATRIX_MATRIX_FWD_H
 
 #include <cstddef>
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 // Declarations
 struct slice;
@@ -53,6 +54,6 @@ Matrix<T, 2> inverse(const Matrix<T, 2> &a);
 template <typename T>
 Matrix<T, 2> inverse(const MatrixRef<T, 2> &a);
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_MATRIX_FWD_H_
+#endif  // _SLAB_MATRIX_MATRIX_FWD_H

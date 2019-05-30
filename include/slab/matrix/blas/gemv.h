@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file gemv.h
 /// @brief C++ template wrapper for C functions cblas_?gemv
 
-#ifndef SLAB_MATRIX_BLAS_GEMV_H_
-#define SLAB_MATRIX_BLAS_GEMV_H_
+#ifndef _SLAB_MATRIX_BLAS_GEMV_H
+#define _SLAB_MATRIX_BLAS_GEMV_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 /// @addtogroup blas_interface BLAS Interface
 /// @{
@@ -45,10 +45,15 @@ namespace slab {
 /// where \f$alpha\f$ and \f$beta\f$ are scalars, \f$x\f$ and \f$y\f$ are
 /// vectors, \f$A\f$ is an m-by-n matrix.
 ///
-template <typename T>
-inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
+template <typename T, typename T1, typename T2>
+inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T1 &alpha,
                       const MatrixBase<T, 2> &a, const MatrixBase<T, 1> &x,
-                      const T &beta, MatrixBase<T, 1> &y) {
+                      const T2 &beta, MatrixBase<T, 1> &y) {
+  static_assert(Convertible<T1, T>(),
+                "blas_gemv(): incompatible element type for alpha");
+  static_assert(Convertible<T2, T>(),
+                "blas_gemv(): incompatible element type for beta");
+
   const std::size_t m = y.n_rows();
   const std::size_t n = x.n_rows();
 
@@ -57,52 +62,42 @@ inline void blas_gemv(const CBLAS_TRANSPOSE trans, const T &alpha,
   const std::size_t incx = x.descriptor().strides[0];
   const std::size_t incy = y.descriptor().strides[0];
 
+  const T *a_ptr = a.data() + a.descriptor().start;
+  const T *x_ptr = x.data() + x.descriptor().start;
+  T *y_ptr = y.data() + y.descriptor().start;
+
   if (is_double<T>::value) {
-    cblas_dgemv(
-        CblasRowMajor, trans, (const int)m, (const int)n, (const double)alpha,
-        (const double *)(a.data() + a.descriptor().start), (const int)lda,
-        (const double *)(x.data() + x.descriptor().start), (const int)incx,
-        (const double)beta, (double *)(y.data() + y.descriptor().start),
-        (const int)incy);
+    cblas_dgemv(CblasRowMajor, trans, (const SLAB_INT)m, (const SLAB_INT)n,
+                (const double)alpha, (const double *)a_ptr, (const SLAB_INT)lda,
+                (const double *)x_ptr, (const SLAB_INT)incx, (const double)beta,
+                (double *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zgemv(
-        CblasRowMajor, trans, (const int)m, (const int)n,
-        reinterpret_cast<const double *>(&alpha),
-        reinterpret_cast<const double *>(a.data() + a.descriptor().start),
-        (const int)lda,
-        reinterpret_cast<const double *>(x.data() + x.descriptor().start),
-        (const int)incx, reinterpret_cast<const double *>(&beta),
-        reinterpret_cast<double *>(y.data() + y.descriptor().start),
-        (const int)incy);
+    cblas_zgemv(CblasRowMajor, trans, (const SLAB_INT)m, (const SLAB_INT)n,
+                (const void *)(&alpha), (const void *)a_ptr,
+                (const SLAB_INT)lda, (const void *)x_ptr, (const SLAB_INT)incx,
+                (const void *)(&beta), (void *)y_ptr, (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_sgemv(
-        CblasRowMajor, trans, (const int)m, (const int)n, (const float)alpha,
-        (const float *)(a.data() + a.descriptor().start), (const int)lda,
-        (const float *)(x.data() + x.descriptor().start), (const int)incx,
-        (const float)beta, (float *)(y.data() + y.descriptor().start),
-        (const int)incy);
+    cblas_sgemv(CblasRowMajor, trans, (const SLAB_INT)m, (const SLAB_INT)n,
+                (const float)alpha, (const float *)a_ptr, (const SLAB_INT)lda,
+                (const float *)x_ptr, (const SLAB_INT)incx, (const float)beta,
+                (float *)y_ptr, (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_cgemv(
-        CblasRowMajor, trans, (const int)m, (const int)n,
-        reinterpret_cast<const float *>(&alpha),
-        reinterpret_cast<const float *>(a.data() + a.descriptor().start),
-        (const int)lda,
-        reinterpret_cast<const float *>(x.data() + x.descriptor().start),
-        (const int)incx, reinterpret_cast<const float *>(&beta),
-        reinterpret_cast<float *>(y.data() + y.descriptor().start),
-        (const int)incy);
+    cblas_cgemv(CblasRowMajor, trans, (const SLAB_INT)m, (const SLAB_INT)n,
+                (const void *)(&alpha), (const void *)a_ptr,
+                (const SLAB_INT)lda, (const void *)x_ptr, (const SLAB_INT)incx,
+                (const void *)(&beta), (void *)y_ptr, (const SLAB_INT)incy);
   }
 #endif
   else {
-    _SLAB_ERROR("blas_gemv(): unsupported element type.");
+    _SLAB_ERROR("blas_ gemv(): unsupported element type.");
   }
 }
 
 /// @}
 /// @} BLAS Interface
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
 #endif

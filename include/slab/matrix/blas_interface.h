@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 /// @file blas_interface.h
 /// @brief BLAS interface
 
-#ifndef SLAB_MATRIX_BLAS_INTERFACE_H_
-#define SLAB_MATRIX_BLAS_INTERFACE_H_
+#ifndef _SLAB_MATRIX_BLAS_INTERFACE_H
+#define _SLAB_MATRIX_BLAS_INTERFACE_H
 
 #include <cassert>
 #include <cstddef>
@@ -28,6 +28,15 @@
 
 #include "slab/__config"
 #include "slab/__error"
+
+#if defined(_SLAB_USE_NO_BLAS)
+#elif defined(_SLAB_USE_MKL)
+#include "mkl.h"
+#elif defined(_SLAB_USE_SUNPERF)
+#include "sunperf.h"
+#else
+#include "cblas.h"
+#endif
 
 #include "slab/matrix/matrix.h"
 #include "slab/matrix/matrix_base.h"
@@ -42,6 +51,10 @@
 #include "slab/matrix/blas/dotu.h"
 #include "slab/matrix/blas/iamax.h"
 #include "slab/matrix/blas/nrm2.h"
+#include "slab/matrix/blas/rot.h"
+#include "slab/matrix/blas/rotg.h"
+#include "slab/matrix/blas/rotm.h"
+#include "slab/matrix/blas/rotmg.h"
 #include "slab/matrix/blas/scal.h"
 #include "slab/matrix/blas/sdot.h"
 #include "slab/matrix/blas/swap.h"
@@ -54,31 +67,4 @@
 // BLAS Level 3 Routines and Functions
 #include "slab/matrix/blas/gemm.h"
 
-namespace slab {
-
-// Computes the parameters for a Givens rotation
-// template<typename T>
-// void blas_rotg(Matrix<T, 1> &a, Matrix<T, 1> &b, Matrix<T, 1> &c, Matrix<T,
-// 1> &s) {
-//  if (is_double<T>::value) {
-//    cblas_drotg((double *) a.data(),
-//                (double *) b.data(),
-//                (double *) c.data(),
-//                (double *) s.data());
-//  } else if (is_float<T>::value) {
-//    cblas_srotg((float *) a.data(), (float *) b.data(), (float *) c.data(),
-//    (float *) s.data());
-//  } else if (is_complex_double<T>::value) {
-//    cblas_zrotg((std::complex<double> *) a.data(), (const std::complex<double>
-//    *) b.data(),
-//                (double *) c.data(), (std::complex<double> *) s.data());
-//  } else if (is_complex_float<T>::value) {
-//    cblas_crotg((std::complex<float> *) a.data(), (const std::complex<float>
-//    *) b.data(),
-//                (float *) c.data(), (std::complex<float> *) s.data());
-//  }
-//}
-
-}  // namespace slab
-
-#endif  // SLAB_MATRIX_BLAS_INTERFACE_H_
+#endif  // _SLAB_MATRIX_BLAS_INTERFACE_H

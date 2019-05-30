@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file pinv.h
 /// @brief pseudo-inverse.
 
-#ifndef SLAB_MATRIX_FNS_PINV_H_
-#define SLAB_MATRIX_FNS_PINV_H_
+#ifndef _SLAB_MATRIX_FNS_PINV_H
+#define _SLAB_MATRIX_FNS_PINV_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename T>
 inline bool pinv(Matrix<T, 2> &a_inv, const Matrix<T, 2> &a) {
@@ -62,6 +62,6 @@ inline Matrix<T, 2> pinv(const Matrix<T, 2> &a) {
   return a_inv;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_FNS_PINV_H_
+#endif  // _SLAB_MATRIX_FNS_PINV_H

@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 /// @file trig.h
 /// @brief Trigonometric element-wise functions
 
-#ifndef SLAB_MATRIX_FNS_TRIG_H_
-#define SLAB_MATRIX_FNS_TRIG_H_
+#ifndef _SLAB_MATRIX_FNS_TRIG_H
+#define _SLAB_MATRIX_FNS_TRIG_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
+
 template <typename T, std::size_t N>
 inline Matrix<T, N> cos(const Matrix<T, N> &x) {
   Matrix<T, N> res = x;
@@ -57,6 +58,6 @@ inline Matrix<T, N> tan(const MatrixRef<T, N> &x) {
   return res.apply([&](T &a) { a = std::tan(a); });
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_FNS_TRIG_H_
+#endif  // _SLAB_MATRIX_FNS_TRIG_H

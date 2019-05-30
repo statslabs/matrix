@@ -39,12 +39,11 @@ _SLAB_BEGIN_NAMESPACE
 ///
 /// @param a Specifies the scalar a.
 /// @param x Vector with type vec/fvec/cx_vec/cx_fvec.
-/// @param y Vector with typeaxp vec/fvec/cx_vec/cx_fvec.
+/// @param y Vector with type vec/fvec/cx_vec/cx_fvec.
 /// @return Void.
 ///
 template <typename T, typename T1>
-inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x,
-                      MatrixBase<T, 1> &y) {
+inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x, Matrix<T, 1> &y) {
   static_assert(Convertible<T1, T>(),
                 "blas_axpy(): incompatible element type for alpha");
   _SLAB_ASSERT(x.size() == y.size(),
@@ -55,22 +54,25 @@ inline void blas_axpy(const T1 &a, const MatrixBase<T, 1> &x,
   const std::size_t n = x.size();
   const std::size_t incx = x.descriptor().strides[0];
   const std::size_t incy = y.descriptor().strides[0];
+  const T a_copy = a;
   const T *x_ptr = x.data() + x.descriptor().start;
   T *y_ptr = y.data() + y.descriptor().start;
 
   if (is_double<T>::value) {
-    cblas_daxpy((const SLAB_INT)n, (const double)a, (const double *)x_ptr,
-                (const SLAB_INT)incx, (double *)y_ptr, (const SLAB_INT)incy);
+    cblas_daxpy((const SLAB_INT)n, *((const double *)(&a_copy)),
+                (const double *)x_ptr, (const SLAB_INT)incx, (double *)y_ptr,
+                (const SLAB_INT)incy);
   } else if (is_complex_double<T>::value) {
-    cblas_zaxpy((const SLAB_INT)n, (const void *)(&a), (const void *)x_ptr,
+    cblas_zaxpy((const SLAB_INT)n, (const void *)(&a_copy), (const void *)x_ptr,
                 (const SLAB_INT)incx, (void *)y_ptr, (const SLAB_INT)incy);
   }
 #ifndef _SLAB_USE_R_BLAS
   else if (is_float<T>::value) {
-    cblas_saxpy((const SLAB_INT)n, (const float)a, (const float *)x_ptr,
-                (const SLAB_INT)incx, (float *)y_ptr, (const SLAB_INT)incy);
+    cblas_saxpy((const SLAB_INT)n, *((const float *)(&a_copy)),
+                (const float *)x_ptr, (const SLAB_INT)incx, (float *)y_ptr,
+                (const SLAB_INT)incy);
   } else if (is_complex_float<T>::value) {
-    cblas_caxpy((const SLAB_INT)n, (const void *)(&a), (const void *)x_ptr,
+    cblas_caxpy((const SLAB_INT)n, (const void *)(&a_copy), (const void *)x_ptr,
                 (const SLAB_INT)incx, (void *)y_ptr, (const SLAB_INT)incy);
   }
 #endif

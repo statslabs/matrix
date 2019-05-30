@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file join.h
 /// @brief concatenation of matrices.
 
-#ifndef SLAB_MATRIX_FNS_JOIN_H_
-#define SLAB_MATRIX_FNS_JOIN_H_
+#ifndef _SLAB_MATRIX_FNS_JOIN_H
+#define _SLAB_MATRIX_FNS_JOIN_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 // join_vecs()
 template <typename T>
@@ -180,6 +180,6 @@ inline Matrix<T, 2> join_cols(const MatrixRef<T, 2> &a, const Matrix<T, 2> &b) {
   return res;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_FNS_JOIN_H_
+#endif  // _SLAB_MATRIX_FNS_JOIN_H

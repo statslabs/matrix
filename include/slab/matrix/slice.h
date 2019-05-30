@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,19 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// -----------------------------------------------------------------------------
-// slice.h
-// -----------------------------------------------------------------------------
-//
-#ifndef SLAB_MATRIX_SLICE_H_
-#define SLAB_MATRIX_SLICE_H_
+
+/// @file slice.h
+/// @brief slice struct
+
+#ifndef _SLAB_MATRIX_SLICE_H
+#define _SLAB_MATRIX_SLICE_H
 
 #include <cstddef>
-
 #include <iostream>
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
+// ---------------------------------------------------------------------- //
+//                                   Slice
+// ---------------------------------------------------------------------- //
 // A slice describes a sequence of elements in some dimension (or row) of a
 // matrix. It is a triple comprised of a starting index, a number of elements,
 // and the stride between subsequent elements.
@@ -42,21 +44,20 @@ struct slice {
 
   static slice all;
 
-  std::size_t start;  // first index
-  std::size_t
-      length;  // number of indices included (can be used for range checking)
+  std::size_t start;   // first index
+  std::size_t length;  // number of indices included
   std::size_t stride;  // distance between elements in sequence
 };
 
-// slice slice::all {0, (size_t)-1, 1};
+// FIXME
+// slice slice::all{0, std::size_t(-1), 1};
 
-// std::ostream &operator<<(std::ostream &os, const slice &s) {
-//  os << "start: " << s.start
-//     << ", length: " << s.length
-//     << ", stride: " << s.stride;
-//  return os;
-//}
+template <typename C, typename T>
+std::basic_ostream<C, T>& operator<<(std::basic_ostream<C, T>& os,
+                                     const slice& s) {
+  return os << '(' << s.start << ' ' << s.length << ' ' << s.stride << ')';
+}
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_SLICE_H_
+#endif  // _SLAB_MATRIX_SLICE_H

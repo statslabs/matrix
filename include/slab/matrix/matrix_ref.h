@@ -1,5 +1,5 @@
 //
-// Copyright 2018 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 /// @file matrix_ref.h
 /// @brief A MatrixRef template
 
-#ifndef SLAB_MATRIX_MATRIX_REF_H_
-#define SLAB_MATRIX_MATRIX_REF_H_
+#ifndef _SLAB_MATRIX_MATRIX_REF_H
+#define _SLAB_MATRIX_MATRIX_REF_H
 
 #include <cassert>
 #include <cstddef>
@@ -33,7 +34,7 @@
 #include "slab/matrix/packed_matrix.h"
 #include "slab/matrix/support.h"
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename T, std::size_t N>
 class MatrixRefIterator;
@@ -92,19 +93,7 @@ class MatrixRef : public MatrixBase<T, N> {
   // ---------------------------------------------
  public:
   //! m(i,j,k) subscripting with integers
-  ///@{
-  template <typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), T &> operator()(
-      Args... args) {
-    return MatrixBase<T, N>::template operator()<Args...>(args...);
-  }
-
-  template <typename... Args>
-  Enable_if<matrix_impl::Requesting_element<Args...>(), const T &> operator()(
-      Args... args) const {
-    return MatrixBase<T, N>::template operator()<Args...>(args...);
-  }
-  ///@}
+  using MatrixBase<T, N>::operator();
 
   //! m(s1, s2, s3) subscripting with slides
   ///@{
@@ -800,6 +789,6 @@ inline bool operator!=(const MatrixRefIterator<T, N> &a,
   return !(a == b);
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_MATRIX_REF_H_
+#endif  // _SLAB_MATRIX_MATRIX_REF_H

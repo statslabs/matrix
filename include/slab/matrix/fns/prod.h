@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 /// @file prod.h
 /// @brief Product of array elements.
 
-#ifndef SLAB_MATRIX_FNS_PROD_H_
-#define SLAB_MATRIX_FNS_PROD_H_
+#ifndef _SLAB_MATRIX_FNS_PROD_H
+#define _SLAB_MATRIX_FNS_PROD_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename T>
 inline T prod(const Matrix<T, 1> &x) {
@@ -56,6 +56,6 @@ inline Matrix<T, 1> prod(const MatrixRef<T, 2> &x) {
   return res;
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_FNS_PROD_H_
+#endif  // _SLAB_MATRIX_FNS_PROD_H

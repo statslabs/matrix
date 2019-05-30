@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@
 /// @file vectorise.h
 /// @brief convert matrix to vector.
 
-#ifndef SLAB_MATRIX_FNS_VECTORISE_H_
-#define SLAB_MATRIX_FNS_VECTORISE_H_
+#ifndef _SLAB_MATRIX_FNS_VECTORISE_H
+#define _SLAB_MATRIX_FNS_VECTORISE_H
 
-namespace slab {
+_SLAB_BEGIN_NAMESPACE
 
 template <typename T, std::size_t N>
 inline Matrix<T, 1> vectorise(const Matrix<T, N> &x) {
   return reshape(x, x.size());
 }
 
-}  // namespace slab
+_SLAB_END_NAMESPACE
 
-#endif  // SLAB_MATRIX_FNS_VECTORISE_H_
+#endif  // _SLAB_MATRIX_FNS_VECTORISE_H

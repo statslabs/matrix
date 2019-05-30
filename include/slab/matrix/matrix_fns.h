@@ -1,5 +1,5 @@
 //
-// Copyright 2019 The Statslabs Authors.
+// Copyright 2018-2019 The Statslabs Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,20 +17,15 @@
 /// @file matrix_fns.h
 /// @brief A collection of functions for Matrix
 
-#ifndef STATSLABS_MATRIX_MATRIX_FNS_H_
-#define STATSLABS_MATRIX_MATRIX_FNS_H_
+#ifndef _SLAB_MATRIX_MATRIX_FNS_H
+#define _SLAB_MATRIX_MATRIX_FNS_H
 
 #include <algorithm>
 #include <complex>
 #include <type_traits>
 
-#ifdef _SLAB_USE_MKL
-#include "mkl.h"
-#else
-extern "C" {
-#include "lapacke.h"
-}
-#endif
+#include "slab/__config"
+#include "slab/matrix/lapack_interface.h"
 
 #include "slab/matrix/fns/eye.h"
 #include "slab/matrix/fns/ones.h"
@@ -51,7 +46,8 @@ extern "C" {
 
 #include "slab/matrix/fns/chol.h"
 #include "slab/matrix/fns/inv.h"
+#include "slab/matrix/fns/lu.h"
 #include "slab/matrix/fns/pinv.h"
 #include "slab/matrix/fns/solve.h"
 
-#endif  // STATSLABS_MATRIX_MATRIX_FNS_H_
+#endif  // _SLAB_MATRIX_MATRIX_FNS_H
